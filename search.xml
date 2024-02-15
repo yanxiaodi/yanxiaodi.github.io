@@ -2422,7 +2422,8 @@
 </li>
 </ol>
 <p>So far, we have configured Swashbuckle to generate the OpenAPI specification with more information and include the XML comments from the controllers. When you run the application and navigate to <code>https://localhost:&lt;your port number&gt;/swagger/index.html</code>, you should see the updated Swagger UI with more information.</p>
-<p><img src="/assets/image-20240215212931292.png" alt="image-20240215212931292"></p>
+
+
 <p>You can see the title, description, and contact information in the Swagger UI. You can also see a link such as <code>https://localhost:7194/swagger/v1/swagger.json</code>. This is the URL to the OpenAPI specification.</p>
 <h2 id="Generating-an-OpenAPI-specification-file-with-Swashbuckle"><a href="#Generating-an-OpenAPI-specification-file-with-Swashbuckle" class="headerlink" title="Generating an OpenAPI specification file with Swashbuckle"></a>Generating an OpenAPI specification file with Swashbuckle</h2><p>Although we can see the OpenAPI specification in the Swagger UI, we need to generate a JSON file for NSwag to consume. Either Swashbuckle or NSwag can generate the OpenAPI specification file. However, Swashbuckle supports header parameters, while NSwag has some limitations. So, we’ll use Swashbuckle to generate the OpenAPI specification file, and then use NSwag to generate the client code.</p>
 <ol>
