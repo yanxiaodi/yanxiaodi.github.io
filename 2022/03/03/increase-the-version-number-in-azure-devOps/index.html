@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yanxiaodi.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Azure DevOps Pipelines is one of my favorite components in Azure DevOps. In this article, I will show you how to customize the version number in the YAML file for .NET applications. Why? Because I hav">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Increase The Version Number In Azure DevOps">
+<meta property="og:url" content="https://yanxiaodi.github.io/2022/03/03/increase-the-version-number-in-azure-devOps/index.html">
+<meta property="og:site_name" content="Xiaodi Yan&#39;s Blog">
+<meta property="og:description" content="Azure DevOps Pipelines is one of my favorite components in Azure DevOps. In this article, I will show you how to customize the version number in the YAML file for .NET applications. Why? Because I hav">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123202732474.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123203910656.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123212131686.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123212553988.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123224036034.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123224130035.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123233413757.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220124160055283.png">
+<meta property="article:published_time" content="2022-03-03T09:20:47.000Z">
+<meta property="article:modified_time" content="2022-03-03T09:20:47.000Z">
+<meta property="article:author" content="Xiaodi Yan">
+<meta property="article:tag" content="Auzre">
+<meta property="article:tag" content="DevOps">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yanxiaodi.github.io/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123202732474.png">
+
+
+<link rel="canonical" href="https://yanxiaodi.github.io/2022/03/03/increase-the-version-number-in-azure-devOps/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://yanxiaodi.github.io/2022/03/03/increase-the-version-number-in-azure-devOps/","path":"2022/03/03/increase-the-version-number-in-azure-devOps/","title":"Increase The Version Number In Azure DevOps"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Increase The Version Number In Azure DevOps | Xiaodi Yan's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaodi Yan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Coding is fun...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about-me/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-community-activities"><a href="/community-activities" rel="section"><i class="events fa-fw"></i>community activities</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-Semantic-Versioning"><span class="nav-number">1.</span> <span class="nav-text">What is Semantic Versioning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Create-a-NET-6-Web-API-project"><span class="nav-number">2.</span> <span class="nav-text">Create a .NET 6 Web API project</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-project"><span class="nav-number">2.1.</span> <span class="nav-text">Create a new project</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Add-the-model-and-controller"><span class="nav-number">2.2.</span> <span class="nav-text">Add the model and controller</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Set-up-the-version-number-with-dotnet-CLI"><span class="nav-number">3.</span> <span class="nav-text">Set up the version number with dotnet CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Add-a-project-in-Azure-DevOps-Pipelines"><span class="nav-number">4.</span> <span class="nav-text">Add a project in Azure DevOps Pipelines</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-your-first-build-pipeline"><span class="nav-number">4.1.</span> <span class="nav-text">Create your first build pipeline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Define-a-version-variable"><span class="nav-number">4.2.</span> <span class="nav-text">Define a version variable</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Define-a-variable-in-YAML-file"><span class="nav-number">4.2.1.</span> <span class="nav-text">Define a variable in YAML file</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Define-a-variable-in-Classic-UI"><span class="nav-number">4.2.2.</span> <span class="nav-text">Define a variable in Classic UI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Define-a-variable-in-variable-groups"><span class="nav-number">4.2.3.</span> <span class="nav-text">Define a variable in variable groups</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Add-a-publish-task"><span class="nav-number">4.3.</span> <span class="nav-text">Add a publish task</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Check-the-artifacts"><span class="nav-number">4.4.</span> <span class="nav-text">Check the artifacts</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Extract-the-version-number-into-a-separate-YAML-file"><span class="nav-number">5.</span> <span class="nav-text">Extract the version number into a separate YAML file</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Create-a-separate-file-for-version-number"><span class="nav-number">5.0.1.</span> <span class="nav-text">Create a separate file for version number</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Read-the-variable-and-use-it-in-the-pipeline"><span class="nav-number">5.0.2.</span> <span class="nav-text">Read the variable and use it in the pipeline</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Increase-the-revision-number"><span class="nav-number">6.</span> <span class="nav-text">Increase the revision number</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#An-alternative-approach"><span class="nav-number">7.</span> <span class="nav-text">An alternative approach</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">8.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiaodi Yan"
+      src="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+  <p class="site-author-name" itemprop="name">Xiaodi Yan</p>
+  <div class="site-description" itemprop="description">Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yanxiaodi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yanxiaodi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/xiaodi-yan-829bb055/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;xiaodi-yan-829bb055&#x2F;" rel="noopener me" target="_blank"><i class="fab linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yanxiaodi.github.io/2022/03/03/increase-the-version-number-in-azure-devOps/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+      <meta itemprop="name" content="Xiaodi Yan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaodi Yan's Blog">
+      <meta itemprop="description" content="Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Increase The Version Number In Azure DevOps | Xiaodi Yan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Increase The Version Number In Azure DevOps
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-03-03 22:20:47" itemprop="dateCreated datePublished" datetime="2022-03-03T22:20:47+13:00">2022-03-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>20k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>18 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Azure DevOps Pipelines is one of my favorite components in Azure DevOps. In this article, I will show you how to customize the version number in the YAML file for .NET applications. Why? Because I have seen some developers set up the build version number as a parameter in Azure DevOps UI, so they have to update the parameter whenever they need to build a new version. The better way is to manage the version number as code, so the pipeline will read the configuration from the code then automatically update it. I’ll show you how to make it in .NET 6 applications. First, let’s look at what the semantic versioning is.</p>
+<span id="more"></span>
+
+<h2 id="What-is-Semantic-Versioning"><a href="#What-is-Semantic-Versioning" class="headerlink" title="What is Semantic Versioning"></a>What is Semantic Versioning</h2><p>Semantic Versioning is widely used to indicate the version numbers of the software. You can find it here: <a target="_blank" rel="noopener" href="https://semver.org/">https://semver.org/</a>.</p>
+<p>Based on the Semantic Versioning, a version number contains these parts:</p>
+<ol>
+<li>MAJOR version when you make incompatible API changes,</li>
+<li>MINOR version when you add functionality in a backwards compatible manner, and</li>
+<li>PATCH version when you make backwards compatible bug fixes.</li>
+</ol>
+<p>So a normal version number may look like this: <code>1.2.3</code>. It can also contain additional labels for pre-release build, such as <code>1.2.3-alpha</code>. Moreover, it can contain build metadata. For example, it can contain an additional part which shows the build time (or build number), like <code>1.0.0+20130313144700</code>.</p>
+<p>Semantic Versioning is a specification, not a rule you must follow. Basically, you can define your own format to indicate the versions. In this article, I will specify the major version, the minor version and the patch version manually, and generate another revision version by the Azure DevOps Pipelines. Every time when the pipeline runs, it will increase the revision version. You can easily modify the YAML files to create your own version number format. You can apply the same approach in any kind of .NET Core Web&#x2F;WPF applications as well. Let’s get started!</p>
+<h2 id="Create-a-NET-6-Web-API-project"><a href="#Create-a-NET-6-Web-API-project" class="headerlink" title="Create a .NET 6 Web API project"></a>Create a .NET 6 Web API project</h2><h3 id="Create-a-new-project"><a href="#Create-a-new-project" class="headerlink" title="Create a new project"></a>Create a new project</h3><p>You might know how to create a new .NET 6 Web API project. We just use the default .NET 6 Web API template. Select ASP.NET Core Web API template.</p>
+<p>Type the project name and select the location, then click <strong>Next</strong>.</p>
+<img src="/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123202732474.png" class="">
+
+<p>Click <strong>Create</strong>, you will have a new .NET 6 Web API project.</p>
+<h3 id="Add-the-model-and-controller"><a href="#Add-the-model-and-controller" class="headerlink" title="Add the model and controller"></a>Add the model and controller</h3><p>We will use a model to represent the application information. Create a <strong>Models</strong> folder and add a new <code>AppInfo</code> class with the following code:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">BuildVersionDemo.Models</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AppInfo</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125; = <span class="string">&quot;BuildVersionDemo&quot;</span>;</span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">string</span> Version &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125; = <span class="built_in">string</span>.Empty;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Then Add a controller named <code>AppInfoController</code> in the <strong>Controllers</strong> folder:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">BuildVersionDemo.Controllers</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">Route(<span class="string">&quot;api/[controller]&quot;</span>)</span>]</span><br><span class="line">    [<span class="meta">ApiController</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AppInfoController</span> : <span class="title">ControllerBase</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">HttpGet(Name = <span class="string">&quot;GetAppInfo&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> AppInfo <span class="title">Get</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> AppInfo()</span><br><span class="line">            &#123;</span><br><span class="line">                Version = Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? <span class="string">&quot;1.0.0&quot;</span></span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In the above code, we use <code>Assembly.GetEntryAssembly()?.GetName().Version?.ToString()</code> to get the version number of the project. If the field is null, it will return a default version <code>1.0.0</code>.</p>
+<p>Run <code>dotnet run</code> to start the project and navigate to <code>http://localhost:xxxx/api/AppInfo</code>, you will see the output as below:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;BuildVersionDemo&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.0.0.0&quot;</span> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>Ok everything is ready for the next step. Let’s look at how to set up the version number.</p>
+<h2 id="Set-up-the-version-number-with-dotnet-CLI"><a href="#Set-up-the-version-number-with-dotnet-CLI" class="headerlink" title="Set up the version number with dotnet CLI"></a>Set up the version number with dotnet CLI</h2><p>dotnet CLI provides the <code>dotnet build</code> command to build the project and its dependencies. It can receive a parameter <code>-p</code> to specify the version of the application, as shown below:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet build -p:Version=1.0.1.1</span><br></pre></td></tr></table></figure>
+
+<p>The command will build the project and set the version as 1.0.1.1. Find more information here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/dotnet/core/tools/dotnet-build?WT.mc_id=DT-MVP-5001643">dotnet build</a>.</p>
+<p>You can run this command in the working folder and you will see dotnet CLI successfully builds the project. Now let’s navigate to the <strong>bin&#x2F;Debug&#x2F;net6.0</strong> folder, then right-click <strong>BuildVersionDemo.dll</strong> file and select <strong>Properties</strong>. In <strong>Details</strong> tab, you can see the Production version shows <code>1.0.1.1</code>:</p>
+<img src="/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123203910656.png" class="" title="VersionNumber" alt="VersionNumber">
+
+<p>To test it, navigate to the <strong>bin&#x2F;Debug&#x2F;net6.0</strong> folder, then run the command below:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet BuildVersionDemo.dll</span><br></pre></td></tr></table></figure>
+
+<p>Navigate to <code>http://localhost:5000/api/AppInfo</code> and you will see the version number has been updated:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;BuildVersionDemo&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.0.1.1&quot;</span> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>When we make the release, we will need to use <code>dotnet publish</code> command. For more information, check <a target="_blank" rel="noopener" href="https://docs.microsoft.com/dotnet/core/tools/dotnet-publish?WT.mc_id=DT-MVP-5001643">dotnet publish</a>. Similarly, we can pass <code>-p</code> parameter as well:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet publish --os win --self-contained <span class="literal">true</span> --configuration Release -p:Version=1.0.1.2</span><br></pre></td></tr></table></figure>
+
+<p>You can find the release files in <strong>bin&#x2F;Release&#x2F;net6.0&#x2F;win-x64&#x2F;publish</strong> folder.</p>
+<p>Please note that the <code>--os</code> parameter is available since .NET 6. If you use .NET Core 3.1, you can specify <code>--runtime</code> instead.</p>
+<p>So that’s how we set up the version number manually. In the next section, we will check how to build the project in Azure DevOps Pipelines.</p>
+<h2 id="Add-a-project-in-Azure-DevOps-Pipelines"><a href="#Add-a-project-in-Azure-DevOps-Pipelines" class="headerlink" title="Add a project in Azure DevOps Pipelines"></a>Add a project in Azure DevOps Pipelines</h2><p>You will need to store your project in Azure DevOps Repos or GitHub repos. Once you complete that, you can continue the next step. I have uploaded my code to this GitHub repo so you can fork it or download the files then upload to your repo: <a target="_blank" rel="noopener" href="https://github.com/yanxiaodi/MyCodeSamples/tree/main/BuildVersionDemo">https://github.com/yanxiaodi/MyCodeSamples/tree/main/BuildVersionDemo</a>.</p>
+<p>Let’s create a new project in Azure DevOps Pipelines. Log in <a target="_blank" rel="noopener" href="https://dev.azure.com/">https://dev.azure.com/</a> then create the <strong>New project</strong> button:</p>
+<img src="/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123212131686.png" class="" title="Create New Project" alt="Create New Project">
+
+<h3 id="Create-your-first-build-pipeline"><a href="#Create-your-first-build-pipeline" class="headerlink" title="Create your first build pipeline"></a>Create your first build pipeline</h3><p>Go to <strong>Pipelines</strong> then create a new pipeline. You will need to select the position of your repo then select the project. I use GitHub repo so it needs authorization:</p>
+<img src="/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123212553988.png" class="" title="authorization" alt="authorization">
+
+<p>It may take a couple of minutes. When the authorization is done, you can choose the pipeline template. For our .NET 6 Web API project, we can select <strong>ASP.NET</strong> template.</p>
+<p>Azure DevOps Pipelines will analyze your project and automatically generate a default pipeline for the project. It might vary based on your project. Update the YAML file as below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">trigger:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">master</span></span><br><span class="line"></span><br><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">&#x27;windows-latest&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="attr">project:</span> <span class="string">&#x27;**/BuildVersionDemo.csproj&#x27;</span></span><br><span class="line">  <span class="attr">buildOS:</span> <span class="string">&#x27;win-x64&#x27;</span></span><br><span class="line">  <span class="attr">buildConfiguration:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">steps:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">UseDotNet@2</span></span><br><span class="line">    <span class="attr">displayName:</span> <span class="string">&#x27;Use .NET 6 sdk&#x27;</span></span><br><span class="line">    <span class="attr">inputs:</span></span><br><span class="line">      <span class="attr">packageType:</span> <span class="string">sdk</span></span><br><span class="line">      <span class="attr">version:</span> <span class="number">6.0</span><span class="number">.101</span></span><br><span class="line">      <span class="attr">installationPath:</span> <span class="string">$(Agent.ToolsDirectory)/dotnet</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">    <span class="attr">displayName:</span> <span class="string">&#x27;Build&#x27;</span></span><br><span class="line">    <span class="attr">inputs:</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">&#x27;build&#x27;</span></span><br><span class="line">      <span class="attr">projects:</span> <span class="string">&#x27;$(project)&#x27;</span></span><br><span class="line">      <span class="attr">arguments:</span> <span class="string">&#x27;-o $(buildOS) --configuration $(BuildConfiguration)&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>We defined the branch which can trigger the build, and the build agent system - you may choose Windows or Linux. If you want to use other build agents, check it here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/azure/devops/pipelines/agents/hosted?view=azure-devops&WT.mc_id=DT-MVP-5001643">Microsoft-hosted agents</a>. In the variables section, we have some variables for the <code>project</code> path, <code>buildOS</code> and <code>buildConfiguration</code>. For <code>buildOS</code> field, you may need to build it for other systems, find the code here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/core/rid-catalog?WT.mc_id=DT-MVP-5001643">Runtime Identifier</a>.</p>
+<p>The first task is to install the latest .NET 6 SDK. When I write this article, the Azure DevOps pipelines hosted agents have been updated and now contain .NET 5.x SDK&#x2F;Runtime along with the older .NET Core version which are currently LTS. But our project is on .NET 6, so we need to install the .NET 6 SDK first. Otherwise you would see an error:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error NETSDK1045: The current .NET SDK does not support targeting .NET 6.0.  Either target .NET 5.0 or lower, or use a version of the .NET SDK that supports .NET 6.0.</span><br></pre></td></tr></table></figure>
+
+<p>You may need to change the .NET 6 SDK version when you make it. Or you can have <code>6.0.x</code> here.</p>
+<p>The next task is to build the project. In the arguments configuration, we will specify the build OS, or you can use <code>--runtime</code> parameter instead. Basically this task is to make sure the project can build successfully.</p>
+<p>Save the pipeline and run it then see if it works.</p>
+<h3 id="Define-a-version-variable"><a href="#Define-a-version-variable" class="headerlink" title="Define a version variable"></a>Define a version variable</h3><p>We will need to add another task to publish the project to Artifactory. In this step, we will specify the release version number, then we can release it to an Azure WebApp in the future.</p>
+<p>I will show you how to define the version number in different ways and you can choose what you prefer.</p>
+<p>This publish task is where we need to define the <code>version</code> variable. The basic way is to define it in the YAML file.</p>
+<h4 id="Define-a-variable-in-YAML-file"><a href="#Define-a-variable-in-YAML-file" class="headerlink" title="Define a variable in YAML file"></a>Define a variable in YAML file</h4><p>Add a <code>version</code> variable in the <code>variables</code> section of the YAML file:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;1.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>We will use it later.</p>
+<h4 id="Define-a-variable-in-Classic-UI"><a href="#Define-a-variable-in-Classic-UI" class="headerlink" title="Define a variable in Classic UI"></a>Define a variable in Classic UI</h4><p>The alternative way to set up a variable is the Classic UI. Click the <strong>Variables</strong> button on the right top corner in the edit page.</p>
+<img src="/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123224036034.png" class="">
+
+<img src="/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123224130035.png" class="">
+
+<p>You can find more information here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/azure/devops/pipelines/get-started/yaml-pipeline-editor?view=azure-devops&WT.mc_id=DT-MVP-5001643#manage-pipeline-variables">Manage pipeline variables</a>.</p>
+<h4 id="Define-a-variable-in-variable-groups"><a href="#Define-a-variable-in-variable-groups" class="headerlink" title="Define a variable in variable groups"></a>Define a variable in variable groups</h4><p>Another way is to define it in <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&WT.mc_id=DT-MVP-5001643">variable groups</a>. But normally variable groups are used to make variables available across multiple pipelines so it is not really for this case. You can find my another article for using variable groups to inject configurations to different environments: <a target="_blank" rel="noopener" href="https://faun.pub/using-azure-devops-pipelines-to-inject-configurations-when-deploying-asp-net-fc34e77a4a70">Using Azure DevOps Pipelines to inject configurations when deploying ASP.NET Core App to Linux host</a>.</p>
+<p>You can use either way. Defining variables in the YAML file is recommended because this allows you to track changes to the variable in your version control system.</p>
+<h3 id="Add-a-publish-task"><a href="#Add-a-publish-task" class="headerlink" title="Add a publish task"></a>Add a publish task</h3><p>Add a task in the YAML file pipeline:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Publish&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&#x27;publish&#x27;</span></span><br><span class="line">    <span class="attr">projects:</span> <span class="string">&#x27;$&#123;project&#125;&#x27;</span></span><br><span class="line">    <span class="attr">arguments:</span> <span class="string">&#x27;-o $(buildOS) --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:Version=$(version)&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>In this task, we specify the output folder as <code>$(Build.ArtifactStagingDirectory)</code>, which is a pre-defined variable in Azure DevOps. You can find more available variables here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/azure/devops/pipelines/build/variables?view=azure-devops&WT.mc_id=DT-MVP-5001643">Use predefined variables</a>. We also use <code>$(version)</code> to refer the <code>version</code> variable. This is called <strong>Macro syntax variable</strong>, and you can only use it for <code>stages</code>, <code>jobs</code>, and <code>steps</code>. They are not available in <code>resource</code> or <code>trigger</code>. For more information, please check <a target="_blank" rel="noopener" href="https://docs.microsoft.com/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml,batch&WT.mc_id=DT-MVP-5001643#understand-variable-syntax">Understand variable syntax</a>.</p>
+<p>Next we will need to publish the build artifacts. Add a task as below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">PublishBuildArtifacts@1</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Publish Artifacts&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">PathtoPublish:</span> <span class="string">&#x27;$(Build.ArtifactStagingDirectory)&#x27;</span></span><br><span class="line">    <span class="attr">ArtifactName:</span> <span class="string">&#x27;drop&#x27;</span></span><br><span class="line">    <span class="attr">publishLocation:</span> <span class="string">&#x27;Container&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>If you already created the <code>version</code> variable, you can click <strong>Save and run</strong> button to run the pipeline.</p>
+<p>The full YAML file is shown as below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">trigger:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">master</span></span><br><span class="line"></span><br><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">&#x27;windows-latest&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="attr">project:</span> <span class="string">&#x27;**/BuildVersionDemo.csproj&#x27;</span></span><br><span class="line">  <span class="attr">buildOS:</span> <span class="string">&#x27;win-x64&#x27;</span></span><br><span class="line">  <span class="attr">buildConfiguration:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line">  <span class="attr">version:</span> <span class="string">&#x27;1.1.1&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">steps:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">UseDotNet@2</span></span><br><span class="line">    <span class="attr">displayName:</span> <span class="string">&#x27;Use .NET 6 sdk&#x27;</span></span><br><span class="line">    <span class="attr">inputs:</span></span><br><span class="line">      <span class="attr">packageType:</span> <span class="string">sdk</span></span><br><span class="line">      <span class="attr">version:</span> <span class="number">6.0</span><span class="number">.101</span></span><br><span class="line">      <span class="attr">installationPath:</span> <span class="string">$(Agent.ToolsDirectory)/dotnet</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">    <span class="attr">displayName:</span> <span class="string">&#x27;Build&#x27;</span></span><br><span class="line">    <span class="attr">inputs:</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">&#x27;build&#x27;</span></span><br><span class="line">      <span class="attr">projects:</span> <span class="string">&#x27;$(project)&#x27;</span></span><br><span class="line">      <span class="attr">arguments:</span> <span class="string">&#x27;-o $(buildOS) --configuration $(BuildConfiguration)&#x27;</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">    <span class="attr">displayName:</span> <span class="string">&#x27;Publish&#x27;</span></span><br><span class="line">    <span class="attr">inputs:</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">&#x27;publish&#x27;</span></span><br><span class="line">      <span class="attr">projects:</span> <span class="string">&#x27;$&#123;project&#125;&#x27;</span></span><br><span class="line">      <span class="attr">arguments:</span> <span class="string">&#x27;-o $(buildOS) --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:Version=$(version)&#x27;</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">PublishBuildArtifacts@1</span></span><br><span class="line">    <span class="attr">displayName:</span> <span class="string">&#x27;Publish Artifacts&#x27;</span></span><br><span class="line">    <span class="attr">inputs:</span></span><br><span class="line">      <span class="attr">PathtoPublish:</span> <span class="string">&#x27;$(Build.ArtifactStagingDirectory)&#x27;</span></span><br><span class="line">      <span class="attr">ArtifactName:</span> <span class="string">&#x27;drop&#x27;</span></span><br><span class="line">      <span class="attr">publishLocation:</span> <span class="string">&#x27;Container&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Check-the-artifacts"><a href="#Check-the-artifacts" class="headerlink" title="Check the artifacts"></a>Check the artifacts</h3><p>Once the pipeline runs successfully, you can download the artifacts here:</p>
+<img src="/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220123233413757.png" class="" title="artifacts" alt="artifacts">
+
+<p>Check the properties of the dll files and see if the version number is correct.</p>
+<h2 id="Extract-the-version-number-into-a-separate-YAML-file"><a href="#Extract-the-version-number-into-a-separate-YAML-file" class="headerlink" title="Extract the version number into a separate YAML file"></a>Extract the version number into a separate YAML file</h2><p>It works well so far. But the next question is - what should we do if we want to update the version number?</p>
+<p>When we defined the <code>version</code> variable, it is actually stored in the same pipeline YAML file. If we want to update the version number for the next build, we must edit the pipeline definition directly (or enter the edit page of the pipeline if you use the classic UI), then update the value. It is not ideal to maintain it because we don’t want to change the pipelines often.</p>
+<p>In this section, I will show you how to achieve <strong>version number as code</strong>.</p>
+<p>To do this, we should not define the version variable in the build pipeline YAML file. Instead, we will need to create a separate file to store the version number, then read it in the build pipeline YAML file. When we want to update the version number, we just need to update the version number file, and no need to touch the build pipeline YAML file anymore. In the version number file, we will follow the semantic versioning - define the major, minor and patch numbers only, and the pipeline will generate the last revision number automatically.</p>
+<h4 id="Create-a-separate-file-for-version-number"><a href="#Create-a-separate-file-for-version-number" class="headerlink" title="Create a separate file for version number"></a>Create a separate file for version number</h4><p>Next, let’s create a new file called <strong>app-variables.yml</strong> file in the root folder. Now your root folder should have two YAML files: <strong>azure-pipelines.yml</strong>, which is created by Azure DevOps; and <strong>app-variables.yml</strong>.</p>
+<p>Edit the <strong>app-variables.yml</strong> file as below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="attr">versionMajorMinorPatch:</span> <span class="number">1.2</span><span class="number">.0</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Read-the-variable-and-use-it-in-the-pipeline"><a href="#Read-the-variable-and-use-it-in-the-pipeline" class="headerlink" title="Read the variable and use it in the pipeline"></a>Read the variable and use it in the pipeline</h4><p>Next we need to read this variable in the original pipeline YAML file. Update the file as the following code:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">trigger:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">master</span></span><br><span class="line"></span><br><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">&#x27;windows-latest&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">project</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&#x27;**/BuildVersionDemo.csproj&#x27;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">buildOS</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&#x27;win-x64&#x27;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">buildConfiguration</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">template:</span> <span class="string">app-version.yml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">steps:</span></span><br><span class="line">  <span class="comment">###</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">    <span class="attr">displayName:</span> <span class="string">&#x27;Publish&#x27;</span></span><br><span class="line">    <span class="attr">inputs:</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">&#x27;publish&#x27;</span></span><br><span class="line">      <span class="attr">projects:</span> <span class="string">&#x27;$&#123;project&#125;&#x27;</span></span><br><span class="line">      <span class="attr">arguments:</span> <span class="string">&#x27;-o $(buildOS) --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:Version=$<span class="template-variable">&#123;&#123;variables.versionMajorMinorPatch&#125;&#125;</span>&#x27;</span></span><br><span class="line"><span class="comment">###</span></span><br></pre></td></tr></table></figure>
+
+<p>Note that the change for the variables. We added a <code>template</code> field to refer the <strong>app-version.yml</strong> file, and use <code>$&#123;&#123;variables.versionMajorMinorPatch&#125;&#125;</code> to read the value defined in the template. This is a <strong>template expression</strong>, which is different with <strong>macro syntax</strong> we mentioned before. For more explanation, please check <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml,batch&WT.mc_id=DT-MVP-5001643#runtime-expression-syntax">Runtime expression syntax</a> and <a target="_blank" rel="noopener" href="https://docs.microsoft.com/azure/devops/pipelines/process/templates?view=azure-devops&WT.mc_id=DT-MVP-5001643#variable-reuse">Variable reuse</a>.</p>
+<p>Ok now you should be able to build the project again and see if the published files have been updated to the new version number you defined in the separate YAML file. Next time if you need to change the version number, then just update the <strong>app-version.yml</strong> only, and no need to touch the <strong>azure-pipelines.yml</strong> file anymore.</p>
+<h2 id="Increase-the-revision-number"><a href="#Increase-the-revision-number" class="headerlink" title="Increase the revision number"></a>Increase the revision number</h2><p>The next step is to automatically increase the revision number by the pipeline. So we can see different revision number based on the build number for each build&#x2F;release. For example, when the version is 1.1.0, every time the pipeline runs, it will increase a revision number in sequence, e.g. 1.1.0.0, 1.1.0.1… and so on.</p>
+<p>We can use expressions to calculate the revision number. Update the YAML file as below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">trigger:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">master</span></span><br><span class="line"></span><br><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">&#x27;windows-latest&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">project</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&#x27;**/BuildVersionDemo.csproj&#x27;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">buildOS</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&#x27;win-x64&#x27;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">buildConfiguration</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">template:</span> <span class="string">app-version.yml</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">versionRevision</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">$[counter($&#123;&#123;variables.versionMajorMinorPatch&#125;&#125;,</span> <span class="number">0</span><span class="string">)]</span></span><br><span class="line"></span><br><span class="line"><span class="attr">steps:</span></span><br><span class="line">  <span class="comment">###</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">    <span class="attr">displayName:</span> <span class="string">&#x27;Publish&#x27;</span></span><br><span class="line">    <span class="attr">inputs:</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">&#x27;publish&#x27;</span></span><br><span class="line">      <span class="attr">projects:</span> <span class="string">&#x27;$&#123;project&#125;&#x27;</span></span><br><span class="line">      <span class="attr">arguments:</span> <span class="string">&#x27;-o $(buildOS) --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:Version=$<span class="template-variable">&#123;&#123;variables.versionMajorMinorPatch&#125;&#125;</span>.$(versionRevision)&#x27;</span></span><br><span class="line"><span class="comment">###</span></span><br></pre></td></tr></table></figure>
+
+<p>We added a new variable called <code>versionRevision</code> with the value <code>$[counter($&#123;&#123;variables.versionMajorMinorPatch&#125;&#125;, 0)]</code>. It uses <code>counter</code> function to evaluate a number that is incremented with each run of a pipeline. There are two parameters for this function: <code>prefix</code> and <code>seed</code>. For this case, the value of <code>versionRevision</code> will be 0 in the first run of the pipeline. If the value of <code>versionMajorMinorPatch</code> does not change, in the second run it will be 1. For more information about <code>counter</code> function, check <a target="_blank" rel="noopener" href="https://docs.microsoft.com/azure/devops/pipelines/process/expressions?view=azure-devops&WT.mc_id=DT-MVP-5001643#counter">Expressions - counter</a>.</p>
+<p>If you edit the <strong>app-version.yml</strong> file and update the value of <code>versionMajorMinorPatch</code> to be a new value, then in the next run of the pipeline, the value of <code>versionRevision</code> will be 0. Subsequent runs will increment the counter to 1, 2, 3, …</p>
+<p>Let’s change the version as 1.2.1 in the <strong>app-version.yml</strong> file and push it. You will see the build log as below:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\hostedtoolcache\windows\dotnet\dotnet.exe publish D:\a\1\s\BuildVersionDemo\BuildVersionDemo.csproj -o win-x64 --configuration Release --output D:\a\1\a\BuildVersionDemo /p:Version=1.2.1.0</span><br></pre></td></tr></table></figure>
+
+<p>Now let’s run the pipeline again. You will see the revision number will increase to 1 so the version would be 1.2.1.1.</p>
+<img src="/2022/03/03/increase-the-version-number-in-azure-devOps/image-20220124160055283.png" class="" title="New Version Number" alt="New Version Number">
+
+<p>If you change the version as 1.2.2 in the <strong>app-version.yml</strong> file and push it, you will see the counter will be reset to 0, which is exact what we want.</p>
+<p>The benefit of this way is we have the version number in a separate file, which can be managed by the source control system. So you don’t have to edit the version number in Azure DevOps UI or in the pipeline file, which is less risky. Also the pipeline can automatically increase the revision number based on the main version number. That is how we manage <strong>version number as code</strong>.</p>
+<p>The full YAML file is shown below. You can easily customize it for your requirements.</p>
+<p><strong>app-version.yml</strong>:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="attr">versionMajorMinorPatch:</span> <span class="number">1.2</span><span class="number">.2</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>azure-pipelines.yml</strong>:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ASP.NET</span></span><br><span class="line"><span class="comment"># Build and test ASP.NET projects.</span></span><br><span class="line"><span class="comment"># Add steps that publish symbols, save build artifacts, deploy, and more:</span></span><br><span class="line"><span class="comment"># https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4</span></span><br><span class="line"></span><br><span class="line"><span class="attr">trigger:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">master</span></span><br><span class="line"></span><br><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">&#x27;windows-latest&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">project</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&#x27;**/BuildVersionDemo.csproj&#x27;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">buildOS</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&#x27;win-x64&#x27;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">buildConfiguration</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">template:</span> <span class="string">app-version.yml</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">versionRevision</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">$[counter($&#123;&#123;variables.versionMajorMinorPatch&#125;&#125;,</span> <span class="number">0</span><span class="string">)]</span></span><br><span class="line"></span><br><span class="line"><span class="attr">steps:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">UseDotNet@2</span></span><br><span class="line">    <span class="attr">displayName:</span> <span class="string">&#x27;Use .NET 6 sdk&#x27;</span></span><br><span class="line">    <span class="attr">inputs:</span></span><br><span class="line">      <span class="attr">packageType:</span> <span class="string">sdk</span></span><br><span class="line">      <span class="attr">version:</span> <span class="number">6.0</span><span class="number">.101</span></span><br><span class="line">      <span class="attr">installationPath:</span> <span class="string">$(Agent.ToolsDirectory)/dotnet</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">    <span class="attr">displayName:</span> <span class="string">&#x27;Build&#x27;</span></span><br><span class="line">    <span class="attr">inputs:</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">&#x27;build&#x27;</span></span><br><span class="line">      <span class="attr">projects:</span> <span class="string">&#x27;$(project)&#x27;</span></span><br><span class="line">      <span class="attr">arguments:</span> <span class="string">&#x27;-o $(buildOS) --configuration $(BuildConfiguration)&#x27;</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">    <span class="attr">displayName:</span> <span class="string">&#x27;Publish&#x27;</span></span><br><span class="line">    <span class="attr">inputs:</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">&#x27;publish&#x27;</span></span><br><span class="line">      <span class="attr">projects:</span> <span class="string">&#x27;$&#123;project&#125;&#x27;</span></span><br><span class="line">      <span class="attr">arguments:</span> <span class="string">&#x27;-o $(buildOS) --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:Version=$<span class="template-variable">&#123;&#123;variables.versionMajorMinorPatch&#125;&#125;</span>.$(versionRevision)&#x27;</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">PublishBuildArtifacts@1</span></span><br><span class="line">    <span class="attr">displayName:</span> <span class="string">&#x27;Publish Artifacts&#x27;</span></span><br><span class="line">    <span class="attr">inputs:</span></span><br><span class="line">      <span class="attr">PathtoPublish:</span> <span class="string">&#x27;$(Build.ArtifactStagingDirectory)&#x27;</span></span><br><span class="line">      <span class="attr">ArtifactName:</span> <span class="string">&#x27;drop&#x27;</span></span><br><span class="line">      <span class="attr">publishLocation:</span> <span class="string">&#x27;Container&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="An-alternative-approach"><a href="#An-alternative-approach" class="headerlink" title="An alternative approach"></a>An alternative approach</h2><p>Sometime you may have more complex requirements for these variables. You can use scripts to generate output variables and pass them to the next job&#x2F;task. Find more information about Azure DevOps Pipelines variables: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/devops/pipelines/process/set-variables-scripts?view=azure-devops&WT.mc_id=DT-MVP-5001643">Set variables in scripts</a>.</p>
+<p>Here is another example to read version numbers and pass it to the next job:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ASP.NET</span></span><br><span class="line"><span class="comment"># Build and test ASP.NET projects.</span></span><br><span class="line"><span class="comment"># Add steps that publish symbols, save build artifacts, deploy, and more:</span></span><br><span class="line"><span class="comment"># https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4</span></span><br><span class="line"></span><br><span class="line"><span class="attr">trigger:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">master</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job:</span> <span class="string">ReadVariables</span></span><br><span class="line">    <span class="attr">pool:</span></span><br><span class="line">      <span class="attr">vmImage:</span> <span class="string">&#x27;windows-latest&#x27;</span></span><br><span class="line">    <span class="attr">variables:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">template:</span> <span class="string">app-version.yml</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">powershell:</span> <span class="string">echo</span> <span class="string">&quot;##vso[task.setvariable variable=versionMajorMinorPatch;isOutput=true]$<span class="template-variable">&#123;&#123;variables.versionMajorMinorPatch&#125;&#125;</span>&quot;</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">setvarStep</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">script:</span> <span class="string">echo</span> <span class="string">$(setvarStep.versionMajorMinorPatch)</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">echovar</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job:</span> <span class="string">BuildAndPublish</span></span><br><span class="line">    <span class="attr">dependsOn:</span> <span class="string">ReadVariables</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">pool:</span></span><br><span class="line">      <span class="attr">vmImage:</span> <span class="string">&#x27;windows-latest&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">variables:</span></span><br><span class="line">      <span class="attr">project:</span> <span class="string">&#x27;**/BuildVersionDemo.csproj&#x27;</span></span><br><span class="line">      <span class="attr">buildOS:</span> <span class="string">&#x27;win-x64&#x27;</span></span><br><span class="line">      <span class="attr">buildConfiguration:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line">      <span class="attr">versionMajorMinorPatch:</span> <span class="string">$[dependencies.ReadVariables.outputs[&#x27;setvarStep.versionMajorMinorPatch&#x27;]]</span></span><br><span class="line">      <span class="attr">versionRevision:</span> <span class="string">$[counter(variables[&#x27;versionMajorMinorPatch&#x27;],</span> <span class="number">0</span><span class="string">)]</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">UseDotNet@2</span></span><br><span class="line">        <span class="attr">displayName:</span> <span class="string">&#x27;Use .NET 6 sdk&#x27;</span></span><br><span class="line">        <span class="attr">inputs:</span></span><br><span class="line">          <span class="attr">packageType:</span> <span class="string">sdk</span></span><br><span class="line">          <span class="attr">version:</span> <span class="number">6.0</span><span class="number">.101</span></span><br><span class="line">          <span class="attr">installationPath:</span> <span class="string">$(Agent.ToolsDirectory)/dotnet</span></span><br><span class="line"></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">        <span class="attr">displayName:</span> <span class="string">&#x27;Build&#x27;</span></span><br><span class="line">        <span class="attr">inputs:</span></span><br><span class="line">          <span class="attr">command:</span> <span class="string">&#x27;build&#x27;</span></span><br><span class="line">          <span class="attr">projects:</span> <span class="string">&#x27;$(project)&#x27;</span></span><br><span class="line">          <span class="attr">arguments:</span> <span class="string">&#x27;-o $(buildOS) --configuration $(BuildConfiguration)&#x27;</span></span><br><span class="line"></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">        <span class="attr">displayName:</span> <span class="string">&#x27;Publish&#x27;</span></span><br><span class="line">        <span class="attr">inputs:</span></span><br><span class="line">          <span class="attr">command:</span> <span class="string">&#x27;publish&#x27;</span></span><br><span class="line">          <span class="attr">projects:</span> <span class="string">&#x27;$&#123;project&#125;&#x27;</span></span><br><span class="line">          <span class="attr">arguments:</span> <span class="string">&#x27;-o $(buildOS) --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:Version=$(versionMajorMinorPatch).$(versionRevision)&#x27;</span></span><br><span class="line"></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">task:</span> <span class="string">PublishBuildArtifacts@1</span></span><br><span class="line">        <span class="attr">displayName:</span> <span class="string">&#x27;Publish Artifacts&#x27;</span></span><br><span class="line">        <span class="attr">inputs:</span></span><br><span class="line">          <span class="attr">PathtoPublish:</span> <span class="string">&#x27;$(Build.ArtifactStagingDirectory)&#x27;</span></span><br><span class="line">          <span class="attr">ArtifactName:</span> <span class="string">&#x27;drop&#x27;</span></span><br><span class="line">          <span class="attr">publishLocation:</span> <span class="string">&#x27;Container&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>This pipeline adds another job to read the variables then sets the variables in the scripts. It allows you to have more capabilities to control these variables, or you want to do something that isn’t supported by the default tasks. You need to use <code>task.setvariable</code> command in the scripts. For more information, see <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/devops/pipelines/process/set-variables-scripts?view=azure-devops&WT.mc_id=DT-MVP-5001643">Set variables in scripts</a>.</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>This article won’t cover the release&#x2F;deployment. You can create a new release pipeline for your application. Because when we publish the artifact, the correct version number has been applied so once your Web API is ready, the client can get the correct version number through the endpoint. You can find a bunch of resources from Microsoft Doc: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/azure/devops/pipelines/?view=azure-devops&WT.mc_id=DT-MVP-5001643">Azure Pipelines</a>.</p>
+<p>In this article, we learned how to have a separate file to store the version numbers. You can have any other variables in this file and include it in the main pipeline YAML file. You can also read the variable directly or have a script for more complex tasks. With this way, the version number is easily maintained in a separate file so we can manage it as code.</p>
+<p>Some important documents are already listed in the article. Hope this is helpful for your Azure DevOps journey.</p>
+<p>Thanks for reading!</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Auzre/" rel="tag"># Auzre</a>
+              <a href="/tags/DevOps/" rel="tag"># DevOps</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/08/be-a-life-long-learner-to-embrace-ai/" rel="prev" title="Be a life-long learner to embrace AI">
+                  <i class="fa fa-angle-left"></i> Be a life-long learner to embrace AI
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/09/20/take-your-first-step-with-dapr/" rel="next" title="Take your first step with Dapr">
+                  Take your first step with Dapr <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xiaodi Yan</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">236k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:35</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

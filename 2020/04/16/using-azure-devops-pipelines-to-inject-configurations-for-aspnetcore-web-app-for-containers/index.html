@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yanxiaodi.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="In part 1 of this article - Using Azure Devops Pipelines to inject configurations for Asp.Net Core Aeb App on linux, I used Azure DevOps to deploy my ASP.NET Core app to Azure Web App on Linux. The ne">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Web App for Containers">
+<meta property="og:url" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/index.html">
+<meta property="og:site_name" content="Xiaodi Yan&#39;s Blog">
+<meta property="og:description" content="In part 1 of this article - Using Azure Devops Pipelines to inject configurations for Asp.Net Core Aeb App on linux, I used Azure DevOps to deploy my ASP.NET Core app to Azure Web App on Linux. The ne">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200413222217885.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414181115521.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415092431638.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414203312336.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414203908190.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414204441800.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414205048943.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414205805741.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414210022278.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414213844915.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415101632338.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415102015297.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414215454254.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414214122293.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414214636066.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414220259987.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414223801566.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415103230881.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415103701990.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415103257466.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415103312112.png">
+<meta property="article:published_time" content="2020-04-16T08:19:20.000Z">
+<meta property="article:modified_time" content="2020-04-16T08:19:20.000Z">
+<meta property="article:author" content="Xiaodi Yan">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="DevOps">
+<meta property="article:tag" content="ASP.NETCore">
+<meta property="article:tag" content="GitHub">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Container">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200413222217885.png">
+
+
+<link rel="canonical" href="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/","path":"2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/","title":"Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Web App for Containers"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Web App for Containers | Xiaodi Yan's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaodi Yan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Coding is fun...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about-me/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-community-activities"><a href="/community-activities" rel="section"><i class="events fa-fw"></i>community activities</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Adding-the-Docker-support-to-the-NET-Core-Web-App"><span class="nav-number">1.</span> <span class="nav-text">Adding the Docker support to the .NET Core Web App</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Understanding-the-Dockerfile"><span class="nav-number">2.</span> <span class="nav-text">Understanding the Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Why-the-local-build-failed"><span class="nav-number">3.</span> <span class="nav-text">Why the local build failed?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-Azure-Container-Registry"><span class="nav-number">4.</span> <span class="nav-text">Creating Azure Container Registry</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-the-build-pipeline-to-build-the-Docker-image"><span class="nav-number">5.</span> <span class="nav-text">Creating the build pipeline to build the Docker image</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-the-Web-App-for-Containers"><span class="nav-number">6.</span> <span class="nav-text">Creating the Web App for Containers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-the-release-pipeline-for-Container"><span class="nav-number">7.</span> <span class="nav-text">Creating the release pipeline for Container</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Injecting-the-values-for-appsettings-json"><span class="nav-number">8.</span> <span class="nav-text">Injecting the values for appsettings.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deployment"><span class="nav-number">9.</span> <span class="nav-text">Deployment</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number"></span> <span class="nav-text">Summary</span></a></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiaodi Yan"
+      src="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+  <p class="site-author-name" itemprop="name">Xiaodi Yan</p>
+  <div class="site-description" itemprop="description">Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yanxiaodi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yanxiaodi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/xiaodi-yan-829bb055/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;xiaodi-yan-829bb055&#x2F;" rel="noopener me" target="_blank"><i class="fab linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+      <meta itemprop="name" content="Xiaodi Yan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaodi Yan's Blog">
+      <meta itemprop="description" content="Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Web App for Containers | Xiaodi Yan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Web App for Containers
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-04-16 20:19:20" itemprop="dateCreated datePublished" datetime="2020-04-16T20:19:20+12:00">2020-04-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>14k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>13 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>In part 1 of this article - <a href="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/">Using Azure Devops Pipelines to inject configurations for Asp.Net Core Aeb App on linux</a>, I used Azure DevOps to deploy my ASP.NET Core app to Azure Web App on Linux. The next part is to publish the same web app to Azure Web Apps for Containers. I do not need to re-emphasize the benefits of the container. You can find bunches of documents that promote it. So I just would like to show you how to leverage the Azure DevOps Pipelines to build the web app as docker images then push it to Azure Container Registry, then publish it to Azure Web Apps for Containers.</p>
+<span id="more"></span>
+
+<h3 id="Adding-the-Docker-support-to-the-NET-Core-Web-App"><a href="#Adding-the-Docker-support-to-the-NET-Core-Web-App" class="headerlink" title="Adding the Docker support to the .NET Core Web App"></a>Adding the Docker support to the .NET Core Web App</h3><p>I suppose you have Docker Desktop installed on your machine. If not, you can download it <a target="_blank" rel="noopener" href="https://docs.docker.com/get-docker/">here</a>. The below commands are necessary for your container journey:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br><span class="line">docker image <span class="built_in">ls</span></span><br><span class="line">docker image <span class="built_in">rm</span></span><br><span class="line">docker image tag</span><br><span class="line">docker container <span class="built_in">ls</span></span><br><span class="line">docker container <span class="built_in">rm</span></span><br><span class="line">docker container <span class="built_in">kill</span></span><br><span class="line">docker container run</span><br><span class="line">docker container stop</span><br><span class="line">docker build</span><br><span class="line">docker run</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>However, the docker command is not the key point of this article. You can find the documents here: <a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/cli/">Docker CLI</a>. Actually, we do not need to build the docker image on our local machine. Instead, we will use Azure DevOps to build the docker image and publish it. Let’s get started.</p>
+<p>The first step is adding the Docker support to the current .NET Core app. Right-click the project and select <strong>Add</strong> - <strong>Docker support…</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200413222217885.png" class="">
+
+<p>We will use Linux as the Target OS. Click <strong>OK</strong>. There are some changes to the project:</p>
+<ul>
+<li>A file named <strong>Dockerfile</strong> will be added to the root folder of the current web app project by VS 2019. The content looks like this:</li>
+</ul>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> mcr.microsoft.com/dotnet/core/aspnet:<span class="number">3.1</span>-buster-slim AS base</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">443</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> mcr.microsoft.com/dotnet/core/sdk:<span class="number">3.1</span>-buster AS build</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /src</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> [<span class="string">&quot;DevOpsSample.WebApp/DevOpsSample.WebApp.csproj&quot;</span>, <span class="string">&quot;DevOpsSample.WebApp/&quot;</span>]</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> dotnet restore <span class="string">&quot;DevOpsSample.WebApp/DevOpsSample.WebApp.csproj&quot;</span></span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> . .</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> <span class="string">&quot;/src/DevOpsSample.WebApp&quot;</span></span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> dotnet build <span class="string">&quot;DevOpsSample.WebApp.csproj&quot;</span> -c Release -o /app/build</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> build AS publish</span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> dotnet publish <span class="string">&quot;DevOpsSample.WebApp.csproj&quot;</span> -c Release -o /app/publish</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> base AS final</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> --from=publish /app/publish .</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="language-bash"> [<span class="string">&quot;dotnet&quot;</span>, <span class="string">&quot;DevOpsSample.WebApp.dll&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>This is the default Dockerfile generated by VS2019. That is the key of this part.</p>
+<ul>
+<li>It also updates the <strong>launchSettings.json</strong> file in the <strong>Properties</strong> folder and this section is added so you can debug the app from Docker:</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;Docker&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;commandName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Docker&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;launchBrowser&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;launchUrl&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&#123;Scheme&#125;://&#123;ServiceHost&#125;:&#123;ServicePort&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;publishAllPorts&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;useSSL&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Another change is VS 2019 added a package named <strong>Microsoft.VisualStudio.Azure.Containers.Tools.Targets</strong> to the project to enable the functionalities regarding Docker.</li>
+<li>Finally, it added a <strong>.dockerignore</strong> file. It looks like <strong>.gitignore</strong>.</li>
+</ul>
+<p>So that you can debug the app in Docker by changing the debug host:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414181115521.png" class="">
+
+<h3 id="Understanding-the-Dockerfile"><a href="#Understanding-the-Dockerfile" class="headerlink" title="Understanding the Dockerfile"></a>Understanding the Dockerfile</h3><p>A <strong>Dockerfile</strong> is a text document that contains all the commands to build an image. When we run <code>docker build</code> command, it will read the <strong>Dockerfile</strong> and execute the inside commands in a specified <strong>context</strong>, which is a set of files at a specified location. So there are lots of <code>WORKDIR</code> commands in the Dockerfile, which is used to set up the command context. You can find the documents of <strong>Dockerfile</strong> <a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/builder/">here</a>.</p>
+<p>Currently, we do not need to change this file much but let’s have a quick look at these commands:</p>
+<ul>
+<li><code>FROM</code> initializes a new build stage and sets the <strong>Base Image</strong> for the next actions. In this case, it will pull an image from Microsoft’s public repositories - which is the base image for .NET Core 3.1 runtime.</li>
+<li><code>WORKDIR</code> sets the working directory for the subsequent commands. If we use relative path for this command, it will be relative to the path of the previous <code>WORKDIR</code>.</li>
+<li><code>EXPOSE</code> sets the ports that will be used to listen for the container. It is TCP by default but you can also specify UDP if you need. In this case, the container will listen 80(for HTTP) and 443(for HTTPS). When we start the container, we need to use the <code>docker run</code> command to map the internal ports to external ports, eg.<code>docker run -p 8080:80</code>, which means the container will listen on port 8080 and forward the requests to the internal port 80.</li>
+<li><code>COPY</code>  copies new files or directories from a source position to the file system of the container at the destination position.</li>
+<li><code>RUN</code> executes the commands on the current image and commits the results, which will be used for the next step.</li>
+<li><code>ENTRYPOINT</code> is to config a container that will run as an executable. In our case, it will call <code>dotnet</code> command and pass the dll name as the argument to start the web app.</li>
+</ul>
+<h3 id="Why-the-local-build-failed"><a href="#Why-the-local-build-failed" class="headerlink" title="Why the local build failed?"></a>Why the local build failed?</h3><p>One tricky thing is the <code>COPY</code> command. We should be careful regarding the file path. If you try to build the image in the project folder by using this command:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build .</span><br></pre></td></tr></table></figure>
+
+<p>You may see the below error in the output:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">Step 7/17 : COPY [<span class="string">&quot;DevOpsSample.WebApp/DevOpsSample.WebApp.csproj&quot;</span>, <span class="string">&quot;DevOpsSample.WebApp/&quot;</span>]</span><br><span class="line">COPY failed: <span class="built_in">stat</span> /var/lib/docker/tmp/docker-builder617484291/DevOpsSample.WebApp/DevOpsSample.WebApp.csproj: no such file or directory</span><br></pre></td></tr></table></figure>
+
+<p>The reason is when VS 2019 generates the Dockerfile, it creates it in the current project folder, but in the <code>COPY</code> commands, it uses the folder that starts from the root folder of the solution, which is <code>DevOpsSample.WebApp/DevOpsSample.WebApp.csproj</code>. We can change the folder path, or move the Dockerfile to the same level as the solution(.sln) file for the local build. However, that would break the Docker build function of VS2019. I am not sure if it is a bug or something else, but it is a little bit tricky. My solution is to copy the Docker file and paste it to the root folder of the solution, which is helpful for Azure DevOps as well. You can right-click the solution and select <strong>Add - Existing Item</strong> to add the Dockerfile to the solution level. So VS2019 is able to continue to use the Dockerfile in the project folder for debugging.</p>
+<p>So the solution looks like this(there are two same Dockerfiles in different folders):</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415092431638.png" class="">
+
+<p>Please be aware of the folder path when you update the Dockerfile, especially when the solution has complex structures and multiple projects.</p>
+<h3 id="Creating-Azure-Container-Registry"><a href="#Creating-Azure-Container-Registry" class="headerlink" title="Creating Azure Container Registry"></a>Creating Azure Container Registry</h3><p>Before we create the pipeline to build the Docker image, we need to create an Azure Container Registry. You can also use Docker Hub as the destination. For this demo, I will use Azure Container Registry to manage the images. We will use Azure DevOps Pipelines to build the image, then push it to Azure Container Registry so that we can use the pipeline to release it to Azure Web App for Containers.</p>
+<p>You can use Azure Portal or Azure CLI to create Azure Container Registry. For more detail: </p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal">Quickstart: Create a private container registry using the Azure portal</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-azure-cli">Quickstart: Create a private container registry using the Azure CLI</a></li>
+</ul>
+<p>ACR is not free but the price for the Basic tier is affordable for dev&#x2F;testing.</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414203312336.png" class="">
+
+<p>I have already created an Azure Container Registry in the Azure Portal. You can select Basic SKU for testing.</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414203908190.png" class="">
+
+<p>Once you created your Azure Container Registry, you can find the server name in the overview page. It is like <strong>youracrname.azurecr.io</strong>.</p>
+<h3 id="Creating-the-build-pipeline-to-build-the-Docker-image"><a href="#Creating-the-build-pipeline-to-build-the-Docker-image" class="headerlink" title="Creating the build pipeline to build the Docker image"></a>Creating the build pipeline to build the Docker image</h3><p>The next step is to create a build pipeline in Azure DevOps. But this time we will use another task. Search <code>docker</code> in the assistant and select <strong>Docker</strong> task:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414204441800.png" class="">
+
+<p>If you cannot find available <strong>Container registry</strong> on the configuration page, you need to add a server connection for your project. Open the project page and click <strong>Project settings</strong>  on the left bottom corner to navigate to the <strong>Project Settings</strong> page. Then click <strong>Service connections</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414205048943.png" class="">
+
+<p>Click <strong>New service connection</strong> on the top right corner and select <strong>Docker Registry</strong>. On the next page, you need to select the proper Azure Subscription and authorize the access, then select the correct service connection:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414205805741.png" class="">
+
+<p>Now return to the pipeline page, you will see the <strong>Container Registry</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414210022278.png" class="">
+
+<p>Create a name for your container repository. We will use this name in the release pipeline. Keep the default values for other options:</p>
+<ul>
+<li>Command: <code>buildAndPush</code>.</li>
+<li>Dockerfile: <code>**/Dockerfile</code></li>
+<li>Build context: <code>**</code></li>
+<li>Tags: <code>$(Build.BuildId)</code>.</li>
+</ul>
+<p>Click <strong>Add</strong> to add the task. Change the YAML file name as <strong>azure-pipelines-docker.yml</strong>. So the pipeline looks like this:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">&#x27;ubuntu-latest&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="attr">buildConfiguration:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">steps:</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">Docker@2</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">containerRegistry:</span> <span class="string">&#x27;devopslab&#x27;</span></span><br><span class="line">    <span class="attr">repository:</span> <span class="string">&#x27;devops-sample-webapp&#x27;</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&#x27;buildAndPush&#x27;</span></span><br><span class="line">    <span class="attr">Dockerfile:</span> <span class="string">&#x27;**/Dockerfile&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>But do not run right now. Because there are two Dockerfiles in our solution. So we need to specify the correct Dockerfile in the root folder of the solution, not the Dockerfile in the web project.</p>
+<p>Also, we need to specify the <strong>Build context</strong>. The default value <code>**</code>  for build context specifies the directory that contains the Dockerfile. The situations may vary depending on your solution structure. Of course, you can modify the Dockerfile content directly. You can edit a Docoker file for the pipeline, another for the local VS2019 build task. You can even change the file name of the Dockerfile. All the configurations are up to you. Just keep in mind that you need to use the correct path for the Dockerfile and the build task. Otherwise, you may encounter the error <code>no such file or directory</code> when the task copies files. </p>
+<p>It is a good practice to specify the tag for the image. It is like an aliase of the Docker image. Currently, we just use <code>$(Build.BuildId)</code> but you can also use <a target="_blank" rel="noopener" href="https://semver.org/">semantic versioning</a>.</p>
+<p>For this case, the final task section in the YAML file is shown below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">Docker@2</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">containerRegistry:</span> <span class="string">&#x27;devopslab&#x27;</span></span><br><span class="line">    <span class="attr">repository:</span> <span class="string">&#x27;devops-sample-webapp&#x27;</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&#x27;buildAndPush&#x27;</span></span><br><span class="line">    <span class="attr">Dockerfile:</span> <span class="string">&#x27;$(System.DefaultWorkingDirectory)/Dockerfile&#x27;</span></span><br><span class="line">    <span class="attr">buildContext:</span> <span class="string">&#x27;$(System.DefaultWorkingDirectory)&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>I use the system variable <code>$(System.DefaultWorkingDirectory)</code> to specify the <strong>buildContext</strong> as the solution folder. The value of <strong>Dockerfile</strong> is  <code>$(System.DefaultWorkingDirectory)/Dockerfile</code>, which specifies the Docker file in the root folder of the solution.</p>
+<p>Now we can run the pipeline. If you see it succeed, return to your Azure Portal and click <strong>Repositories</strong> of Azure Container Registry then you will see it:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414213844915.png" class="">
+
+<p>That means the pipeline has successfully built and pushed our web app to Azure Container Registry! Every time we run the pipeline, it will build a new image with a tag and push it to the registry. You can change the pipeline to use the other build number policy.</p>
+<h3 id="Creating-the-Web-App-for-Containers"><a href="#Creating-the-Web-App-for-Containers" class="headerlink" title="Creating the Web App for Containers"></a>Creating the Web App for Containers</h3><p>Next, we need to create two instances of Web App for Containers, as we did for Web App on Linux. One difference is that we need to configure the registry credentials for the container registry:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415101632338.png" class="">
+
+<p>You can change it later in the <strong>Container settings</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415102015297.png" class="">
+
+<p>For now, the <strong>Tag</strong> is 418. We will use the release pipeline to update the image.</p>
+<p>Once we config the Docker image, it will pull the Docker image and complete the first deployment. But because we did not inject the environment variables for the Docker image, so the app is using the dev appsettings.json.</p>
+<p>In the Azure Portal, Here are my Web App for Containers instances:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414215454254.png" class="">
+
+<p>Feel free to enable the deployment slot feature if you select standard or higher tier.</p>
+<h3 id="Creating-the-release-pipeline-for-Container"><a href="#Creating-the-release-pipeline-for-Container" class="headerlink" title="Creating the release pipeline for Container"></a>Creating the release pipeline for Container</h3><p>There are two easy ways to run the container. Click the three dots of each container and you will find two options - <strong>Run instance</strong> and <strong>Deploy to web app</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414214122293.png" class="">
+
+<p>If you use <strong>Run instance</strong>, actually you would create another service called <strong>Container Instances</strong>. For more detail: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/container-instances/container-instances-overview">What is Azure Container Instances?</a>. That is not the key point of this article. For this case, we will use Azure DevOps Pipelines to publish it.</p>
+<p>So let’s create another release pipeline. The steps are quite similar to the previous section. We still use <strong>Azure App Service deployment</strong> task. But for the artifact, we will use <strong>Azure Container Registry</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414214636066.png" class="">
+
+<p>Select the correct repository for the release. </p>
+<p>When you config the deploy task, you need to select <strong>Web App for Containers(Linux)</strong> as <strong>App Type</strong>, and specify the <strong>Registry or Namespace</strong>, which is the login server you saw on the overview page of your Azure Container Registry. The <strong>Repository</strong> is the name you configured in the build pipeline a moment ago. My configuration is shown below:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414220259987.png" class="">
+
+<h3 id="Injecting-the-values-for-appsettings-json"><a href="#Injecting-the-values-for-appsettings-json" class="headerlink" title="Injecting the values for appsettings.json"></a>Injecting the values for appsettings.json</h3><p>When we build the Docker image, we did not change the values in the <strong>appsettings.json</strong> file. It is time to inject them in the release pipeline. How would we do that?</p>
+<p>This time, I will show you how to use the <strong>Application and Configuration Settings</strong> section to replace these values. The tricky thing is that the variable syntax for Linux container is quite different.</p>
+<p>Click the <strong>Deploy Azure App Service</strong> task in the release pipeline, we will see a <strong>Application and Configuration Settings</strong> section. We can edit application settings or configuration settings here. Click the three dots button for App settings. You will see an edit page that you can add some key-value pairs. The rules are:</p>
+<ul>
+<li>If the key is non-nested, like <strong>MyKey</strong> in our demo, use the same name as the key, eg. <code>MyKey</code>.</li>
+<li>If the key is nested, like <strong>Title</strong> in <strong>Position</strong>, use double-underscore <code>__</code> to separate them, eg. <code>Position__Title</code>.</li>
+<li>If there are spaces in the value, use quotation marks to wrap the value, eg <code>&quot;My appsettings.json Value&quot;</code>.</li>
+</ul>
+<p>Did you find the difference? When we created the variable groups, we used syntax like <code>Title.Position</code> for nested JSON objects, but here, we need to use <code>__</code>. </p>
+<blockquote>
+<p>IMPORTANT:</p>
+<p>In a default Linux container or a custom Linux container, any nested JSON key structure in the app setting name like <code>ApplicationInsights:InstrumentationKey</code> needs to be configured in App Service as <code>ApplicationInsights__InstrumentationKey</code> for the key name. In other words, any <code>:</code> should be replaced by <code>__</code> (double underscore).</p>
+<p>For more, please see <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/app-service/configure-common#app-settings">https://docs.microsoft.com/en-us/azure/app-service/configure-common#app-settings</a>.</p>
+</blockquote>
+<p>Thereby, we have quite a few different ways to represent the nested key-value pairs:</p>
+<ul>
+<li>In ASP.NET Core Apps, we use <code>_configuration[&quot;Position:Title&quot;]</code></li>
+<li>For variables of Azure Web Apps, we use <code>Position.Title</code></li>
+<li>For Azure Web App for Containers, we use <code>Position__Title</code></li>
+</ul>
+<p>We have already created the variable groups in the previous section so this time we just reuse them. However, we need to specify the key names. So the configuration looks like this:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200414223801566.png" class="">
+
+<p>Because we already applied quotation marks for the variable values in the variable groups, so no need to use <code>&quot;&quot;</code> here. Also please do not forget to link the correct variable groups and specify the scope. If you got an error like this:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[error]Error: Failed to update App service <span class="string">&#x27;devops-sample-container-staging&#x27;</span> application settings. Error: BadRequest - Parameter name cannot be empty. (CODE: 400)</span><br></pre></td></tr></table></figure>
+
+<p>Please check the variable values and make sure there is no duplicated <code>&quot;&quot;</code> for the values.</p>
+<p>Create another stage for production and add the correct variable groups.</p>
+<h3 id="Deployment"><a href="#Deployment" class="headerlink" title="Deployment"></a>Deployment</h3><p>Now it is time to deploy them. Create a new release then deploy to two stages. Usually, we should run tests and have some approvals before deploying to each stage. This is just a demo so we deploy them at the same time. When the deployment is done, you can see the <strong>Tag</strong> has been changed to the latest build version:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415103230881.png" class="">
+
+<p>If you check the <strong>Configuration</strong>, you will see the variables have been updated:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415103701990.png" class="">
+
+<p>Then check the web site, you will see the variables in <strong>appsettings.json</strong> have been updated for the correct environments:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415103257466.png" class="">
+
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/image-20200415103312112.png" class="">
+
+<p>All done!</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>In this article, I demonstrated how to deploy the ASP.NET Core Web App to Azure App Service - Web App on Linux and Web App for Container. The key is how to inject the variables of <strong>appsettings.json</strong> for different environments. We have learnt how to use <strong>File Transform</strong> task and the built-in <strong>Application and Configuration Settings</strong> of the deployment task to replace the variable. The reason why we build one artifact or Docker image for multiple environments is we should always keep immutability for the artifact&#x2F;Docker image. If you build environment-specific images, it might cause some issues. And we should not store the sensitive data in the Docker image, such as the database connection string. That is why we inject the values in the deployment process.</p>
+<p>The important thing here is we need to specify the key name because there is a various syntax for different platforms. If you get something wrong when you build the Docker image or replace the environment variables, I hope this article would be helpful. Thanks for reading.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Azure/" rel="tag"># Azure</a>
+              <a href="/tags/DevOps/" rel="tag"># DevOps</a>
+              <a href="/tags/ASP-NETCore/" rel="tag"># ASP.NETCore</a>
+              <a href="/tags/GitHub/" rel="tag"># GitHub</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/Container/" rel="tag"># Container</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/" rel="prev" title="Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Aeb App on linux">
+                  <i class="fa fa-angle-left"></i> Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Aeb App on linux
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/08/09/implementing-a-non-copy-paste-editText-control-with-Xamarin-Android/" rel="next" title="Implementing a Non-CopyPaste EditText control with Xamarin.Android">
+                  Implementing a Non-CopyPaste EditText control with Xamarin.Android <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xiaodi Yan</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">236k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:35</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

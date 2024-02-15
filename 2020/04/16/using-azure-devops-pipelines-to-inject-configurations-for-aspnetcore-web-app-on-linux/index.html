@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yanxiaodi.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="ASP.NET Core is a cross-platform, high-performance framework for building cloud-based applications. One benefit is we can run ASP.NET Core apps on Linux, and it is easy to deploy as Docker images. One">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Aeb App on linux">
+<meta property="og:url" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/index.html">
+<meta property="og:site_name" content="Xiaodi Yan&#39;s Blog">
+<meta property="og:description" content="ASP.NET Core is a cross-platform, high-performance framework for building cloud-based applications. One benefit is we can run ASP.NET Core apps on Linux, and it is easy to deploy as Docker images. One">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413161913285.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413161934480.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413154040121.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413161236686.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413171144243.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413175852781.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413180126314.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413180436459.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413180615768.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413182359668.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413183821757.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413184333396.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413185011720.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413185148760.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413185640426.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413190220473.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413192938209.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413193036865.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413193400272.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413193437505.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413193835918.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413193927711.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413194526842.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413194633208.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413194941079.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413195730451.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413200018467.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413200258868.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413202101006.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413201728224.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413201856075.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413202554633.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413211858800.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413203641774.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413203757531.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413204032778.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413210308951.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413212038848.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413204601195.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413204735815.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413204820955.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413204932395.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413205024866.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413213231017.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413213241918.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413220739835.png">
+<meta property="article:published_time" content="2020-04-16T07:52:44.000Z">
+<meta property="article:modified_time" content="2020-04-16T07:52:44.000Z">
+<meta property="article:author" content="Xiaodi Yan">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="DevOps">
+<meta property="article:tag" content="ASP.NETCore">
+<meta property="article:tag" content="GitHub">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413161913285.png">
+
+
+<link rel="canonical" href="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/","path":"2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/","title":"Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Aeb App on linux"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Aeb App on linux | Xiaodi Yan's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaodi Yan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Coding is fun...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about-me/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-community-activities"><a href="/community-activities" rel="section"><i class="events fa-fw"></i>community activities</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Prerequisites"><span class="nav-number">1.</span> <span class="nav-text">Prerequisites</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Set-up-the-appsettings-json"><span class="nav-number">2.</span> <span class="nav-text">Set up the appsettings.json</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-the-first-CI-pipeline"><span class="nav-number">3.</span> <span class="nav-text">Creating the first CI pipeline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Publishing-the-app-to-Azure-Web-Apps-on-Linux"><span class="nav-number">4.</span> <span class="nav-text">Publishing the app to Azure Web Apps on Linux</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-the-Web-Apps-on-Linux"><span class="nav-number">4.1.</span> <span class="nav-text">Creating the Web Apps on Linux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-the-artifact-pipeline"><span class="nav-number">4.2.</span> <span class="nav-text">Creating the artifact pipeline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-the-release-pipeline"><span class="nav-number">4.3.</span> <span class="nav-text">Creating the release pipeline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Injecting-the-values-for-appsettings-json"><span class="nav-number">4.4.</span> <span class="nav-text">Injecting the values for appsettings.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deployment"><span class="nav-number">4.5.</span> <span class="nav-text">Deployment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Checking-the-results"><span class="nav-number">4.6.</span> <span class="nav-text">Checking the results</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">5.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiaodi Yan"
+      src="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+  <p class="site-author-name" itemprop="name">Xiaodi Yan</p>
+  <div class="site-description" itemprop="description">Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yanxiaodi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yanxiaodi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/xiaodi-yan-829bb055/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;xiaodi-yan-829bb055&#x2F;" rel="noopener me" target="_blank"><i class="fab linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yanxiaodi.github.io/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+      <meta itemprop="name" content="Xiaodi Yan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaodi Yan's Blog">
+      <meta itemprop="description" content="Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Aeb App on linux | Xiaodi Yan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Aeb App on linux
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-04-16 19:52:44" itemprop="dateCreated datePublished" datetime="2020-04-16T19:52:44+12:00">2020-04-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>16k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>14 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>ASP.NET Core is a cross-platform, high-performance framework for building cloud-based applications. One benefit is we can run ASP.NET Core apps on Linux, and it is easy to deploy as Docker images. One more thing, the price is good. Let us compare the price tiers of Azure App Service:</p>
+<p>Web App on Windows:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413161913285.png" class="">
+
+<span id="more"></span>
+
+<p>Web App on Linux:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413161934480.png" class="">
+
+<p>Obviously, the Linux host is more economic. So it is time to move to Linux! When we deploy the project, I would say Azure DevOps is a good choice - it is free for open source projects, and it simplifies the setup of an entire CI&#x2F;CD pipeline for all platforms. You can quickly deploy the application to various targets: such as App Services, Containers, or K8S, etc.</p>
+<p>There are a bunch of articles to describe how to use the Azure DevOps Pipelines to deploy ASP.NET Core apps to Azure App Service. In this article, I will more focus on how to deploy to Web Apps on Linux and Web App for Containers, and how to inject the configurations in the release pipeline. If you do not know much about Docker, no worries. I will explain fundamentals regarding Docker.</p>
+<h2 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h2><p>First, we need to prepare an ASP.NET Core Web App. If you have .NET Core CLI installed, you can create a new ASP.NET Core Web App by using the below command:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet new mvc -n DevOpsSample.WebApp</span><br></pre></td></tr></table></figure>
+
+<p>It will create a new MVC project. Then you need to create a GitHub repo and push your new project to GitHub. Or you can just fork my repo from GitHub: <a target="_blank" rel="noopener" href="https://github.com/yanxiaodi/DevOpsSample">https://github.com/yanxiaodi/DevOpsSample</a>. It is a default .NET Core 3.1 MVC project. Let us use it as our example.</p>
+<p>If you run the project, you will see the default page:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413154040121.png" class="">
+
+<p>You also need a valid Azure DevOps account. If you do not have one, please sign up for free <a target="_blank" rel="noopener" href="https://azure.microsoft.com/en-us/services/devops/">here</a>.</p>
+<p>Let’s get started!</p>
+<h2 id="Set-up-the-appsettings-json"><a href="#Set-up-the-appsettings-json" class="headerlink" title="Set up the appsettings.json"></a>Set up the appsettings.json</h2><p>ASP.NET Core uses multiple ways to store configurations. One of the most common ways is using the <strong>appsettings.json</strong> file. A typical <strong>appsettings.json</strong> file looks like this:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;Position&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;Title&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Editor&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;Name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Joe Smith&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;MyKey&quot;</span><span class="punctuation">:</span>  <span class="string">&quot;My appsettings.json Value&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;Logging&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;LogLevel&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;Default&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Information&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;Microsoft&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Warning&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;Microsoft.Hosting.Lifetime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Information&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;AllowedHosts&quot;</span><span class="punctuation">:</span> <span class="string">&quot;*&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>Usually, it can be used to store the database connection strings. But for simplicity, we do not need database so I added a couple of key-value pairs, which have a hierarchical structure. For more detail: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-3.1">Configuration of ASP.NET Core</a>.</p>
+<p>We can use the built-in <code> IConfiguration</code>  interface to read the values and show them on the page. Open the <strong>HomeController.cs</strong> file in the <strong>Controllers</strong> folder and add a private field:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">readonly</span> IConfiguration _configuration;</span><br></pre></td></tr></table></figure>
+
+<p>You need to add <code>using Microsoft.Extensions.Configuration;</code> on the top of the code to import the namespace. Then update the constructor to inject the <code>IConfiguration</code>:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HomeController</span>(<span class="params">ILogger&lt;HomeController&gt; logger,</span></span></span><br><span class="line"><span class="params"><span class="function">    IConfiguration configuration</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    _logger = logger;</span><br><span class="line">    _configuration = configuration;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Update the <code>Index</code> action to read the configurations:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> IActionResult <span class="title">Index</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    ViewData[<span class="string">&quot;myKeyValue&quot;</span>] = _configuration[<span class="string">&quot;MyKey&quot;</span>];</span><br><span class="line">    ViewData[<span class="string">&quot;positionTitle&quot;</span>] = _configuration[<span class="string">&quot;Position:Title&quot;</span>];</span><br><span class="line">    ViewData[<span class="string">&quot;positionName&quot;</span>] = _configuration[<span class="string">&quot;Position:Name&quot;</span>];</span><br><span class="line">    <span class="keyword">return</span> View();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Then update the <strong>Index.cshtml</strong> file in the <strong>Views&#x2F;Home</strong> folder:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;text-center&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span> <span class="attr">class</span>=<span class="string">&quot;display-4&quot;</span>&gt;</span>Welcome<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>My Key value: @ViewData[&quot;myKeyValue&quot;]<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Title: @ViewData[&quot;positionTitle&quot;]<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Name: @ViewData[&quot;positionName&quot;]<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Learn about <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;https://docs.microsoft.com/aspnet/core&quot;</span>&gt;</span>building Web apps with ASP.NET Core<span class="tag">&lt;/<span class="name">a</span>&gt;</span>.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Now run the app again. We can see the correct values on the page:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413161236686.png" class="">
+
+<p>In the development stage, we can use the <code>appsettings.Environment.json</code> to store the values for development, such as <code>appsettings.Development.json</code>. Or use app secrets: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.1&tabs=windows">Safe storage of app secrets in development in ASP.NET Core</a>. When we release the app, the temporary values will be replaced by correct values in the pipeline.</p>
+<h2 id="Creating-the-first-CI-pipeline"><a href="#Creating-the-first-CI-pipeline" class="headerlink" title="Creating the first CI pipeline"></a>Creating the first CI pipeline</h2><p>The first pipeline is to make sure the code change will not break the build. Let us build a pipeline. If your code is hosted on GitHub, you can install Azure Pipelines from the marketplace for your project:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413171144243.png" class="">
+
+<p>I have written an article to describe this process. You can find it here: <a target="_blank" rel="noopener" href="https://medium.com/@yanxiaodi/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo-fb58be4e9be8">Using Azure Pipelines to publish the NuGet package from GitHub repo</a>.</p>
+<p>Once it is set up, you can find the project in Azure DevOps. Then click <strong>Pipelines</strong> in the <strong>Pipelines</strong> menu and click <strong>New pipeline</strong> button. You will be asked to select the code repo. Choose the correct repo. Next step is to select the project. In the third step, Azure DevOps will automatically analyze the code and generate a basic pipeline YAML file. For our ASP.NET Core project, the basic YAML file looks like this:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ASP.NET Core</span></span><br><span class="line"><span class="comment"># Build and test ASP.NET Core projects targeting .NET Core.</span></span><br><span class="line"><span class="comment"># Add steps that run tests, create a NuGet package, deploy, and more:</span></span><br><span class="line"><span class="comment"># https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core</span></span><br><span class="line"></span><br><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">&#x27;Ubuntu 16.04&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="attr">buildConfiguration:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">steps:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">script:</span> <span class="string">dotnet</span> <span class="string">build</span> <span class="string">--configuration</span> <span class="string">$(buildConfiguration)</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;dotnet build $(buildConfiguration)&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>The first pipeline is quite simple. It runs <code>dotnet build</code> command to build the project. We can rename it to <strong>azure-pipelines-ci.yml</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413175852781.png" class="">
+
+<p>It specifies the build pool as <code>Ubuntu 16.04</code>, which is hosted by Microsoft. You can find all the supported Microsoft-hosted agents here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops">Microsoft-hosted agents</a>. I change it to <code>ubuntu-latest</code> so it can use the latest ubuntu version.</p>
+<p>Then we can click <strong>Save and Run</strong> and see the output:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413180126314.png" class="">
+
+<p>The build is succeeded. If you need to start the build pipeline when you push PR or the PR is merged, you can edit the pipeline and set up the triggers:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413180436459.png" class="">
+
+<p>Enable <strong>Continuous integration</strong> and <strong>Pull request validation</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413180615768.png" class="">
+
+<p>The trigger configured here will override the trigger in the YAML file. However, it is up to you regarding which trigger will be applied. You can also config the branch filters and path filters here. So every time we push code to the specified branch, it will trigger this pipeline to validate the build.</p>
+<h2 id="Publishing-the-app-to-Azure-Web-Apps-on-Linux"><a href="#Publishing-the-app-to-Azure-Web-Apps-on-Linux" class="headerlink" title="Publishing the app to Azure Web Apps on Linux"></a>Publishing the app to Azure Web Apps on Linux</h2><p>Next, we need to deploy the app to Azure Web Apps on Linux. Before we create the release pipeline, we need to create a new Web App on Linux from Azure Portal. You can also use Azure CLI to create it. </p>
+<p>It is quite straightforward to create a new Web App in Azure Portal:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413182359668.png" class="">
+
+<p>We will select <strong>Linux</strong> as the Operating System and <strong>Code</strong> as Publish type. For the demo, you can select the free <strong>F1</strong> tier. It provides 60 minutes free compute time each day. Then click <strong>Review + Create</strong> to create the resource. You will see it after a couple of minutes in the portal.</p>
+<h3 id="Creating-the-Web-Apps-on-Linux"><a href="#Creating-the-Web-Apps-on-Linux" class="headerlink" title="Creating the Web Apps on Linux"></a>Creating the Web Apps on Linux</h3><p><strong>Deployment slots</strong> is very useful when we have multiple stages, eg. development, stage, production, etc. We can validate the new version of the app in a staging deployment slot before swapping it to the production slot. However, the free <strong>F1</strong> tier does not support it. So we could create another free web app as the staging environment. If you scale up the App Service plan to <strong>Standard</strong> or higher, feel free to enable this feature. You can find more detail here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/app-service/deploy-staging-slots">Set up staging environments in Azure App Service</a>. For this demo, I will create another web app instance as the staging environment. I recommend you create these two Web Apps in one resource group so it would be easy to delete them all after this exercise.</p>
+<blockquote>
+<p>Note:</p>
+<p>Keep in mind that <strong>F1</strong> tier only has 60 minutes each day.</p>
+</blockquote>
+<p>Here are my resources in <strong>devops-lab</strong> resource group:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413183821757.png" class="">
+
+<h3 id="Creating-the-artifact-pipeline"><a href="#Creating-the-artifact-pipeline" class="headerlink" title="Creating the artifact pipeline"></a>Creating the artifact pipeline</h3><p>Next, we need to build the artifact for the release. My goal is to replace some values in the <strong>appsettings.json</strong> file. Let’s create a new build pipeline from Azure DevOps.</p>
+<p>You can find <strong>Show assistant</strong> button on the top right corner:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413184333396.png" class="">
+
+<p>Click <strong>Show assistant</strong> then select <strong>.NET Core</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413185011720.png" class="">
+
+<p>We need to add a <strong>publish</strong> task that publishes the application and its dependencies to a folder for deployment. Find more detail about this command here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-publish">dotnet publish</a>.</p>
+<p>The configuration is shown below:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413185148760.png" class="">
+
+<p>Click <strong>Add</strong>, you will see the new script section is added to the current YAML file:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&#x27;publish&#x27;</span></span><br><span class="line">    <span class="attr">publishWebProjects:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">arguments:</span> <span class="string">&#x27;-r linux-x64 -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>In this task:</p>
+<ul>
+<li>We specify the runtime as <code>linux-x64</code>. </li>
+<li>The configuration argument <code>-c</code> comes from the predefined variable <code>$(buildConfiguration)</code> in the top of the YAML file. The value is <code>Release</code>.</li>
+<li>The output <code>-o</code> argument is <code>$(Build.ArtifactStagingDirectory)</code>, which is a predefined variable of Azure DevOps. You can find all the available predefined variables here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml">Use predefined variables</a>. So when the publish command completes, it will output the app to this folder for the next step.</li>
+</ul>
+<p>If <strong>Publish Web Projects</strong> is checked, the task will try to find the web projects in the repository and run the publish command on them. Web projects are identified by the presence of either a web.config file or wwwroot folder in the directory. If your solution contains multiple web projects but you only want to build one specific web project, you can uncheck this option and explicitly assign the project path:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413185640426.png" class="">
+
+<p>Or, you can define a variable regarding the project path and use it like this:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">&#x27;ubuntu-latest&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="attr">buildConfiguration:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line">  <span class="attr">projectPath:</span> <span class="string">&#x27;**/DevOpsSample.WebApp&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">steps:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">script:</span> <span class="string">dotnet</span> <span class="string">build</span> <span class="string">--configuration</span> <span class="string">$(buildConfiguration)</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;dotnet build $(buildConfiguration)&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&#x27;publish&#x27;</span></span><br><span class="line">    <span class="attr">publishWebProjects:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">projects:</span> <span class="string">&#x27;$(projectPath)&#x27;</span></span><br><span class="line">    <span class="attr">arguments:</span> <span class="string">&#x27;-r linux-x64 -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>The <strong>Zip Published Projects</strong> means the folder of the application will be zipped by the publish command. It is <code>true</code> by default. If you do not need it, you can add <code>zipAfterPublish: false</code> at the end of the <code>inputs</code> elements.</p>
+<p>If you click the <strong>Settings</strong> link on each task, you can reopen the UI to config the task:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413190220473.png" class="">
+
+<p>This feature is very useful if you are not familiar with YAML syntax.</p>
+<p>For some reason, you may see the build fails and show the below error:</p>
+<blockquote>
+<p>error MSB4025: The project file could not be loaded. Data at the root level is invalid. Line 1, position 1. </p>
+</blockquote>
+<p>Because the project is based on .NET Core 3.1, we need to install .NET Core SDK in case there is no corresponding SDK installed on the agent.</p>
+<p>Add a new task before the publish task:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">UseDotNet@2</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;use dotnet core cli&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">packageType:</span> <span class="string">&#x27;sdk&#x27;</span></span><br><span class="line">    <span class="attr">version:</span> <span class="string">&#x27;3.1.x&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>Now we have already published the artifact to the <code>Build.ArtifactStagingDirectory</code> folder. We need to publish the artifact. Search <strong>publish</strong> in the assistant:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413192938209.png" class="">
+
+<p>Select <strong>Publish build artifacts</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413193036865.png" class="">
+
+<p>The default <strong>Artifact name</strong> is <strong>drop</strong>. You can give it a more sensible name if you like.</p>
+<p>The final artifact pipeline is shown below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">&#x27;ubuntu-latest&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="attr">buildConfiguration:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line">  <span class="attr">projectPath:</span> <span class="string">&#x27;**/DevOpsSample.WebApp&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">steps:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">UseDotNet@2</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;use dotnet core cli&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">packageType:</span> <span class="string">&#x27;sdk&#x27;</span></span><br><span class="line">    <span class="attr">version:</span> <span class="string">&#x27;3.1.x&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&#x27;publish&#x27;</span></span><br><span class="line">    <span class="attr">publishWebProjects:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">projects:</span> <span class="string">&#x27;$(projectPath)&#x27;</span></span><br><span class="line">    <span class="attr">arguments:</span> <span class="string">&#x27;-r linux-x64 -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">PublishBuildArtifacts@1</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">PathtoPublish:</span> <span class="string">&#x27;$(Build.ArtifactStagingDirectory)&#x27;</span></span><br><span class="line">    <span class="attr">ArtifactName:</span> <span class="string">&#x27;devops-sample-app&#x27;</span></span><br><span class="line">    <span class="attr">publishLocation:</span> <span class="string">&#x27;Container&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>After you run this artifact pipeline, you will find the artifact on the build summary page:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413193400272.png" class="">
+
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413193437505.png" class="">
+
+<h3 id="Creating-the-release-pipeline"><a href="#Creating-the-release-pipeline" class="headerlink" title="Creating the release pipeline"></a>Creating the release pipeline</h3><p>Now the artifact is ready. But you may realize that how we would update the configurations in <strong>appsettings.json</strong>? We can inject the values in the release pipeline for multiple environments. Let’s move on.</p>
+<p>Click <strong>Releases</strong> in the Pipelines menu. Click <strong>New</strong> to create a new release pipeline:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413193835918.png" class="">
+
+<p>On the next page you will be asked to select a template:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413193927711.png" class="">
+
+<p>For our demo, we select <strong>Azure App Service deployment</strong>. Then change the name to <strong>Stage</strong>.</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413194526842.png" class="">
+
+<p>Next we need to add an artifact. Click <strong>Add an artifact</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413194633208.png" class="">
+
+<p>There are quite a few source types we can use. For this demo, we select <strong>Build</strong>. Then specify the build pipeline to the one we created in the previous section. The default version is <strong>Latest</strong>. So every time we create a new release, it will pick up the latest build to publish.</p>
+<p>You can click the lightning icon to config the CD trigger:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413194941079.png" class="">
+
+<p>For this demo, it is not necessary because we will manually trigger the release.</p>
+<p>Click the job in the Stage and config the task as shown below:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413195730451.png" class="">
+
+<p>You need to authorize your account when selecting the Azure subscription. For <strong>App type</strong>, please select <strong>Web App on Linux</strong> so that you can see the Web Apps you created a moment ago.</p>
+<p>Then click <strong>Run on agent</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413200018467.png" class="">
+
+<p>I use <strong>ubuntu-18.04</strong> as the Agent. Actually it does not matter because ASP.NET Core is cross-platform. You can use other agents as well.</p>
+<p>Next click <strong>Deploy Azure App Service</strong> so we can config some other options:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413200258868.png" class="">
+
+<ul>
+<li><p>Keep in mind that if you disabled the <strong>zipAfterPublish</strong> feature in the artifact build pipeline, you need to change the <strong>Package or folder</strong> in this step. </p>
+</li>
+<li><p>Do not forget to select the correct <strong>Runtime Stack</strong>. For our ASP.NET Core 3.1 application, you can select <strong>Latest</strong>.</p>
+</li>
+<li><p>If you are using the <strong>Standard</strong> or higher tier, you can use the deployment slot here:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413202101006.png" class=""></li>
+</ul>
+<p>You can click <strong>View YAML</strong> to see the generated YAML file:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">steps:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">AzureRmWebAppDeployment@4</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Deploy Azure App Service&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">azureSubscription:</span> <span class="string">&#x27;$(Parameters.ConnectedServiceName)&#x27;</span></span><br><span class="line">    <span class="attr">appType:</span> <span class="string">&#x27;$(Parameters.WebAppKind)&#x27;</span></span><br><span class="line">    <span class="attr">WebAppName:</span> <span class="string">&#x27;$(Parameters.WebAppName)&#x27;</span></span><br><span class="line">    <span class="attr">RuntimeStack:</span> <span class="string">&#x27;DOTNETCORE|Latest&#x27;</span></span><br><span class="line">    <span class="attr">StartupCommand:</span> <span class="string">&#x27;$(Parameters.StartupCommand)&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>We can add another stage for production. Click <strong>Add</strong> on the edit release page:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413201728224.png" class="">
+
+<p>For the production stage, just select another Web App instance or select the correct deployment slot if you enabled this feature. So now we have two environments for staging and production:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413201856075.png" class="">
+
+<h3 id="Injecting-the-values-for-appsettings-json"><a href="#Injecting-the-values-for-appsettings-json" class="headerlink" title="Injecting the values for appsettings.json"></a>Injecting the values for appsettings.json</h3><p>For now, we only have one artifact. That means the configurations (eg. the database connection string) in the <strong>appsettings.json</strong> are the same. The next step is to replace the values in <strong>appsettings.json</strong> file.</p>
+<p>We can use <strong>Library</strong> to create variables for different environments. Click <strong>Library</strong> in the <strong>Pipelines</strong> menu, and click <strong>+ Variable group</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413202554633.png" class="">
+
+<p>Update the group name to indicate which environment it is for. Then add variables based on the below rules:</p>
+<ul>
+<li>If the key is non-nested, like <strong>MyKey</strong> in our demo, use the same name as the key, eg. <code>MyKey</code>.</li>
+<li>If the key is nested, like <strong>Title</strong> in <strong>Position</strong>, use JSONPath expressions to specify them, eg. <code>Position.Title</code>.</li>
+<li>If there are spaces in the value, use quotation marks to wrap the value, eg <code>&quot;My appsettings.json Value&quot;</code>.</li>
+</ul>
+<p>So the variable group would be:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413211858800.png" class="">
+
+<blockquote>
+<p>IMPORTANT:</p>
+<p>If you store the database connection strings here, please make sure you click the <strong>lock</strong> icon to change it to secret. Otherwise, the value will show in the release logs.</p>
+</blockquote>
+<p>Now return to the release pipeline edit page and edit the tasks for one stage. Click the plus button on the right side of <strong>Run on agent</strong> then search <strong>transform</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413203641774.png" class="">
+
+<p>Add the File transform task to the pipeline. Make sure it is before the deploy task. The configuration is shown below:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413203757531.png" class="">
+
+<p><strong>File transform</strong> is a task to apply file transformations and variable substitutions on configuration and parameters files. For more detail: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/transforms-variable-substitution?view=azure-devops&tabs=Classic">File transforms and variable substitution reference</a>.</p>
+<p>Change the <strong>Package or folder</strong> based on your configuration in the artifact build pipeline. Select <strong>JSON</strong> as the <strong>File format</strong>. The <strong>Target files</strong> is <code>**/appsettings.json</code>. This task will replace the corresponding key-value pairs according to the variable definitions. Next we need to link the variable group.</p>
+<p>Click <strong>Variables</strong> tab and link the variable group:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413204032778.png" class="">
+
+<p>Save the pipeline. Create another variable group and add the File transform task for another environment. You can easily <strong>Clone</strong> the variable group and update the values. </p>
+<p>Because these two variable groups have the same keys, so we need to specify the variable group scope. In other words, the <strong>Staging</strong> variable group is only for <strong>Stage</strong>, and the <strong>Production</strong> variable group is only for <strong>Production</strong>:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413210308951.png" class="">
+
+<p>The final configuration for the variables is as below:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413212038848.png" class="">
+
+<p>Now all tasks are ready to go:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413204601195.png" class="">
+
+<h3 id="Deployment"><a href="#Deployment" class="headerlink" title="Deployment"></a>Deployment</h3><p>Click <strong>Create release</strong> on the release detail page, you can select which stage you need to deploy:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413204735815.png" class="">
+
+<p>It automatically selects the latest build version as the artifact. Once you click <strong>Create</strong>, you can see a toast message:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413204820955.png" class="">
+
+<p>Click the link to check the release status:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413204932395.png" class="">
+
+<p>You can deploy to one or multiple stages:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413205024866.png" class="">
+
+<p>The pipeline will download the artifact from the specified folder and upload it to Azure App Service. It also replaces the correct variables for different environments.</p>
+<h3 id="Checking-the-results"><a href="#Checking-the-results" class="headerlink" title="Checking the results"></a>Checking the results</h3><p>If you stopped the App Service instances, please start them in Azure Portal. </p>
+<p>We can see the correct configurations have been replaced:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413213231017.png" class="">
+
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413213241918.png" class="">
+
+<p>We can check the file content by Visual Studio 2019. Click <strong>View</strong> - <strong>Cloud Explorer</strong> then connect to your Azure subscription. You will find the actual file content:</p>
+<img src="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/image-20200413220739835.png" class="">
+
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>In this part, we use Azure DevOps Pipelines to build and deploy the ASP.NET Core Web App to Azure Web App on Linux. The key is how to inject the <strong>appsettings.json</strong> in the deployment. We use <strong>File transform</strong> task to do it.</p>
+<p>In part 2, I will show you how to create Azure Container Registry and deploy the same Web App to Azure Web App for Containers. Please stay tuned.</p>
+<p>Part 2: <a href="../using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/">Using Azure Devops Pipelines to inject configurations for Asp.Net Core Web App for Containers</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Azure/" rel="tag"># Azure</a>
+              <a href="/tags/DevOps/" rel="tag"># DevOps</a>
+              <a href="/tags/ASP-NETCore/" rel="tag"># ASP.NETCore</a>
+              <a href="/tags/GitHub/" rel="tag"># GitHub</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/04/12/gildedRose-refactoring-kata-with-simple-factory-pattern-and-strategy-pattern/" rel="prev" title="How to refactor GildedRose-Refactoring-Kata with Simple Factory Pattern and Strategy Pattern">
+                  <i class="fa fa-angle-left"></i> How to refactor GildedRose-Refactoring-Kata with Simple Factory Pattern and Strategy Pattern
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-for-containers/" rel="next" title="Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Web App for Containers">
+                  Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Web App for Containers <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xiaodi Yan</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">236k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:35</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

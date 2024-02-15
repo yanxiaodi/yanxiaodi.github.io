@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yanxiaodi.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="The original requirement is that I need to develop a WPF application which implements the socket sender&#x2F;receiver. First, I created a basic WPF application with MVVM pattern. Then I made a single">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Implementing a simple messenger component for WPF, UWP and Xamarin">
+<meta property="og:url" content="https://yanxiaodi.github.io/2019/11/20/implement-a-simple-messenger-component-for-wpf-uwp-and-xamarin/index.html">
+<meta property="og:site_name" content="Xiaodi Yan&#39;s Blog">
+<meta property="og:description" content="The original requirement is that I need to develop a WPF application which implements the socket sender&#x2F;receiver. First, I created a basic WPF application with MVVM pattern. Then I made a single">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/11/20/implement-a-simple-messenger-component-for-wpf-uwp-and-xamarin/image-20191120115517898.png">
+<meta property="article:published_time" content="2019-11-20T03:57:44.000Z">
+<meta property="article:modified_time" content="2019-11-20T03:57:44.000Z">
+<meta property="article:author" content="Xiaodi Yan">
+<meta property="article:tag" content="design pattern">
+<meta property="article:tag" content="WPF">
+<meta property="article:tag" content="UWP">
+<meta property="article:tag" content="Xamarin">
+<meta property="article:tag" content="sub-pub">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yanxiaodi.github.io/2019/11/20/implement-a-simple-messenger-component-for-wpf-uwp-and-xamarin/image-20191120115517898.png">
+
+
+<link rel="canonical" href="https://yanxiaodi.github.io/2019/11/20/implement-a-simple-messenger-component-for-wpf-uwp-and-xamarin/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://yanxiaodi.github.io/2019/11/20/implement-a-simple-messenger-component-for-wpf-uwp-and-xamarin/","path":"2019/11/20/implement-a-simple-messenger-component-for-wpf-uwp-and-xamarin/","title":"Implementing a simple messenger component for WPF, UWP and Xamarin"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Implementing a simple messenger component for WPF, UWP and Xamarin | Xiaodi Yan's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaodi Yan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Coding is fun...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about-me/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-community-activities"><a href="/community-activities" rel="section"><i class="events fa-fw"></i>community activities</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Message"><span class="nav-number">1.</span> <span class="nav-text">Message</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Subscriptions"><span class="nav-number">2.</span> <span class="nav-text">Subscriptions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MessengerHub"><span class="nav-number">3.</span> <span class="nav-text">MessengerHub</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Subscribe"><span class="nav-number">3.1.</span> <span class="nav-text">Subscribe</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unsubscribe"><span class="nav-number">3.2.</span> <span class="nav-text">Unsubscribe</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Publish"><span class="nav-number">3.3.</span> <span class="nav-text">Publish</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Usage"><span class="nav-number">4.</span> <span class="nav-text">Usage</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-the-Message-class"><span class="nav-number">4.1.</span> <span class="nav-text">Creating the Message class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Subscription"><span class="nav-number">4.2.</span> <span class="nav-text">Subscription</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Publishing-the-Message"><span class="nav-number">4.3.</span> <span class="nav-text">Publishing the Message</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Parameters"><span class="nav-number">4.4.</span> <span class="nav-text">Parameters</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unsubscribe-1"><span class="nav-number">4.5.</span> <span class="nav-text">Unsubscribe</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Differences-with-MvvmCross-Messenger"><span class="nav-number">5.</span> <span class="nav-text">Differences with MvvmCross.Messenger</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thanks"><span class="nav-number">6.</span> <span class="nav-text">Thanks</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiaodi Yan"
+      src="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+  <p class="site-author-name" itemprop="name">Xiaodi Yan</p>
+  <div class="site-description" itemprop="description">Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yanxiaodi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yanxiaodi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/xiaodi-yan-829bb055/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;xiaodi-yan-829bb055&#x2F;" rel="noopener me" target="_blank"><i class="fab linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yanxiaodi.github.io/2019/11/20/implement-a-simple-messenger-component-for-wpf-uwp-and-xamarin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+      <meta itemprop="name" content="Xiaodi Yan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaodi Yan's Blog">
+      <meta itemprop="description" content="Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Implementing a simple messenger component for WPF, UWP and Xamarin | Xiaodi Yan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Implementing a simple messenger component for WPF, UWP and Xamarin
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-11-20 16:57:44" itemprop="dateCreated datePublished" datetime="2019-11-20T16:57:44+13:00">2019-11-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/My-Projects/" itemprop="url" rel="index"><span itemprop="name">My Projects</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>14k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>13 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>The original requirement is that I need to develop a WPF application which implements the socket sender&#x2F;receiver. First, I created a basic WPF application with MVVM pattern. Then I made a single project to do all the stuff related to socket communication. Next I have to integrate the socket library into the ViewModel project to operate socket connections.</p>
+<p>Obviously, we can use <code>event</code> for this purpose. For example, we could have a class named <code>SocketServer</code> that has an event to receive socket packages, then subscribe to it in the ViewModel layer. But that means we have to create the instance of the <code>SocketServer</code>class, which couples the ViewModel layer with the socket project. I hope to create a mediator to decouple them. So the publisher and subscriber do not need to know each other.</p>
+<span id="more"></span>
+
+<p>When I use <strong>MvvmCross</strong> as the MVVM Framework, I found that MvvmCross provides a plugin named <strong>Messenger</strong> to communicate between ViewModels. But it has dependencies on some MvvmCross libraries, which means if I want to use this plugin in other projects, I have to reference MvvmCross. It is not ideal for my current scenario because actually, the socket project has no requirements to reference MvvmCross. So I made a project that focuses on sub-pub pattern and removed the dependencies to MvvmCross. Now I can reuse it in any WPF, UWP and Xamarin projects. The project is available here:  <a target="_blank" rel="noopener" href="https://github.com/yanxiaodi/CoreMessenger">https://github.com/yanxiaodi/CoreMessenger</a>. Let us dive into it for more details.</p>
+<img src="/2019/11/20/implement-a-simple-messenger-component-for-wpf-uwp-and-xamarin/image-20191120115517898.png" class="" title="Sub-Pub pattern" alt="Sub-Pub pattern">
+
+<h2 id="Message"><a href="#Message" class="headerlink" title="Message"></a>Message</h2><p><code>Message</code> is an abstract class to represent a message in this system:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title">Message</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">object</span> Sender &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">Message</span>(<span class="params"><span class="built_in">object</span> sender</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Sender = sender ?? <span class="keyword">throw</span> <span class="keyword">new</span> ArgumentNullException(<span class="keyword">nameof</span>(sender));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>We should create instances of different messages derived from this abstract class. It has an argument called <code>sender</code>, so the subscriber is able to get the instance of the sender. But it is not mandatory.</p>
+<h2 id="Subscriptions"><a href="#Subscriptions" class="headerlink" title="Subscriptions"></a>Subscriptions</h2><p><code>BaseSubscription</code> is the base class for subscriptions. The code looks like this:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title">BaseSubscription</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> Guid Id &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> SubscriptionPriority Priority &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Tag &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Task&lt;<span class="built_in">bool</span>&gt; <span class="title">Invoke</span>(<span class="params"><span class="built_in">object</span> message</span>)</span>;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">BaseSubscription</span>(<span class="params">SubscriptionPriority priority, <span class="built_in">string</span> tag</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Id = Guid.NewGuid();</span><br><span class="line">        Priority = priority;</span><br><span class="line">        Tag = tag;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>It has an <code>Id</code> property and a <code>tag</code> property so you could put some tags to differentiate or group the instances of subscriptions. The <code>Priority</code> property is an enum type which is used to indicate the priority of the subscription so the subscriptions will be invoked by the expected order.</p>
+<p>There are two types of <code>Subscription</code>s. One is <code>StrongSubscription</code>:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">StrongSubscription</span>&lt;<span class="title">TMessage</span>&gt; : <span class="title">BaseSubscription</span> <span class="keyword">where</span> <span class="title">TMessage</span> : <span class="title">Message</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> Action&lt;TMessage&gt; _action;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StrongSubscription</span>(<span class="params">Action&lt;TMessage&gt; action,</span></span></span><br><span class="line"><span class="params"><span class="function">        SubscriptionPriority priority, <span class="built_in">string</span> tag</span>): <span class="title">base</span>(<span class="params">priority, tag</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _action = action;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">async</span> Task&lt;<span class="built_in">bool</span>&gt; <span class="title">Invoke</span>(<span class="params"><span class="built_in">object</span> message</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> typedMessage = message <span class="keyword">as</span> TMessage;</span><br><span class="line">        <span class="keyword">if</span> (typedMessage == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">$&quot;Unexpected message <span class="subst">&#123;message.ToString()&#125;</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">await</span> Task.Run(() =&gt; _action?.Invoke(typedMessage));</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>It inherits <code>BaseSubscription</code> and overrides the <code>Invoke()</code> method. Basically, it has a field named <code>_action</code> which is defined when you create the instance. When we publish the message, the subscription will call <code>Invoke()</code> method to execute the action. We use <code>Task</code> to wrap the action so we could leverage the benefit of asynchronous operations.</p>
+<p>Here is another type of <code>Subscription</code> named <code>WeakSubscription</code>:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">WeakSubscription</span>&lt;<span class="title">TMessage</span>&gt; : <span class="title">BaseSubscription</span> <span class="keyword">where</span> <span class="title">TMessage</span> : <span class="title">Message</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> WeakReference&lt;Action&lt;TMessage&gt;&gt; _weakReference;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WeakSubscription</span>(<span class="params">Action&lt;TMessage&gt; action,</span></span></span><br><span class="line"><span class="params"><span class="function">        SubscriptionPriority priority, <span class="built_in">string</span> tag</span>) : <span class="title">base</span>(<span class="params">priority, tag</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _weakReference = <span class="keyword">new</span> WeakReference&lt;Action&lt;TMessage&gt;&gt;(action);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">async</span> Task&lt;<span class="built_in">bool</span>&gt; <span class="title">Invoke</span>(<span class="params"><span class="built_in">object</span> message</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> typedMessage = message <span class="keyword">as</span> TMessage;</span><br><span class="line">        <span class="keyword">if</span> (typedMessage == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">$&quot;Unexpected message <span class="subst">&#123;message.ToString()&#125;</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        Action&lt;TMessage&gt; action;</span><br><span class="line">        <span class="keyword">if</span> (!_weakReference.TryGetTarget(<span class="keyword">out</span> action))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">await</span> Task.Run(() =&gt; action?.Invoke(typedMessage));</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The difference here is that the action is stored in a <code>WeakReference</code> field. You could learn more here:  <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.weakreference-1?view=netstandard-2.0&WT.mc_id=DT-MVP-5001643">WeakReference<T> Class</a> . It is used to represent a typed weak reference, which references an object while still allowing that object to be reclaimed by Garbage Collection. Before we use it, we need to check if the target has been collected by GC by using <code>TryGetTarget(T)</code> method. If this method returns false, that means the reference has been collected by GC.</p>
+<p>If you use <code>StrongSubscription</code>, the Messenger will keep the strong reference to the callback method and  Garbage Collection will not destroy the subscription. In this case, you need to unsubscribe the subscription explicitly to avoid memory leaking. Otherwise, you could use <code>WeakSubscription</code> to remove the subscription when objects go out of scope.</p>
+<h2 id="MessengerHub"><a href="#MessengerHub" class="headerlink" title="MessengerHub"></a>MessengerHub</h2><p><code>MessengerHub</code> is a singleton instance in the whole application domain. We don’t need to use Dependency Injection to create the instance because its purpose is explicit and we only have this one instance. Here is an easy way to implement the singleton pattern:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MessengerHub</span></span><br><span class="line">&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> Lazy&lt;MessengerHub&gt; lazy = <span class="keyword">new</span> Lazy&lt;MessengerHub&gt;(() =&gt; <span class="keyword">new</span> MessengerHub());</span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="title">MessengerHub</span>()</span> &#123; &#125;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> MessengerHub Instance</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">get</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">return</span> lazy.Value;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>MessengerHub</code> maintain a Dictionary to keep the instances of the subscriptions, as shown below:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">readonly</span> ConcurrentDictionary&lt;Type, ConcurrentDictionary&lt;Guid, BaseSubscription&gt;&gt; _subscriptions =</span><br><span class="line">            <span class="keyword">new</span> ConcurrentDictionary&lt;Type, ConcurrentDictionary&lt;Guid, BaseSubscription&gt;&gt;();</span><br></pre></td></tr></table></figure>
+
+<p>The key of the dictionary is the Type of the <code>Message</code> and the value is a Dictionary that contains a set of subscriptions for this specific <code>Message</code>. Obviously, one type could have multiple subscriptions.</p>
+<h3 id="Subscribe"><a href="#Subscribe" class="headerlink" title="Subscribe"></a>Subscribe</h3><p><code>MessageHub</code> exposes several important methods to subscribe&#x2F;unsubscribe&#x2F;publish messages.</p>
+<p>The <code>Subscribe()</code> method is shown below:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> SubscriptionToken <span class="title">Subscribe</span>&lt;<span class="title">TMessage</span>&gt;(<span class="params">Action&lt;TMessage&gt; action,</span></span></span><br><span class="line"><span class="params"><span class="function">    ReferenceType referenceType = ReferenceType.Weak,</span></span></span><br><span class="line"><span class="params"><span class="function">    SubscriptionPriority priority = SubscriptionPriority.Normal, <span class="built_in">string</span> tag = <span class="literal">null</span></span>) <span class="keyword">where</span> TMessage : Message</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (action == <span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ArgumentNullException(<span class="keyword">nameof</span>(action));</span><br><span class="line">    &#125;</span><br><span class="line">    BaseSubscription subscription = BuildSubscription(action, referenceType, priority, tag);</span><br><span class="line">    <span class="keyword">return</span> SubscribeInternal(action, subscription);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> SubscriptionToken <span class="title">SubscribeInternal</span>&lt;<span class="title">TMessage</span>&gt;(<span class="params">Action&lt;TMessage&gt; action, BaseSubscription subscription</span>)</span></span><br><span class="line"><span class="function">    <span class="keyword">where</span> TMessage : Message</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!_subscriptions.TryGetValue(<span class="keyword">typeof</span>(TMessage), <span class="keyword">out</span> <span class="keyword">var</span> messageSubscriptions))</span><br><span class="line">    &#123;</span><br><span class="line">        messageSubscriptions = <span class="keyword">new</span> ConcurrentDictionary&lt;Guid, BaseSubscription&gt;();</span><br><span class="line">        _subscriptions[<span class="keyword">typeof</span>(TMessage)] = messageSubscriptions;</span><br><span class="line">    &#125;</span><br><span class="line">    messageSubscriptions[subscription.Id] = subscription;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> SubscriptionToken(subscription.Id, <span class="keyword">async</span> () =&gt; <span class="keyword">await</span> UnsubscribeInternal&lt;TMessage&gt;(subscription.Id), action);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>When we subscribe to the message, we create an instance of the <code>Subscription</code> and add it to the dictionary. It might be a strong reference or weak reference - depending on your choice. Then it will create a <code>SubscriptionToken</code>, which is a class that implements <code>IDisposable</code> interface to manage the subscriptions:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">sealed</span> <span class="keyword">class</span> <span class="title">SubscriptionToken</span> : <span class="title">IDisposable</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> Guid Id &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> Action _disposeMe;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> <span class="built_in">object</span> _dependentObject;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SubscriptionToken</span>(<span class="params">Guid id, Action disposeMe, <span class="built_in">object</span> dependentObject</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Id = id;</span><br><span class="line">        _disposeMe = disposeMe;</span><br><span class="line">        _dependentObject = dependentObject;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Dispose(<span class="literal">true</span>);</span><br><span class="line">        GC.SuppressFinalize(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Dispose</span>(<span class="params"><span class="built_in">bool</span> isDisposing</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (isDisposing)</span><br><span class="line">        &#123;</span><br><span class="line">            _disposeMe();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>When we create the instance of <code>SubscriptionToken</code>, actually we pass a method to dispose itself - so when <code>Dispose</code> method is invoked, it will unsubscribe the subscription first.</p>
+<h3 id="Unsubscribe"><a href="#Unsubscribe" class="headerlink" title="Unsubscribe"></a>Unsubscribe</h3><p>The method to unsubscribe the message is shown below:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">Unsubscribe</span>&lt;<span class="title">TMessage</span>&gt;(<span class="params">SubscriptionToken subscriptionToken</span>) <span class="keyword">where</span> TMessage : Message</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">await</span> UnsubscribeInternal&lt;TMessage&gt;(subscriptionToken.Id);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">async</span> Task <span class="title">UnsubscribeInternal</span>&lt;<span class="title">TMessage</span>&gt;(<span class="params">Guid subscriptionId</span>) <span class="keyword">where</span> TMessage : Message</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (_subscriptions.TryGetValue(<span class="keyword">typeof</span>(TMessage), <span class="keyword">out</span> <span class="keyword">var</span> messageSubscriptions))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (messageSubscriptions.ContainsKey(subscriptionId))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> result = messageSubscriptions.TryRemove(subscriptionId, <span class="keyword">out</span> BaseSubscription <span class="keyword">value</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>It is quite straightforward. When we unsubscribe the message, the subscription will be removed from the dictionary.</p>
+<h3 id="Publish"><a href="#Publish" class="headerlink" title="Publish"></a>Publish</h3><p>Well, we have subscribed the message and created instances of subscriptions that are stored in the dictionary. We can publish messages now. The method to publish messages are shown as below:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">Publish</span>&lt;<span class="title">TMessage</span>&gt;(<span class="params">TMessage message</span>) <span class="keyword">where</span> TMessage : Message</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (message == <span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ArgumentNullException(<span class="keyword">nameof</span>(message));</span><br><span class="line">    &#125;</span><br><span class="line">    List&lt;BaseSubscription&gt; toPublish = <span class="literal">null</span>;</span><br><span class="line">    Type messageType = message.GetType();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_subscriptions.TryGetValue(messageType, <span class="keyword">out</span> <span class="keyword">var</span> messageSubscriptions))</span><br><span class="line">    &#123;</span><br><span class="line">        toPublish = messageSubscriptions.Values.OrderByDescending(x =&gt; x.Priority).ToList();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (toPublish == <span class="literal">null</span> || toPublish.Count == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    List&lt;Guid&gt; deadSubscriptionIds = <span class="keyword">new</span> List&lt;Guid&gt;();</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> subscription <span class="keyword">in</span> toPublish)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Execute the action for this message.</span></span><br><span class="line">        <span class="keyword">var</span> result = <span class="keyword">await</span> subscription.Invoke(message);</span><br><span class="line">        <span class="keyword">if</span> (!result)</span><br><span class="line">        &#123;</span><br><span class="line">            deadSubscriptionIds.Add(subscription.Id);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (deadSubscriptionIds.Any())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> PurgeDeadSubscriptions(messageType, deadSubscriptionIds);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;     </span><br></pre></td></tr></table></figure>
+
+<p>When we publish a message, <code>MessageHub</code> will query the dictionary to retrieve the subscriptions for this message, then execute the actions in a loop.</p>
+<p>Another thing we need to note is that because some subscriptions might be weak references so we need to check the result of the execution. If it failed, we need to remove it from the subscriptions.</p>
+<h2 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h2><p>Install from NuGet:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PM&gt; Install-Package FunCoding.CoreMessenger</span><br></pre></td></tr></table></figure>
+
+<p>Use <code>MessengerHub.Instance</code> as the singleton pattern in your whole app domain. It provides these methods:</p>
+<ul>
+<li>Publish:</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">Publish</span>&lt;<span class="title">TMessage</span>&gt;(<span class="params">TMessage message</span>)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Subscribe:</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> SubscriptionToken <span class="title">Subscribe</span>&lt;<span class="title">TMessage</span>&gt;(<span class="params">Action&lt;TMessage&gt; action, ReferenceType referenceType = ReferenceType.Weak, SubscriptionPriority priority = SubscriptionPriority.Normal, <span class="built_in">string</span> tag = <span class="literal">null</span></span>)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Unsubscribe:</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">Unsubscribe</span>&lt;<span class="title">TMessage</span>&gt;(<span class="params">SubscriptionToken subscriptionToken</span>)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Creating-the-Message-class"><a href="#Creating-the-Message-class" class="headerlink" title="Creating the Message class"></a>Creating the <code>Message</code> class</h3><p>First, define a Message class inherited from <code>Message</code> between different components, like this:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TestMessage</span> : <span class="title">Message</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> ExtraContent &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestMessage</span>(<span class="params"><span class="built_in">object</span> sender, <span class="built_in">string</span> content</span>) : <span class="title">base</span>(<span class="params">sender</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        ExtraContent = content;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Then create an instance of the <code>Message</code> in your component A, as shown below:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> message = <span class="keyword">new</span> TestMessage(<span class="keyword">this</span>, <span class="string">&quot;Test Content&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Subscription"><a href="#Subscription" class="headerlink" title="Subscription"></a>Subscription</h3><p>Define a <code>SubscriptionToken</code> instance to store the subscription. Subscribe the <code>Message</code> in your component B, like this:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">HomeViewModel</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">readonly</span> SubscriptionToken _subscriptionTokenForTestMessage;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">HomeViewModel</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            _subscriptionTokenForTestMessage = </span><br><span class="line">                MessengerHub.Instance.Subscribe&lt;TestMessage&gt;(OnTestMessageReceived,</span><br><span class="line">                ReferenceType.Weak, SubscriptionPriority.Normal);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnTestMessageReceived</span>(<span class="params">TestMessage message</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> DEBUG</span></span><br><span class="line">            System.Diagnostics.Debug.WriteLine(<span class="string">$&quot;Received messages of type <span class="subst">&#123;message.GetType().ToString()&#125;</span>. Content: <span class="subst">&#123;message.Content&#125;</span>&quot;</span>);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Publishing-the-Message"><a href="#Publishing-the-Message" class="headerlink" title="Publishing the Message"></a>Publishing the <code>Message</code></h3><p>Publish the <code>Message</code> in your component A:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">PublishMessage</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">await</span> MessengerHub.Instance.Publish(<span class="keyword">new</span> TestMessage(<span class="keyword">this</span>, <span class="string">$&quot;Hello World!&quot;</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>All done!</p>
+<h3 id="Parameters"><a href="#Parameters" class="headerlink" title="Parameters"></a>Parameters</h3><p>The full signature of the <code>Subscribe</code> method is:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> SubscriptionToken <span class="title">Subscribe</span>&lt;<span class="title">TMessage</span>&gt;(<span class="params">Action&lt;TMessage&gt; action,</span></span></span><br><span class="line"><span class="params"><span class="function">            ReferenceType referenceType = ReferenceType.Weak,</span></span></span><br><span class="line"><span class="params"><span class="function">            SubscriptionPriority priority = SubscriptionPriority.Normal, <span class="built_in">string</span> tag = <span class="literal">null</span></span>) <span class="keyword">where</span> TMessage : Message</span></span><br></pre></td></tr></table></figure>
+
+<p>You can specify these parameters:</p>
+<ul>
+<li><code>ReferenceType</code>. The default value is <code>ReferenceType.Weak</code> so you do not need to worry about the memory leaking. Once the <code>SubscriptionToken</code> instance goes out of the scope, GC can collect it automatically(But not sure when). If you need to keep a strong reference, specify the parameter as <code>ReferenceType.Strong</code> so that GC cannot collect it.</li>
+<li><code>SubscriptionPriority</code>. The default value is <code>SubscriptionPriority.Normal</code>. Sometimes it is required to control the execution orders of the subscriptions for one <code>Message</code>. In this case, specify different priorities for the subscriptions to control the execution orders. Notice that this parameter is not for different <code>Message</code>s.</li>
+<li><code>Tag</code>. It is optional to inspect the current status for subscriptions.</li>
+</ul>
+<h3 id="Unsubscribe-1"><a href="#Unsubscribe-1" class="headerlink" title="Unsubscribe"></a>Unsubscribe</h3><p>You can use these methods to unsubscribe the subscription:</p>
+<ul>
+<li><p>Use <code>Unsubscribe</code> method, as shown below:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> MessengerHub.Instance.Unsubscribe&lt;TestMessage&gt;(_subscriptionTokenForTestMessage);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Use <code>Dispose</code> method of the <code>SubscriptionToken</code>:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_subscriptionTokenForTestMessage.Dispose();</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>In many scenarios, you will not call these methods directly. If you are using the strong subscription type, it might cause memory leaking issue. So <code>ReferenceType.Weak</code> is recommended. Be aware that if the token is not stored in the context, it might be collected by GC immediately. For example:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">MayNotEverReceiveAMessage</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> token = MessengerHub.Instance.Subscribe&lt;TestMessage&gt;((message) =&gt; &#123;</span><br><span class="line">        <span class="comment">// Do something here</span></span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">// token goes out of scope now</span></span><br><span class="line">    <span class="comment">// - so will be garbage collected *at some point*</span></span><br><span class="line">    <span class="comment">// - so the action may never get called</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Differences-with-MvvmCross-Messenger"><a href="#Differences-with-MvvmCross-Messenger" class="headerlink" title="Differences with MvvmCross.Messenger"></a>Differences with MvvmCross.Messenger</h2><p>If you are using <code>MvvmCross</code> to develop your application, please use <code>MvvmCross.Messenger</code> directly. I extracted some main methods and removed dependencies to <code>MvvmCross</code> components so it can be used in any WPF, UWP and Xamarin projects without <code>MvvmCross</code>. Also, the <code>Publish</code> method is always running in the background to avoid blocking the UI. But you should be aware of when you need to return to UI thread - especially when you need to interact with the UI controls. Another difference is that no need to use DI to create the instance of <code>MessageHub</code> which is a singleton instance in all the app domain. It is useful if the solution contains multiple components that need to communicate with each other. DI would make it more complicated.</p>
+<h2 id="Thanks"><a href="#Thanks" class="headerlink" title="Thanks"></a>Thanks</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.mvvmcross.com/">MvvmCross</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/jonathanpeppers/XPlatUtils">XPlatUtils</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/design-pattern/" rel="tag"># design pattern</a>
+              <a href="/tags/WPF/" rel="tag"># WPF</a>
+              <a href="/tags/UWP/" rel="tag"># UWP</a>
+              <a href="/tags/Xamarin/" rel="tag"># Xamarin</a>
+              <a href="/tags/sub-pub/" rel="tag"># sub-pub</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/" rel="next" title="Using Azure DevOps Pipelines to publish the NuGet package from GitHub repo">
+                  Using Azure DevOps Pipelines to publish the NuGet package from GitHub repo <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xiaodi Yan</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">236k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:35</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

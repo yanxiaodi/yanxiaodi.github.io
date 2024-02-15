@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yanxiaodi.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Microsoft introduced Source Generator in the latest C# version. It is a new feature that allows us to generate source code when the code compiles. In this article, I will walk you through four ways th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Four ways to generate code in C# - Including Source Generators in .NET 5">
+<meta property="og:url" content="https://yanxiaodi.github.io/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/index.html">
+<meta property="og:site_name" content="Xiaodi Yan&#39;s Blog">
+<meta property="og:description" content="Microsoft introduced Source Generator in the latest C# version. It is a new feature that allows us to generate source code when the code compiles. In this article, I will walk you through four ways th">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yanxiaodi.github.io/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/image-20210114155123349.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/image-20210114222759505.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/Picture1.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/image-20210115155119641.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/image-20210115164047740.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/image-20210115114204721.png">
+<meta property="article:published_time" content="2021-01-18T02:46:13.000Z">
+<meta property="article:modified_time" content="2021-01-18T02:46:13.000Z">
+<meta property="article:author" content="Xiaodi Yan">
+<meta property="article:tag" content="Visual Studio">
+<meta property="article:tag" content=".NET">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content=".NETCore">
+<meta property="article:tag" content=".NET5">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yanxiaodi.github.io/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/image-20210114155123349.png">
+
+
+<link rel="canonical" href="https://yanxiaodi.github.io/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://yanxiaodi.github.io/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/","path":"2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/","title":"Four ways to generate code in C# - Including Source Generators in .NET 5"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Four ways to generate code in C# - Including Source Generators in .NET 5 | Xiaodi Yan's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaodi Yan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Coding is fun...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about-me/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-community-activities"><a href="/community-activities" rel="section"><i class="events fa-fw"></i>community activities</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-snippets"><span class="nav-number">1.</span> <span class="nav-text">Code snippets</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reflection"><span class="nav-number">2.</span> <span class="nav-text">Reflection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#T4-Template"><span class="nav-number">3.</span> <span class="nav-text">T4 Template</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-Time-T4-Template"><span class="nav-number">3.1.</span> <span class="nav-text">Run-Time T4 Template</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Design-Time-T4-Template"><span class="nav-number">3.2.</span> <span class="nav-text">Design-Time T4 Template</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-to-create-a-T4-Template"><span class="nav-number">3.3.</span> <span class="nav-text">How to create a T4 Template</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debug-the-T4-Template"><span class="nav-number">3.4.</span> <span class="nav-text">Debug the T4 Template</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#T4-Template-editor"><span class="nav-number">3.5.</span> <span class="nav-text">T4 Template editor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Source-Generators-in-NET-5"><span class="nav-number">4.</span> <span class="nav-text">Source Generators in .NET 5</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#What-is-a-Source-Generator-and-how-it-works"><span class="nav-number">4.1.</span> <span class="nav-text">What is a Source Generator and how it works?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#My-first-Source-Generator-sample"><span class="nav-number">4.2.</span> <span class="nav-text">My first Source Generator sample</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-an-Attribute-in-compilation"><span class="nav-number">4.3.</span> <span class="nav-text">Generate an Attribute in compilation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-to-debug-the-Source-Generators"><span class="nav-number">4.4.</span> <span class="nav-text">How to debug the Source Generators</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-can-we-deal-with-the-complicated-template-code"><span class="nav-number">4.5.</span> <span class="nav-text">How can we deal with the complicated template code?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Usage-scenarios"><span class="nav-number">4.6.</span> <span class="nav-text">Usage scenarios</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">5.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiaodi Yan"
+      src="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+  <p class="site-author-name" itemprop="name">Xiaodi Yan</p>
+  <div class="site-description" itemprop="description">Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yanxiaodi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yanxiaodi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/xiaodi-yan-829bb055/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;xiaodi-yan-829bb055&#x2F;" rel="noopener me" target="_blank"><i class="fab linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yanxiaodi.github.io/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+      <meta itemprop="name" content="Xiaodi Yan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaodi Yan's Blog">
+      <meta itemprop="description" content="Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Four ways to generate code in C# - Including Source Generators in .NET 5 | Xiaodi Yan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Four ways to generate code in C# - Including Source Generators in .NET 5
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-01-18 15:46:13" itemprop="dateCreated datePublished" datetime="2021-01-18T15:46:13+13:00">2021-01-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NET-Core/" itemprop="url" rel="index"><span itemprop="name">.NET Core</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>33k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>30 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Microsoft introduced Source Generator in the latest C# version. It is a new feature that allows us to generate source code when the code compiles. In this article, I will walk you through four ways that can generate source code to simplify our daily jobs. Then you can choose the proper way for various scenarios.</p>
+<span id="more"></span>
+
+<p>Good developers are lazy developers because they don’t want to repeat the code over and over again. In the .NET world, we have such ways to help us generate code:</p>
+<ul>
+<li>Code snippets.</li>
+<li>Reflection.</li>
+<li>T4 Template.</li>
+<li>[New] Source Generators in .NET 5.</li>
+</ul>
+<p>Maybe you have more ideas but this article will mainly cover these four ways. You can check my repo for this article: <a target="_blank" rel="noopener" href="https://github.com/yanxiaodi/MyCodeSamples/tree/main/CodeGeneratorDemo">https://github.com/yanxiaodi/MyCodeSamples/tree/main/CodeGeneratorDemo</a>. Let’s get started!</p>
+<h2 id="Code-snippets"><a href="#Code-snippets" class="headerlink" title="Code snippets"></a>Code snippets</h2><p>Code snippets are small blocks of reusable code that can be inserted in our code files by using a combination of hotkeys. For example, if you type <code>prop</code> then press <code>Tab</code> in Visual Studio, VS will automatically generate a property in your class, then you can easily replace the property name. VS already provides us with lots of built-in code snippets, such as <code>prop</code>, <code>if</code>, <code>while</code>, <code>for</code>, <code>try</code>, etc. You can find the list of all default code snippets here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/ide/visual-csharp-code-snippets?view=vs-2019&WT.mc_id=DT-MVP-5001643">C# code snippets</a>.</p>
+<p>The benefit of code snippets is you can replace the parameters. For example, when we use MVVM pattern for UWP&#x2F;Xamarin&#x2F;WPF apps, we often need to create properties in the class that implements <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.inotifypropertychanged?WT.mc_id=DT-MVP-5001643">INotifyPropertyChanged</a> interface. If you use <strong>MvvmCross</strong> framework, it may look like this:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> ObservableCollection&lt;Comment&gt; _commentList;</span><br><span class="line"><span class="keyword">public</span> ObservableCollection&lt;Comment&gt; CommentList</span><br><span class="line">&#123;</span><br><span class="line">     <span class="keyword">get</span> =&gt; _commentList;</span><br><span class="line">     <span class="keyword">set</span> =&gt; SetProperty(<span class="keyword">ref</span> _commentList, <span class="keyword">value</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>We do not want to copy&#x2F;paste then change the variable names so I created a code snippet to simplify the work. Create a new file called <code>myMvvm.snippet</code> and copy &amp; paste the below code:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">CodeSnippets</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">CodeSnippet</span> <span class="attr">Format</span>=<span class="string">&quot;1.0.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Header</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">SnippetTypes</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">SnippetType</span>&gt;</span>Expansion<span class="tag">&lt;/<span class="name">SnippetType</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">SnippetTypes</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">Title</span>&gt;</span>MvvmCross property<span class="tag">&lt;/<span class="name">Title</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">Author</span>&gt;</span>Xiaodi Yan<span class="tag">&lt;/<span class="name">Author</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">Shortcut</span>&gt;</span>mvxprop<span class="tag">&lt;/<span class="name">Shortcut</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">Description</span>&gt;</span></span><br><span class="line">        A property in a ViewModel in the Xamarin project with MvvmCross.</span><br><span class="line">      <span class="tag">&lt;/<span class="name">Description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Header</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Snippet</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">Declarations</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Literal</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">ID</span>&gt;</span>Property<span class="tag">&lt;/<span class="name">ID</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">ToolTip</span>&gt;</span>Property name<span class="tag">&lt;/<span class="name">ToolTip</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">Default</span>&gt;</span>Property<span class="tag">&lt;/<span class="name">Default</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">Literal</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Object</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">ID</span>&gt;</span>type<span class="tag">&lt;/<span class="name">ID</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">ToolTip</span>&gt;</span>Property type<span class="tag">&lt;/<span class="name">ToolTip</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">Default</span>&gt;</span>string<span class="tag">&lt;/<span class="name">Default</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">Object</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Literal</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">ID</span>&gt;</span>pProperty<span class="tag">&lt;/<span class="name">ID</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">ToolTip</span>&gt;</span>Private property name<span class="tag">&lt;/<span class="name">ToolTip</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">Default</span>&gt;</span>property<span class="tag">&lt;/<span class="name">Default</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">Literal</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">Declarations</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">Code</span> <span class="attr">Language</span>=<span class="string">&quot;csharp&quot;</span>&gt;</span></span><br><span class="line">        &lt;![CDATA[#region $Property$;</span><br><span class="line">		private $type$ _$pProperty$;</span><br><span class="line">        public $type$ $Property$</span><br><span class="line">        &#123;</span><br><span class="line">            get =&gt; _$pProperty$;</span><br><span class="line">            set =&gt; SetProperty(ref _$pProperty$, value);</span><br><span class="line">        &#125;</span><br><span class="line">		#endregion]]&gt;</span><br><span class="line">      <span class="tag">&lt;/<span class="name">Code</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Snippet</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">CodeSnippet</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">CodeSnippets</span>&gt;</span>    </span><br></pre></td></tr></table></figure>
+
+<p>In this code snippets, we use <code>&lt;Shortcut&gt;</code> section to specify the shortcut <code>mvxprop</code>, and use <code>&lt;Declarations&gt;</code> section to declare some parameters. For instance, we declared a parameter named <code>Property</code>, then insert it to the snippet using <code>$Property</code>. You can import this code snippet by <strong>Code Snippets Manager</strong> from VS <strong>Tools</strong> menu (or press <strong>Ctrl+K, Ctrl+B</strong>).</p>
+<p>Now you can type <code>mvxprop</code> and press <strong>Tab</strong>, VS can create the property for you - you just manually replace the property names.</p>
+<p>For more information: </p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/ide/walkthrough-creating-a-code-snippet?view=vs-2019&WT.mc_id=DT-MVP-5001643">Walkthrough: Create a code snippet</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/ide/code-snippet-functions?view=vs-2019&WT.mc_id=DT-MVP-5001643">Code snippet functions</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/ide/how-to-distribute-code-snippets?view=vs-2019&WT.mc_id=DT-MVP-5001643">How to: Distribute code snippets</a></li>
+</ul>
+<p>Code snippets are suitable to reuse to insert entire classes or methods or properties. You can also distribute the code snippets to other users. It is useful when we create the new files&#x2F;classes&#x2F;methods. But if you want to update the generated code after it is done, you have to delete the existing code then recreate it. Basically, it saves the time from boring copy&#x2F;paste, but it is a once-only use.</p>
+<h2 id="Reflection"><a href="#Reflection" class="headerlink" title="Reflection"></a>Reflection</h2><p>Reflection is widely used in many .NET frameworks and libraries, such as <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-5.0&WT.mc_id=DT-MVP-5001643">ASP.NET Core</a>, <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/ef/core/?WT.mc_id=DT-MVP-5001643">Entity Framework Core</a>, etc. It can provide object of type <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.type?WT.mc_id=DT-MVP-5001643">Type</a> that describes assemblies, modules and types so you can dynamically create an instance of a type, get the type from an existing object then invoke its methods or access its fields and properties.</p>
+<p>When we build the .NET application, it generates assemblies - such as the .dll files. These assemblies contain our modules, which contain some types. Types contain members. Reflection allows us to read the information of these. So we can dynamically load new .dll files and call the methods or events of them without editing the code. <strong>Dynamically</strong> means it works at runtime. In other words, when we compile the application, the .NET app does not know what types we need to use, until it runs. By this way, we can create a client that can dynamically execute methods in other assemblies based on our rules. If we update the classes in other assemblies following the rules, we do not need to update the client code.</p>
+<p>Let us check the below sample. You can find it in my sample project. We have an interface called <code>ISpeaker</code> in the <strong>CodeGeneratorDemo.ReflectionDemo.Core</strong> project as shown below:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">CodeGeneratorDemo.ReflectionDemo.Core</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">ISpeaker</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="built_in">string</span> <span class="title">SayHello</span>()</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Create two implementation classes:</p>
+<p><code>ChineseSpeaker</code>:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">CodeGeneratorDemo.ReflectionDemo.Core</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ChineseSpeaker</span> : <span class="title">ISpeaker</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">string</span> Name =&gt; <span class="keyword">this</span>.GetType().ToString();</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">SayHello</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Nihao&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>and <code>EnglishSpeaker</code>:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">CodeGeneratorDemo.ReflectionDemo.Core</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">EnglishSpeaker</span> : <span class="title">ISpeaker</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">string</span> Name =&gt; <span class="keyword">this</span>.GetType().ToString();</span><br><span class="line">        </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">SayHello</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Hello!&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Now we can use reflection to find all the implementations of <code>ISpeaker</code> interface and call their methods or properties.</p>
+<p>Create a new file named <strong>ReflectionHelper</strong> in the <strong>CodeGeneratorDemo.ReflectionDemo</strong> project:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> CodeGeneratorDemo.ReflectionDemo.Core;</span><br><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"><span class="keyword">using</span> System.Linq;</span><br><span class="line"><span class="keyword">using</span> System.Reflection;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">CodeGeneratorDemo.ReflectionDemo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ReflectionHelper</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;Type&gt; <span class="title">GetAvailableSpeakers</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// You can also use AppDomain.CurrentDomain.GetAssemblies() to load all assemblies in the current domain.</span></span><br><span class="line">            <span class="comment">// Get the specified assembly.</span></span><br><span class="line">            <span class="keyword">var</span> assembly =</span><br><span class="line">                Assembly.LoadFrom(Path.Combine(Directory.GetCurrentDirectory(), <span class="string">&quot;CodeGeneratorDemo.ReflectionDemo.Core.dll&quot;</span>));</span><br><span class="line">            <span class="comment">// Find all the types in the assembly.</span></span><br><span class="line">            <span class="keyword">var</span> types = assembly.GetTypes();</span><br><span class="line">            <span class="comment">// Apply the filter to find the implementations of ISayHello interface.</span></span><br><span class="line">            <span class="keyword">var</span> result = types.Where(x =&gt; x.IsClass &amp;&amp; <span class="keyword">typeof</span>(ISpeaker).IsAssignableFrom(x)).ToList();</span><br><span class="line">            <span class="comment">// Or you can use types.Where(x =&gt; x.IsClass &amp;&amp; x.GetInterfaces().Contains(typeof(ISpeaker))).ToList();</span></span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In this class, we load the specified dll file that contains types we need. Then we can apply the LINQ query to find all the implementations of <code>ISpeaker</code> interface using Reflection.</p>
+<p>In the <strong>CodeGeneratorDemo.Client</strong> project, we can output the name and call <code>SayHello</code> method of each speaker:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ReflectionSample</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Here is the Reflection sample:&quot;</span>);</span><br><span class="line">    <span class="comment">// Find all the speakers in the current domain</span></span><br><span class="line">    <span class="keyword">var</span> availableSpeakers = ReflectionHelper.GetAvailableSpeakers();</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> availableSpeaker <span class="keyword">in</span> availableSpeakers)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Create the instance of the type</span></span><br><span class="line">        <span class="keyword">var</span> speaker = Activator.CreateInstance(availableSpeaker);</span><br><span class="line">        <span class="comment">// Get the property info of the given property name</span></span><br><span class="line">        PropertyInfo namePropertyInfo = availableSpeaker.GetProperty(<span class="string">&quot;Name&quot;</span>);</span><br><span class="line">        <span class="comment">// Then you can get the value of the property</span></span><br><span class="line">        <span class="keyword">var</span> name = namePropertyInfo?.GetValue(speaker)?.ToString();</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;I am <span class="subst">&#123;name&#125;</span>&quot;</span>);</span><br><span class="line">        <span class="comment">// Invoke the method of the instance</span></span><br><span class="line">        Console.WriteLine(availableSpeaker.InvokeMember(<span class="string">&quot;SayHello&quot;</span>, BindingFlags.InvokeMethod, <span class="literal">null</span>, speaker, <span class="literal">null</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Run the program, you will see the below output:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Here is the Reflection sample:</span><br><span class="line">I am CodeGeneratorDemo.ReflectionDemo.Core.ChineseSpeaker</span><br><span class="line">Nihao</span><br><span class="line">I am CodeGeneratorDemo.ReflectionDemo.Core.EnglishSpeaker</span><br><span class="line">Hello!</span><br></pre></td></tr></table></figure>
+
+<p>If we need to add other speakers in other languages, just add the implementation classes in the same project. .NET reflection can automatically find out all the required classes and call the methods correctly.</p>
+<p>It is extremely useful when we create the plugin-type applications. First we make the interfaces and call the methods from the client by reflection. Then we can create plugins following the interface for the client, which can be loaded as the *.dll files dynamically and executed.</p>
+<p>Another scenario is for the framework development. As a framework developer, you will not be able to know what implementations the users will create, so you can only use reflection to create these instances. One example is in some MVVM frameworks, if you create the classes following the conventions, eg. xxxViewModel, the framework can find all the ViewModels and load them automatically using reflection.</p>
+<p>Generally, when people talk about reflection, the main concern is the performance. Because it runs on runtime, so theoretically, it is a little bit slower than the normal application. But it is flexible for many scenarios, especially if you develop the framework. If it is acceptable to spend a few seconds (or only hundreds of milliseconds) to load assemblies, then feel free to use it.</p>
+<p>The main namespaces we need to use for reflection are <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection?WT.mc_id=DT-MVP-5001643">System.Reflection</a> and <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.type?WT.mc_id=DT-MVP-5001643">System.Type</a>. You may also need to know the below terms:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assembly?WT.mc_id=DT-MVP-5001643">Assembly</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.module?WT.mc_id=DT-MVP-5001643">Module</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.constructorinfo?WT.mc_id=DT-MVP-5001643">ConstructorInfo</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodinfo?WT.mc_id=DT-MVP-5001643">MethodInfo</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.fieldinfo?WT.mc_id=DT-MVP-5001643">FieldInfo</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.eventinfo?WT.mc_id=DT-MVP-5001643">EventInfo</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.propertyinfo?WT.mc_id=DT-MVP-5001643">PropertyInfo</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.parameterinfo?WT.mc_id=DT-MVP-5001643">ParameterInfo</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.reflection.customattributedata?WT.mc_id=DT-MVP-5001643">CustomAttributeData</a></li>
+</ul>
+<p>For more information, please check these docs:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/reflection?WT.mc_id=DT-MVP-5001643">Reflection in .NET</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/viewing-type-information?WT.mc_id=DT-MVP-5001643">Viewing Type Information</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/dynamically-loading-and-using-types?WT.mc_id=DT-MVP-5001643">Dynamically Loading and Using Types</a></li>
+</ul>
+<h2 id="T4-Template"><a href="#T4-Template" class="headerlink" title="T4 Template"></a>T4 Template</h2><p><strong>T4 Text Template</strong> is a mixture of text blocks and control logic that can generate a text file. <strong>T4</strong> means <em>text template transformation</em>. You can use it to generate files in Visual Studio for C# and Visual Basic. But the file itself can be text of any kind, such as .txt file, or a HTML file, or a program source code of any languages. You use C# code(or VB) to control the logic in the template. A couple of years ago, I used to use a NuGet package (EntityFramework Reverse POCO Generator) to generate the POCO models for EntityFramework. It is implemented by the T4 template. I just needed to update the database connection string in the T4 template and save it, then the T4 template can read the database information and automatically create all the models and methods.</p>
+<p>Let us see how the magic happens. There are two kinds of T4 templates: <strong>Run-Time</strong> and <strong>Design-Time</strong>. The difference is that the run time T4 template is executed in the application to generate the text strings. It will create a .cs class which contains a <code>TransformText()</code> method. Then you can call this method to generate the strings even the target machine does not have Visual Studio installed. On the contrary, the design time T4 template generates the raw source code or text files when you save the template in Visual Studio. If you want to use the run time T4 template, you need to set the <strong>Custom Tool</strong> property of the file as <strong>TextTemplatingFilePreprocessor</strong>. For design time T4 template, the <strong>Custom Tool</strong> property should be set to <strong>TextTemplatingFileGenerator</strong>.</p>
+<img src="/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/image-20210114155123349.png" class="" title="Set Custom Tool property for the T4 template" alt="Set Custom Tool property for the T4 template">
+
+<p>You can find the samples in the <strong>CodeGeneratorDemo.T4TemplateDemo</strong> project. There are two T4 templates: <strong>RunTimeTextTemplateDemo.tt</strong> and <strong>DesignTimeTextTemplateDemo.tt</strong>.</p>
+<h3 id="Run-Time-T4-Template"><a href="#Run-Time-T4-Template" class="headerlink" title="Run-Time T4 Template"></a>Run-Time T4 Template</h3><p>To build the project correctly, you need to install the <strong>System.CodeDom</strong> NuGet package. Open the <strong>RunTimeTextTemplateDemo.tt</strong> file, make some changes to the HTML code, then save it. You will see the T4 template automatically update the generated file <strong>RunTimeTextTemplateDemo.cs</strong>. There is a method called <code>TransformText()</code> you can use in the client code.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="meta">#@ template language=&quot;C#&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ assembly name=&quot;System.Core&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ import namespace=&quot;System.Linq&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ import namespace=&quot;System.Text&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ import namespace=&quot;System.Collections.Generic&quot; #&gt;</span></span><br><span class="line">&lt;html&gt;&lt;body&gt;</span><br><span class="line">&lt;h1&gt;Sales <span class="keyword">for</span> Previous Month&lt;/h2&gt;</span><br><span class="line">&lt;table&gt;</span><br><span class="line">    &lt;<span class="meta"># for (int i = 1; i &lt;= 10; i++)</span></span><br><span class="line">       &#123; <span class="meta">#&gt;</span></span><br><span class="line">         &lt;tr&gt;&lt;td&gt;Test name &lt;<span class="meta">#= i #&gt; &lt;/td&gt;</span></span><br><span class="line">             &lt;td&gt;Test <span class="keyword">value</span> &lt;<span class="meta">#= i * i #&gt; &lt;/td&gt; &lt;/tr&gt;</span></span><br><span class="line">    &lt;<span class="meta"># &#125; #&gt;</span></span><br><span class="line"> &lt;/table&gt;</span><br><span class="line">This report <span class="keyword">is</span> Company Confidential.</span><br><span class="line">&lt;/body&gt;&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Every time you save the template, it will update the generated file. In the client code, we can call the below code:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> page = <span class="keyword">new</span> RunTimeTextTemplateDemo();</span><br><span class="line">Console.WriteLine(page.TransformText());</span><br></pre></td></tr></table></figure>
+
+<p>You will see the HTML code in the console.</p>
+<h3 id="Design-Time-T4-Template"><a href="#Design-Time-T4-Template" class="headerlink" title="Design-Time T4 Template"></a>Design-Time T4 Template</h3><p>Design-Time template can only be used in the Visual Studio when you develop the program. It generates the raw text files, whatever the format is - it can be .cs, .html, or .txt. Typically, you will need to define a <strong>model</strong>, which could be a text file (XML or JSON or csv or whatever), or a database, then the template reads the data from the model and generate some of your source code.</p>
+<p>Here is an example:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="meta">#@ template debug=&quot;false&quot; hostspecific=&quot;true&quot; language=&quot;C#&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ assembly name=&quot;System.Core&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ import namespace=&quot;System.Linq&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ import namespace=&quot;System.Text&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ import namespace=&quot;System.Collections.Generic&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ import namespace=&quot;System.IO&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ output extension=&quot;.cs&quot; #&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">CodeGeneratorDemo.T4TemplateDemo.DesignTimeTextTemplateDemo</span></span><br><span class="line">&#123;</span><br><span class="line">&lt;<span class="meta"># </span></span><br><span class="line">    <span class="keyword">var</span> models = <span class="keyword">new</span> List&lt;<span class="built_in">string</span>&gt;();</span><br><span class="line">    <span class="comment">// You can read the data from any source you have.</span></span><br><span class="line">    <span class="built_in">string</span> path = Path.Combine(Path.GetDirectoryName(<span class="keyword">this</span>.Host.TemplateFile), <span class="string">&quot;dataSource.txt&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(File.Exists(path))</span><br><span class="line">    &#123;</span><br><span class="line">        models = File.ReadAllText(path).Split(<span class="string">&#x27;,&#x27;</span>).ToList();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> model <span class="keyword">in</span> models)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="meta">#&gt;</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">class</span> &lt;#=<span class="title">model</span>#&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">public</span> Guid Id &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">        <span class="keyword">public</span> &lt;<span class="meta">#=model#&gt;(Guid id)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Id = id;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">class</span> &lt;#=<span class="title">model</span>#&gt;<span class="title">Service</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">public</span> Task&lt;&lt;<span class="meta">#=model#&gt;&gt; Get&lt;#=model#&gt;(Guid id)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> Task.FromResult(<span class="keyword">new</span> &lt;<span class="meta">#=model#&gt;(id));</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;<span class="meta">#</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#&gt;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>When you save the template, the T4 template can generate the Model and the Service for each class.</p>
+<h3 id="How-to-create-a-T4-Template"><a href="#How-to-create-a-T4-Template" class="headerlink" title="How to create a T4 Template"></a>How to create a T4 Template</h3><p>As you see in the above examples, the T4 templates are composed of the following parts:</p>
+<ul>
+<li><strong>Directives</strong> - elements that control how the template is processed.</li>
+<li><strong>Text blocks</strong> - the raw text that is copied directly to the output.</li>
+<li><strong>Control blocks</strong> - program code that inserts variable values into the text, and controls conditional or repeated parts of the text.</li>
+</ul>
+<p>For example, you can use the below directive to specify the output file format:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="meta">#@ output extension=&quot;.txt&quot; #&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>You can also use C# code to control the logic. For example, check this code:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="meta">#</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line"><span class="meta">#&gt;</span></span><br><span class="line">Hello!</span><br><span class="line">&lt;<span class="meta">#</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>It will output <code>Hello</code> four times. In this example, <code>Hello</code> is a text block, and the <code>for</code> statement is just the C# code.</p>
+<p>To use the variables, you can use the expression control blocks. Just use <code>&lt;#= ... #&gt;</code> to output the variables, as shown below:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="meta">#</span></span><br><span class="line">    <span class="built_in">string</span> message = <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line"><span class="meta">#&gt;</span></span><br><span class="line">		&lt;<span class="meta">#=message#&gt;</span></span><br><span class="line">&lt;<span class="meta">#</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>It will output <code>Hello</code> four times as well.</p>
+<p>The powerful feature of T4 template is that you can import assemblies and use most of .NET libraries you need, eg:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="meta">#@ assembly name=&quot;System.Core&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ import namespace=&quot;System.Linq&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ import namespace=&quot;System.Text&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ import namespace=&quot;System.Collections.Generic&quot; #&gt;</span></span><br><span class="line">&lt;<span class="meta">#@ import namespace=&quot;System.IO&quot; #&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Just note that you need to place them before the raw text and control blocks. You can even use Reflection in the control blocks. With these features, we can write quite useful templates for some scenarios.</p>
+<h3 id="Debug-the-T4-Template"><a href="#Debug-the-T4-Template" class="headerlink" title="Debug the T4 Template"></a>Debug the T4 Template</h3><p>Like the normal C# program, we can debug the T4 template by setting breakpoints. To debug a design-time T4 template, right click the template and choose <strong>Debug T4 template</strong> from the menu of the file in Solution Explorer. To debug a run-time T4 template, just debug the project because it runs when the program compiles.</p>
+<img src="/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/image-20210114222759505.png" class="" title="Debug the T4 template" alt="Debug the T4 template">
+
+<h3 id="T4-Template-editor"><a href="#T4-Template-editor" class="headerlink" title="T4 Template editor"></a>T4 Template editor</h3><p>By default, Visual Studio does not support the syntax coloring and Intellisense, etc. Fortunately, we have some VS extensions to improve the productivity, such as <a target="_blank" rel="noopener" href="https://www.devart.com/t4-editor/">DevArt T4 Editor</a>. You can search <em>T4 template</em> in the VS extension market and you will find more.</p>
+<p>We will not cover all the details of T4 template in this article. For more information, please read these documents:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/modeling/code-generation-and-t4-text-templates?view=vs-2019&WT.mc_id=DT-MVP-5001643">Code Generation and T4 Text Templates</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/modeling/walkthrough-generating-code-by-using-text-templates?view=vs-2019&WT.mc_id=DT-MVP-5001643">Walkthrough: Generate Code by using Text Templates</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/modeling/run-time-text-generation-with-t4-text-templates?view=vs-2019&WT.mc_id=DT-MVP-5001643">Run-Time Text Generation with T4 Text Templates</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/modeling/t4-text-template-directives?view=vs-2019&WT.mc_id=DT-MVP-5001643">T4 Text Template Directives</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/modeling/text-template-control-blocks?view=vs-2019&WT.mc_id=DT-MVP-5001643">Text Template Control Blocks</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/modeling/guidelines-for-writing-t4-text-templates?view=vs-2019&WT.mc_id=DT-MVP-5001643">Guidelines for Writing T4 Text Templates</a></li>
+</ul>
+<h2 id="Source-Generators-in-NET-5"><a href="#Source-Generators-in-NET-5" class="headerlink" title="Source Generators in .NET 5"></a>Source Generators in .NET 5</h2><p>To get started with Source Generators, you need to install the latest <a target="_blank" rel="noopener" href="https://dotnet.microsoft.com/download/dotnet/5.0">.NET 5 SDK</a>.</p>
+<h3 id="What-is-a-Source-Generator-and-how-it-works"><a href="#What-is-a-Source-Generator-and-how-it-works" class="headerlink" title="What is a Source Generator and how it works?"></a>What is a Source Generator and how it works?</h3><p>According to Microsoft’s definition:</p>
+<blockquote>
+<p>A Source Generator is a piece of code that runs during compilation and can inspect your program to produce additional files that are compiled together with the rest of your code.</p>
+</blockquote>
+<p>Let us recap how the Reflection works. As I mentioned before, when we build the application, the reflection code does not know what types it will use, until the application runs. That’s why people complain the performance of reflection. If we have lots of assemblies to load when the app starts, it may cause a slight impact to the performance. And this issue is hard to resolve because that is the downside of reflection - you get the benefit for the development, but you have to accept the disadvantage of it.</p>
+<p>Source Generators are used to solve the performance issue - at least, to improve the performance is one of the important goals. Source Generators can analyze the current source code and inject into the code compilation process, then generate some code that will be compiled along the current source code - in other words, when the app completes the compilation, it already exactly knew what types it would use. That is the key to the improvement.</p>
+<p>Here is the diagram of Source Generators from Microsoft:</p>
+<img src="/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/Picture1.png" class="" title="Source Generators" alt="Source Generators">
+
+<p>One thing we need to know is that <strong>Source Generators can only add something to code but not change any existing code</strong>. Let us see an example.</p>
+<h3 id="My-first-Source-Generator-sample"><a href="#My-first-Source-Generator-sample" class="headerlink" title="My first Source Generator sample"></a>My first Source Generator sample</h3><p>A Source Generate is an implementation of <code>Microsoft.CodeAnalysis.ISourceGenerator</code>:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">Microsoft.CodeAnalysis</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">ISourceGenerator</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">Initialize</span>(<span class="params">GeneratorInitializationContext context</span>)</span>;</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">Execute</span>(<span class="params">GeneratorExecutionContext context</span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Create a new .NET Standard 2.0 Class project called <strong>CodeGeneratorDemo.SourceGeneratorDemo</strong>. Install these two NuGet packages:</p>
+<ul>
+<li>Microsoft.CodeAnalysis.CSharp v3.8+</li>
+<li>Microsoft.CodeAnalysis.Analyzers v3.3+</li>
+</ul>
+<p>We also need to specify the language version as <code>preview</code>:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">TargetFramework</span>&gt;</span>netstandard2.0<span class="tag">&lt;/<span class="name">TargetFramework</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">LangVersion</span>&gt;</span>preview<span class="tag">&lt;/<span class="name">LangVersion</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Technically, Source Generators are not a C# language feature. They are still in preview. So we need to specify it explicitly at the moment.</p>
+<p>Then create a <code>SpeakersSourceGenerator.cs</code> file in the project. Update the content as shown below:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.CodeAnalysis;</span><br><span class="line"><span class="keyword">using</span> Microsoft.CodeAnalysis.CSharp.Syntax;</span><br><span class="line"><span class="keyword">using</span> Microsoft.CodeAnalysis.Text;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">CodeGeneratorDemo.SourceGeneratorDemo</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">Generator</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SpeakersSourceGenerator</span> : <span class="title">ISourceGenerator</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Initialize</span>(<span class="params">GeneratorInitializationContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Not needed for this sample</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Execute</span>(<span class="params">GeneratorExecutionContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// begin creating the source we&#x27;ll inject into the users compilation</span></span><br><span class="line">            <span class="keyword">var</span> sourceBuilder = <span class="keyword">new</span> StringBuilder(<span class="string">@&quot;</span></span><br><span class="line"><span class="string">using System;</span></span><br><span class="line"><span class="string">namespace CodeGeneratorDemo.SourceGeneratorDemo</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">    public static class SpeakerHelper</span></span><br><span class="line"><span class="string">    &#123;</span></span><br><span class="line"><span class="string">        public static void SayHello() </span></span><br><span class="line"><span class="string">        &#123;</span></span><br><span class="line"><span class="string">            Console.WriteLine(&quot;&quot;Hello from generated code!&quot;&quot;);</span></span><br><span class="line"><span class="string">&quot;</span>);</span><br><span class="line">            sourceBuilder.Append(<span class="string">@&quot;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;&quot;</span>);</span><br><span class="line">            <span class="comment">// inject the created source into the users compilation</span></span><br><span class="line">            context.AddSource(<span class="string">&quot;speakersSourceGenerator&quot;</span>, SourceText.From(sourceBuilder.ToString(), Encoding.UTF8));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The <code>SpeakersSourceGenerator</code> class implements the <code>ISourceGenerator</code> interface, and has the <code>Generator</code> attribute. When the program compiles, it will find the Source Generators and produce the code we need. In this example, I only created a new class named <code>SpeakerHelper</code> that contains one <code>SayHello()</code> method. If we generate the code correctly, it should output the message in the console.</p>
+<p>Next, add the reference to the <strong>CodeGeneratorDemo.Client</strong> project. Please note that you need to update the project file like this:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Project</span> <span class="attr">Sdk</span>=<span class="string">&quot;Microsoft.NET.Sdk&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">OutputType</span>&gt;</span>Exe<span class="tag">&lt;/<span class="name">OutputType</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">TargetFramework</span>&gt;</span>net5.0<span class="tag">&lt;/<span class="name">TargetFramework</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">LangVersion</span>&gt;</span>preview<span class="tag">&lt;/<span class="name">LangVersion</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">ItemGroup</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ProjectReference</span> <span class="attr">Include</span>=<span class="string">&quot;..\CodeGeneratorDemo.SourceGeneratorDemo\CodeGeneratorDemo.SourceGeneratorDemo.csproj&quot;</span> </span></span><br><span class="line"><span class="tag">                      <span class="attr">OutputItemType</span>=<span class="string">&quot;Analyzer&quot;</span></span></span><br><span class="line"><span class="tag">                      <span class="attr">ReferenceOutputAssembly</span>=<span class="string">&quot;false&quot;</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">ItemGroup</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>You need to specify the language version as well. Also, because we do not reference the project as the normal dll file, so we need to update the values of <code>OutputItemType</code> and <code>ReferenceOutputAssembly</code> as shown above.</p>
+<p>Add the code in the client code:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SourceGeneratorSample</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    CodeGeneratorDemo.SourceGeneratorDemo.SpeakerHelper.SayHello();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>You may see VS complains <code>CodeGeneratorDemo.SourceGeneratorDemo.SpeakerHelper</code> cannot be found because there is no such class in our code. The tooling of Source Generators is still in preview so we need to build the <strong>CodeGeneratorDemo.SourceGeneratorDemo</strong> project and close VS then restart it. Then you will find VS can support the Intellinsense as well. When we build it, the Source Generators actually generates the <code>SpeakerHelper</code> class. Now run the client app, we can see the output, which comes from the generated code:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hello from generated code!</span><br></pre></td></tr></table></figure>
+
+<p>So the process is, when we build the project, the Source Generators will be called to produce some code that can be compiled with the original source code together. In that way, there is no performance issue because it happens in the compilation. When the app starts, the generated code is already compiled with the other source code.</p>
+<p>From my experience, sometimes VS cannot recognize the generated methods or classes but that should be fine if the build runs correctly.</p>
+<img src="/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/image-20210115155119641.png" class="" title="VS error regarding the generated code" alt="VS error regarding the generated code">
+
+<p>If you press <code>F12</code> to inspect the <code>SayHello()</code> method in the client code, you will see the generated file which shows this file cannot be edited:</p>
+<img src="/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/image-20210115164047740.png" class="" title="Generated code" alt="Generated code">
+
+<p>You might be curious where the file is. If you want to see the actual generated file, you can add these section to the <strong>CodeGeneratorDemo.SourceGeneratorDemo</strong> project and the <strong>CodeGeneratorDemo.Client</strong> project:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">EmitCompilerGeneratedFiles</span>&gt;</span>true<span class="tag">&lt;/<span class="name">EmitCompilerGeneratedFiles</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">CompilerGeneratedFilesOutputPath</span>&gt;</span>$(BaseIntermediateOutputPath)\GeneratedFiles<span class="tag">&lt;/<span class="name">CompilerGeneratedFilesOutputPath</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Then you can find the file in <strong>obj&#x2F;GeneratedFiles</strong> folder. If you do not specify the <strong>CompilerGeneratedFilesOutputPath</strong> property, it should be in <strong>obj&#x2F;SourceGeneratorFiles</strong> folder.</p>
+<p>This is just a quite simple example to show how to generate the code before the runtime. Next, let us see another example that is a little bit more complex.</p>
+<h3 id="Generate-an-Attribute-in-compilation"><a href="#Generate-an-Attribute-in-compilation" class="headerlink" title="Generate an Attribute in compilation"></a>Generate an Attribute in compilation</h3><p>When we use the Dependency Injection, normally we need to register the instances manually. For this demo, I will create an <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/attributes/?WT.mc_id=DT-MVP-5001643">Attribute</a> to decorate the classes that need to be registered. We can use Reflection to retrieve these attributes to find the specific classes, but the operation maybe expensive. With the Source Generators, we can generate the code to register them before the runtime.</p>
+<p>Create a new class called <code>AutoRegisterSourceGenerator</code> as shown below:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">Generator</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AutoRegisterSourceGenerator</span> : <span class="title">ISourceGenerator</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Initialize</span>(<span class="params">GeneratorInitializationContext context</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// TODO</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Execute</span>(<span class="params">GeneratorExecutionContext context</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">         <span class="comment">// TODO</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Next, let us create the attribute. We can create the actual class as the normal code, but for the demonstration, I will use Source Generator to generate it. Add the below code to <code>AutoRegisterSourceGenerator</code>:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> AttributeText = <span class="string">@&quot;</span></span><br><span class="line"><span class="string">using System;</span></span><br><span class="line"><span class="string">namespace CodeGeneratorDemo.SourceGeneratorDemo</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]</span></span><br><span class="line"><span class="string">    sealed class AutoRegisterAttribute : Attribute</span></span><br><span class="line"><span class="string">    &#123;</span></span><br><span class="line"><span class="string">        public AutoRegisterAttribute()</span></span><br><span class="line"><span class="string">        &#123;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>This is just a string. Next, update the <code>Execute</code> method to add the string to the source code:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Execute</span>(<span class="params">GeneratorExecutionContext context</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    context.AddSource(<span class="string">&quot;AutoRegisterAttribute&quot;</span>, SourceText.From(AttributeText, Encoding.UTF8));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>When we build the project, it will generate the <code>AutoRegisterAttribute</code>. </p>
+<p>The next step is to create some interfaces:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">CodeGeneratorDemo.Client.Core</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IOrderService</span></span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IProductService</span></span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>And some implementations, such as <code>OrderService</code> and <code>ProductService</code>, which are decorated by the <code>AutoRegister</code> attribute:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> CodeGeneratorDemo.SourceGeneratorDemo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">CodeGeneratorDemo.Client.Core</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">AutoRegister</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">OrderService</span> : <span class="title">IOrderService</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">OrderService</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">$&quot;<span class="subst">&#123;<span class="keyword">this</span>.GetType()&#125;</span> constructed.&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [<span class="meta">AutoRegister</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProductService</span> : <span class="title">IProductService</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ProductService</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">$&quot;<span class="subst">&#123;<span class="keyword">this</span>.GetType()&#125;</span> constructed.&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>We do not have <code>AutoRegister</code> in our code at the moment. So you will see VS complains. It does not matter because the attribute will be generated by the Source Generator later.</p>
+<p>We will have another class called <code>DiContainerMocker</code> to mock the DI container:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">namespace</span> <span class="title">CodeGeneratorDemo.Client.Core</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">DiContainerMocker</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">RegisterService</span>&lt;<span class="title">TInterface</span>, <span class="title">TImplementation</span>&gt;(<span class="params">TImplementation service</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">$&quot;<span class="subst">&#123;service.GetType()&#125;</span> has been registered for <span class="subst">&#123;<span class="keyword">typeof</span>(TInterface)&#125;</span>.&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The Source Generators rely on <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/?WT.mc_id=DT-MVP-5001643">Roslyn</a>. It can inspect the data from compilation. We can access the <code>SyntaxTrees</code> by using an object called <code>SyntaxReceivers</code>, iterate the <code>SyntaxNodes</code> then generate codes based on these information.</p>
+<p>Create a new class called <code>MySyntaxReceiver</code>, which implements the <code>ISyntaxReceiver</code> interface:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MySyntaxReceiver</span> : <span class="title">ISyntaxReceiver</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;ClassDeclarationSyntax&gt; CandidateClasses &#123; <span class="keyword">get</span>; &#125; = <span class="keyword">new</span> List&lt;ClassDeclarationSyntax&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> Called for every syntax node in the compilation, we can inspect the nodes and save any information useful for generation</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnVisitSyntaxNode</span>(<span class="params">SyntaxNode syntaxNode</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// any method with at least one attribute is a candidate for property generation</span></span><br><span class="line">        <span class="keyword">if</span> (syntaxNode <span class="keyword">is</span> ClassDeclarationSyntax classDeclarationSyntax</span><br><span class="line">            &amp;&amp; classDeclarationSyntax.AttributeLists.Count &gt;= <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            CandidateClasses.Add(classDeclarationSyntax);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In this class, we will check each <code>SyntaxNode</code>. If it is a class and it has attributes, then we will add it to a list.</p>
+<p>Next, we need to register <code>MySyntaxReceiver</code> in the <code>Initialize</code> method of the Source Generator:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Initialize</span>(<span class="params">GeneratorInitializationContext context</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    context.RegisterForSyntaxNotifications(() =&gt; <span class="keyword">new</span> MySyntaxReceiver());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Now it is time to complete our Source Generator. The idea is that we will hook the compilation and check if the <code>SyntaxNode</code> is a class and has the <code>AutoRegister</code> attribute. Update the <code>Execute</code> method by the following code:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Execute</span>(<span class="params">GeneratorExecutionContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            context.AddSource(<span class="string">&quot;AutoRegisterAttribute&quot;</span>, SourceText.From(AttributeText, Encoding.UTF8));</span><br><span class="line">            <span class="keyword">if</span> (!(context.SyntaxReceiver <span class="keyword">is</span> MySyntaxReceiver receiver))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            CSharpParseOptions options = (context.Compilation <span class="keyword">as</span> CSharpCompilation).SyntaxTrees[<span class="number">0</span>].Options <span class="keyword">as</span> CSharpParseOptions;</span><br><span class="line">            SyntaxTree attributeSyntaxTree =</span><br><span class="line">                CSharpSyntaxTree.ParseText(SourceText.From(AttributeText, Encoding.UTF8), options);</span><br><span class="line">            Compilation compilation = context.Compilation.AddSyntaxTrees(attributeSyntaxTree);</span><br><span class="line">            StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">            stringBuilder.Append(<span class="string">@&quot;</span></span><br><span class="line"><span class="string">using System;</span></span><br><span class="line"><span class="string">using CodeGeneratorDemo.Client.Core;</span></span><br><span class="line"><span class="string">namespace CodeGeneratorDemo.SourceGeneratorDemo</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">    public class RegisterHelper</span></span><br><span class="line"><span class="string">    &#123;</span></span><br><span class="line"><span class="string">        public static void RegisterServices()</span></span><br><span class="line"><span class="string">        &#123;</span></span><br><span class="line"><span class="string">&quot;</span>);</span><br><span class="line">            <span class="comment">// Get all the classes with the AutoRegisterAttribute</span></span><br><span class="line">            INamedTypeSymbol attributeSymbol =</span><br><span class="line"> compilation.GetTypeByMetadataName(<span class="string">&quot;CodeGeneratorDemo.SourceGeneratorDemo.AutoRegisterAttribute&quot;</span>);</span><br><span class="line">            <span class="keyword">foreach</span> (<span class="keyword">var</span> candidateClass <span class="keyword">in</span> receiver.CandidateClasses)</span><br><span class="line">            &#123;</span><br><span class="line">                SemanticModel model = compilation.GetSemanticModel(candidateClass.SyntaxTree);</span><br><span class="line">                <span class="keyword">if</span> (model.GetDeclaredSymbol(candidateClass) <span class="keyword">is</span> ITypeSymbol typeSymbol &amp;&amp;</span><br><span class="line">                    typeSymbol.GetAttributes().Any(x =&gt;</span><br><span class="line">                        x.AttributeClass.Equals(attributeSymbol, SymbolEqualityComparer.Default)))</span><br><span class="line">                &#123;</span><br><span class="line">                    stringBuilder.Append(<span class="string">$@&quot;</span></span><br><span class="line"><span class="string">            DiContainerMocker.RegisterService&lt;I<span class="subst">&#123;candidateClass.Identifier.Text&#125;</span>, <span class="subst">&#123;candidateClass.Identifier.Text&#125;</span>&gt;(new <span class="subst">&#123;candidateClass.Identifier.Text&#125;</span>());&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            stringBuilder.Append(<span class="string">@&quot;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;&quot;</span>);</span><br><span class="line">            context.AddSource(<span class="string">&quot;RegisterServiceHelper&quot;</span>, SourceText.From(stringBuilder.ToString(), Encoding.UTF8));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>If you are not familiar with Roslyn, this method may look like complicated. It uses Roslyn API to get the metadata of the classes - kind of similar with Reflection. You can check the documents for more information:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/work-with-syntax?WT.mc_id=DT-MVP-5001643">Work with syntax</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/work-with-semantics?WT.mc_id=DT-MVP-5001643">Work with semantics</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/syntax-visualizer?tabs=csharp&WT.mc_id=DT-MVP-5001643">Explore code with the Roslyn syntax visualizer in Visual Studio</a></li>
+</ul>
+<p>To better check the syntax trees in our project, you can install <strong>.NET Compiler Platform SDK</strong> from <strong>Visual Studio Installer</strong>, which provides a SyntaxVisualizer window for VS2019.</p>
+<img src="/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/image-20210115114204721.png" class="" title="Install .NET Compiler Platform SDK" alt="Install .NET Compiler Platform SDK">
+
+<p>Once we find the classes decorated by the <code>AutoRegister</code> attribute, we can append the source code which can register the instance. The generated code will be compiled with the original code together. By this way, we avoid the expensive cost of Reflection and improve the performance.</p>
+<p>Finally, we can call the generated code in the client:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SourceGeneratorSample</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Here is the simple Source Generator sample:&quot;</span>);</span><br><span class="line">    CodeGeneratorDemo.SourceGeneratorDemo.SpeakerHelper.SayHello();</span><br><span class="line">    Console.WriteLine();</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Here is the AutoRegisterAttribute Source Generator sample:&quot;</span>);</span><br><span class="line">    CodeGeneratorDemo.SourceGeneratorDemo.RegisterHelper.RegisterServices();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>You need to build the <strong>CodeGeneratorDemo.SourceGeneratorDemo</strong> project then reopen the VS2019. Then you can see the output like this:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Here is the AutoRegisterAttribute Source Generator sample:</span><br><span class="line">CodeGeneratorDemo.Client.Core.OrderService constructed.</span><br><span class="line">CodeGeneratorDemo.Client.Core.OrderService has been registered <span class="keyword">for</span> CodeGeneratorDemo.Client.Core.IOrderService.</span><br><span class="line">CodeGeneratorDemo.Client.Core.ProductService constructed.</span><br><span class="line">CodeGeneratorDemo.Client.Core.ProductService has been registered <span class="keyword">for</span> CodeGeneratorDemo.Client.Core.IProductService.</span><br></pre></td></tr></table></figure>
+
+<p>If you press <code>F12</code> on <code>RegisterServices()</code> to check its definition, you will see the generated code is like this:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> CodeGeneratorDemo.SourceGeneratorDemo.Core;</span><br><span class="line"><span class="keyword">namespace</span> <span class="title">CodeGeneratorDemo.SourceGeneratorDemo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">RegisterHelper</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">RegisterServices</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            DiContainerMocker.RegisterService&lt;IProductService, ProductService&gt;(<span class="keyword">new</span> ProductService());</span><br><span class="line">            DiContainerMocker.RegisterService&lt;IOrderService, OrderService&gt;(<span class="keyword">new</span> OrderService());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>That is exactly what we want.</p>
+<p>The cool thing is if you remove or add the <code>AutoRegister</code> for the services, you will see the generated code will be updated immediately - no need to rebuild the project!</p>
+<h3 id="How-to-debug-the-Source-Generators"><a href="#How-to-debug-the-Source-Generators" class="headerlink" title="How to debug the Source Generators"></a>How to debug the Source Generators</h3><p>Sometimes we need to debug the Source Generators in case we have any issues. If you set a breakpoint in the Source Generator, you will find it will not work. The solution is to attach the debugger in the <code>Initialize</code> method:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Initialize</span>(<span class="params">GeneratorInitializationContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> DEBUG</span></span><br><span class="line">            <span class="keyword">if</span> (!Debugger.IsAttached)</span><br><span class="line">            &#123;</span><br><span class="line">                Debugger.Launch();</span><br><span class="line">            &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">            context.RegisterForSyntaxNotifications(() =&gt; <span class="keyword">new</span> MySyntaxReceiver());</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Then you can debug the Source Generator by setting the breakpoints.</p>
+<h3 id="How-can-we-deal-with-the-complicated-template-code"><a href="#How-can-we-deal-with-the-complicated-template-code" class="headerlink" title="How can we deal with the complicated template code?"></a>How can we deal with the complicated template code?</h3><p>In these two examples, I demonstrated how to generate code using Source Generators. We use the raw strings in the <code>Execute</code> method - it seems ugly. The better way is to use a template engine. One possible option is <a target="_blank" rel="noopener" href="https://github.com/scriban/scriban">Scriban</a> -  a fast, powerful, safe and lightweight scripting language and engine for .NET. So we can store the templates in separate files and make the solution tidy. I will not dive deep to the template syntax because it is out of the scope of this article. You can find more on its GitHub repo.</p>
+<h3 id="Usage-scenarios"><a href="#Usage-scenarios" class="headerlink" title="Usage scenarios"></a>Usage scenarios</h3><p>Microsoft provides a Source Generators cookbook. You can find it on GitHub: <a target="_blank" rel="noopener" href="https://github.com/dotnet/roslyn/blob/master/docs/features/source-generators.cookbook.md">https://github.com/dotnet/roslyn/blob/master/docs/features/source-generators.cookbook.md</a>. You will see the Source Generators can be applied in many scenarios, especially to replace Reflection, or when you develop the boilerplate codes. For example, some JSON serialization often use dynamic analysis, such as Reflection to examine the type in runtime. Source Generators can generate static serialization code in compile-time to save the cost. You can also access additional files, such as XML or JSON files to generate your code.</p>
+<p>Find more examples on GitHub: <a target="_blank" rel="noopener" href="https://github.com/dotnet/roslyn-sdk/tree/master/samples/CSharp/SourceGenerators">https://github.com/dotnet/roslyn-sdk/tree/master/samples/CSharp/SourceGenerators</a>.</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>In this article, I walked you through four ways that we can use to generate code in our C# program. They may fit for different scenarios, so we need to compare each approach and choose the appropriate one. </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Scenarios</th>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Code Snippets</td>
+<td>To create code blocks in specific format, such as properties, methods, and classes, etc.</td>
+<td>Save the time to type repeating code blocks.</td>
+<td>Can only applied to specific format. Cannot be updated automatically.</td>
+</tr>
+<tr>
+<td>Reflection</td>
+<td>To get the metadata in runtime then interact with the classes, properties, methods, etc.</td>
+<td>Powerful and flexible for many scenarios. Can reduce the coupling.</td>
+<td>Expensive cost. Potential performance issue. More complex to maintain.</td>
+</tr>
+<tr>
+<td>T4 Template</td>
+<td>To generate some boilerplate code. But sometimes it can be refactored by design patterns.</td>
+<td>Can read data from other files. Many available control blocks. Can generate static code without performance issue.</td>
+<td>Terrible editor support. Easy to make mistakes in the template.</td>
+</tr>
+<tr>
+<td>Source Generators</td>
+<td>To replace some reflection code. Generates static code in compilation based on Roslyn.</td>
+<td>No performance issues. Faster build.  IntelliSense support. Can produce diagnostics when unable to generate source code. Partial classes&#x2F;methods support.</td>
+<td>Tooling needs improvements. A little bit hard to get started.</td>
+</tr>
+</tbody></table>
+<p>The point is how we use Source Generators - the new features provided in .NET 5. It is still in preview so we may see more improvements from Microsoft soon. My expectation is the better integration with VS2019. Now the experience is not good enough because we must reopen VS repeatedly. Hope this article would help you save your time on C# development. Feel free to leave your comments if you have any ideas, please. Thanks.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Visual-Studio/" rel="tag"># Visual Studio</a>
+              <a href="/tags/NET/" rel="tag"># .NET</a>
+              <a href="/tags/C/" rel="tag"># C#</a>
+              <a href="/tags/NETCore/" rel="tag"># .NETCore</a>
+              <a href="/tags/NET5/" rel="tag"># .NET5</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/10/19/my-tips-for-dot-net-code-review/" rel="prev" title="My tips for .NET code-review">
+                  <i class="fa fa-angle-left"></i> My tips for .NET code-review
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/06/08/be-a-life-long-learner-to-embrace-ai/" rel="next" title="Be a life-long learner to embrace AI">
+                  Be a life-long learner to embrace AI <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xiaodi Yan</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">236k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:35</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

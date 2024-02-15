@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yanxiaodi.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="These days, everyone is talking about ChatGTP, which is a powerful AI tool that can have natural conversations with humans. It is powered by OpenAI. I have started to use ChatGPT in different scenario">
+<meta property="og:type" content="article">
+<meta property="og:title" content="build-an-openai-powered-vscode-extension-in-no-time">
+<meta property="og:url" content="https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/index.html">
+<meta property="og:site_name" content="Xiaodi Yan&#39;s Blog">
+<meta property="og:description" content="These days, everyone is talking about ChatGTP, which is a powerful AI tool that can have natural conversations with humans. It is powered by OpenAI. I have started to use ChatGPT in different scenario">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312142051850.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312142200856.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312143556430.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312144101050.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312144250919.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312144645619.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312150404908.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/revision.gif">
+<meta property="og:image" content="https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/translation.gif">
+<meta property="article:published_time" content="2023-03-12T00:27:46.000Z">
+<meta property="article:modified_time" content="2023-03-12T00:27:46.000Z">
+<meta property="article:author" content="Xiaodi Yan">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="vscode">
+<meta property="article:tag" content="vscode extension">
+<meta property="article:tag" content="translate">
+<meta property="article:tag" content="open source">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312142051850.png">
+
+
+<link rel="canonical" href="https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/","path":"2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/","title":"build-an-openai-powered-vscode-extension-in-no-time"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>build-an-openai-powered-vscode-extension-in-no-time | Xiaodi Yan's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaodi Yan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Coding is fun...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about-me/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-community-activities"><a href="/community-activities" rel="section"><i class="events fa-fw"></i>community activities</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Idea"><span class="nav-number">1.</span> <span class="nav-text">Idea</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-an-OpenAI-account-and-getting-the-API-key"><span class="nav-number">2.</span> <span class="nav-text">Creating an OpenAI account and getting the API key</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-the-extension"><span class="nav-number">3.</span> <span class="nav-text">Creating the extension</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Installing-the-OpenAI-SDK"><span class="nav-number">4.</span> <span class="nav-text">Installing the OpenAI SDK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Writing-the-code"><span class="nav-number">5.</span> <span class="nav-text">Writing the code</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Extension-configurations"><span class="nav-number">5.1.</span> <span class="nav-text">Extension configurations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Extension-code"><span class="nav-number">5.2.</span> <span class="nav-text">Extension code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Publishing-the-extension"><span class="nav-number">5.3.</span> <span class="nav-text">Publishing the extension</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">6.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiaodi Yan"
+      src="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+  <p class="site-author-name" itemprop="name">Xiaodi Yan</p>
+  <div class="site-description" itemprop="description">Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yanxiaodi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yanxiaodi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/xiaodi-yan-829bb055/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;xiaodi-yan-829bb055&#x2F;" rel="noopener me" target="_blank"><i class="fab linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yanxiaodi.github.io/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+      <meta itemprop="name" content="Xiaodi Yan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaodi Yan's Blog">
+      <meta itemprop="description" content="Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="build-an-openai-powered-vscode-extension-in-no-time | Xiaodi Yan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          build-an-openai-powered-vscode-extension-in-no-time
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-03-12 13:27:46" itemprop="dateCreated datePublished" datetime="2023-03-12T13:27:46+13:00">2023-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/My-Projects/" itemprop="url" rel="index"><span itemprop="name">My Projects</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>9.8k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>9 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>These days, everyone is talking about ChatGTP, which is a powerful AI tool that can have natural conversations with humans. It is powered by OpenAI. I have started to use ChatGPT in different scenarios. Besides using it to write some scripts, I also use it to revise or translate some text. In some cases, it provides a better result than Google Translate or DeepL. However, I still need to copy and paste the text to the website. I often use VS Code to write or translate technical documents, so I want to integrate AI power into my VS Code. Similar to <a target="_blank" rel="noopener" href="https://medium.com/@yanxiaodi/how-to-develop-a-vs-code-extension-step-by-step-translator-helper-55226fcd018e">Translator Helper</a>, I spent around three hours building an OpenAI-powered VS Code extension. The extension is called <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=XiaodiYan.revision">ReVision</a>. It is an open-source project, and you can find the source code on <a target="_blank" rel="noopener" href="https://github.com/yanxiaodi/vs-code-revision">GitHub</a>.</p>
+<span id="more"></span>
+
+<p>In this article, I will show you how to build an OpenAI-powered VS Code extension in no time. With the help of AI, the productivity of developers will definitely be improved.</p>
+<h2 id="Idea"><a href="#Idea" class="headerlink" title="Idea"></a>Idea</h2><p>One thing in my daily work is to write various technical documents or emails. Previously, I used some tools such as Grammarly to check the grammar. In some cases, I may need to rewrite the whole paragraph in another way. For example:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Revise the text in a professional style:</span><br><span class="line">Code-review is important in our daily development. Some developers may spend lots of time on learning new features of the languages, DDD, distributed system or some fancy stuff but the first thing we should keep in mind is we need to write the robust, maintainable code. Here are some tips from my recent code-review and I hope it would be helpful for you.</span><br></pre></td></tr></table></figure>
+
+<p>ChatGPT can help me to revise the text in a professional style:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Code review is an integral aspect of our daily development process. While it is essential for developers to stay abreast of the latest features and trends in languages, DDD, distributed systems, and other advanced concepts, it is imperative to prioritize writing robust and maintainable code. In light of this, I would like to share some tips from my recent code review experience, which I believe will prove beneficial to you.</span><br></pre></td></tr></table></figure>
+
+<img src="/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312142051850.png" class="" title="Revise the text in ChatGPT" alt="Revise the text in ChatGPT">
+
+<p>You may find that the revised text has more professional words and the sentence structure is better. It is a good tool to help me write a better document (and improve my English writing skills).</p>
+<blockquote>
+<p>Note<br>There are some arguments about whether we should use AI to produce content, and whether the content produced by AI is meaningful. For sure, students should not use AI to cheat in their exams. I won’t discuss this topic in this article because it is out of the scope.</p>
+</blockquote>
+<p>We can also use ChatGPT to translate the text. For example, I can translate the following text from English to Chinese:</p>
+<img src="/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312142200856.png" class="" title="Translate text in ChatGPT" alt="Translate text in ChatGPT">
+
+<p>ChatGPT is powered by <a target="_blank" rel="noopener" href="https://platform.openai.com/">OpenAI</a>, which provides a powerful API to use its AI model. My idea is to follow the approach of Translator Helper to build an OpenAI-powered VS Code extension so that I can easily revise or translate the text in VS Code without leaving the editor. Because I have already built the Translator Helper, I can reuse some code to build the new extension.</p>
+<h2 id="Creating-an-OpenAI-account-and-getting-the-API-key"><a href="#Creating-an-OpenAI-account-and-getting-the-API-key" class="headerlink" title="Creating an OpenAI account and getting the API key"></a>Creating an OpenAI account and getting the API key</h2><p>The first step is to create an OpenAI account and get the API key. You can create an account on <a target="_blank" rel="noopener" href="https://platform.openai.com/">OpenAI</a>. After creating the account, you can get the API key on the <a target="_blank" rel="noopener" href="https://platform.openai.com/account/api-keys">API Keys</a> page.</p>
+<p>Note that the API key only shows once. You need to save it somewhere safe. If you lose the API key, you need to create a new one.</p>
+<p>OpenAI provides a set of examples to show you how to use the API: <a target="_blank" rel="noopener" href="https://platform.openai.com/examples">https://platform.openai.com/examples</a>. Here is an example to translate the text from English to three different languages:</p>
+<img src="/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312143556430.png" class="" title="OpenAI example" alt="OpenAI example">
+
+<p>So the basic usage of the API is to send a request to the API endpoint with a <strong>Prompt</strong>:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Translate this into 1. French, 2. Spanish and 3. Japanese:</span><br><span class="line"></span><br><span class="line">&lt;The text you want to translate&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Similarly, we can use the API to revise the text. OpenAI provides a playground to test the API: <a target="_blank" rel="noopener" href="https://platform.openai.com/playground">https://platform.openai.com/playground</a>. Let’s try to revise the text:</p>
+<img src="/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312144101050.png" class="" title="OpenAI playground" alt="OpenAI playground">
+
+<p>In the settings panel, you can choose settings such as Model, Temperature, and Top P, etc. The default settings are good enough for most cases.</p>
+<img src="/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312144250919.png" class="" title="OpenAI API settings" alt="OpenAI API settings">
+
+<p>To learn more about the settings, you can read the <a target="_blank" rel="noopener" href="https://platform.openai.com/docs/introduction">OpenAI API documentation</a>.</p>
+<h2 id="Creating-the-extension"><a href="#Creating-the-extension" class="headerlink" title="Creating the extension"></a>Creating the extension</h2><p>Now we have the API key, we can start to build the extension. First, I asked ChatGPT to advise me on what name I can use.</p>
+<img src="/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312144645619.png" class="" title="Ask ChatGPT to give me a name for the extension" alt="Ask ChatGPT to give me a name for the extension">
+
+<p>Not bad, isn’t it? I would use the name <strong>ReVision</strong> for the extension.</p>
+<p>So the next step is to create a new VS Code extension project. You can find more information about how to create a VS Code extension project in the VS Code document: <a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/get-started/your-first-extension">Your First Extension</a>. I will skip this step and assume that you have already created a new VS Code extension project.</p>
+<h2 id="Installing-the-OpenAI-SDK"><a href="#Installing-the-OpenAI-SDK" class="headerlink" title="Installing the OpenAI SDK"></a>Installing the OpenAI SDK</h2><p>OpenAI provides a set of SDKs to help developers to use the API. You can find the SDKs on this page: <a target="_blank" rel="noopener" href="https://platform.openai.com/docs/libraries">https://platform.openai.com/docs/libraries</a>. I will use the OpenAI Node.js SDK. Run the following command to install the SDK:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install openai</span><br></pre></td></tr></table></figure>
+
+<h2 id="Writing-the-code"><a href="#Writing-the-code" class="headerlink" title="Writing the code"></a>Writing the code</h2><p>The idea is similar to Translator Helper. We click a paragraph and then press a shortcut key to trigger the extension. The extension will automatically select the whole paragraph and then send a request to the OpenAI API endpoint. The response will be inserted into the editor after the current paragraph.</p>
+<p>Using different shortcuts, we can send different requests to revise or translate the text. For example, we can use <code>shift+alt+r</code> to revise the text and use <code>ctrl+shift+t</code> to translate the text.</p>
+<h3 id="Extension-configurations"><a href="#Extension-configurations" class="headerlink" title="Extension configurations"></a>Extension configurations</h3><p>We will need two commands: <code>revision.reviseInsert</code> and <code>revision.translateInsert</code>. Here are the settings for commands and keybindings in the <code>package.json</code> file:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;commands&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;revision.reviseInsert&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;title&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Revise &amp; Insert&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;revision.translateInsert&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;title&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Translate &amp; Insert&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;keybindings&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;revision.reviseInsert&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;shift+alt+r&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;mac&quot;</span><span class="punctuation">:</span> <span class="string">&quot;shift+alt+r&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;when&quot;</span><span class="punctuation">:</span> <span class="string">&quot;editorTextFocus&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;revision.translateInsert&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ctrl+shift+t&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;mac&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cmd+shift+t&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;when&quot;</span><span class="punctuation">:</span> <span class="string">&quot;editorTextFocus&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+
+<p>We also need these configurations in the <code>package.json</code> file:</p>
+<ul>
+<li><code>revision.openAIApiKey</code>: the API key of OpenAI</li>
+<li><code>revision.writingStyle</code>: the writing style, which can be <code>professional</code> or <code>casual</code></li>
+<li><code>revision.sourceLanguage</code>: the source language</li>
+<li><code>revision.targetLanguage</code>: the target language to be translated</li>
+<li><code>revision.maxTokens</code>: the maximum number of tokens to be generated. OpenAI API has a limit of 4097 tokens shared between prompt and completion.</li>
+</ul>
+<p>We can provide some default styles in the <code>package.json</code> file:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;revision.writingStyle&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;default&quot;</span><span class="punctuation">:</span> <span class="string">&quot;professional&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;enum&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;professional&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;formal&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;casual&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;humorous&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;sarcastic&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;informative&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;empathetic&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;authoritative&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;poetic&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;other&quot;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;enumDescriptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;A professional tone that is appropriate for business documents, such as proposals, reports, and presentations.&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;A formal tone that is appropriate for documents that require a high level of formality, such as legal documents, academic papers, and business correspondence.&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;A casual tone that is appropriate for documents that are meant to be read by friends, family, or colleagues.&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;A humorous tone that is fun and playful.&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;A sarcastic tone that is characterized by its use of irony and sarcasm, often used to express displeasure or frustration.&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;An informative tone that focuses on presenting factual information in a clear and concise manner.&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;An empathetic tone that is used to express understanding and compassion towards the reader, often used in customer service or support contexts.&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;An authoritative tone that is used to convey expertise and authority on a particular subject, often used in instructional or educational contexts.&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;A poetic tone that is appropriate for poems, song lyrics, and other works of art.&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;A custom tone that is not one of the above.&quot;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+<p>By the way, these settings and descriptions were generated by ChatGPT as well.</p>
+<p>So users can choose the writing style in the settings panel:</p>
+<img src="/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/image-20230312150404908.png" class="" title="ReVision configurations" alt="ReVision configurations">
+
+<h3 id="Extension-code"><a href="#Extension-code" class="headerlink" title="Extension code"></a>Extension code</h3><p>We can reuse lots of code from Translator Helper, including the code to get the current paragraph and the code to insert the text into the editor. The main difference is the code to send the request to the OpenAI API endpoint.</p>
+<p>Here is the code to revise the text:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="title function_">revise</span>(</span><br><span class="line">  <span class="attr">text</span>: <span class="built_in">string</span>,</span><br><span class="line">  <span class="attr">language</span>: <span class="built_in">string</span>,</span><br><span class="line">  <span class="attr">writingStyle</span>: <span class="built_in">string</span></span><br><span class="line">): <span class="title class_">Promise</span>&lt;<span class="built_in">string</span> | <span class="literal">undefined</span>&gt; &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> maxTokens = <span class="title function_">getMaxTokensConfiguration</span>();</span><br><span class="line">    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="variable language_">this</span>.<span class="property">openaiService</span>.<span class="title function_">createCompletion</span>(&#123;</span><br><span class="line">      <span class="attr">model</span>: <span class="string">&quot;text-davinci-003&quot;</span>,</span><br><span class="line">      <span class="attr">prompt</span>: <span class="string">`Revise this into better sentences and paragraphs in <span class="subst">$&#123;language&#125;</span> using a <span class="subst">$&#123;writingStyle&#125;</span> tone:\n\n<span class="subst">$&#123;text&#125;</span>\n\n`</span>,</span><br><span class="line">      <span class="attr">temperature</span>: <span class="number">0.3</span>,</span><br><span class="line">      <span class="attr">max_tokens</span>: maxTokens,</span><br><span class="line">      <span class="attr">top_p</span>: <span class="number">1.0</span>,</span><br><span class="line">      <span class="attr">frequency_penalty</span>: <span class="number">0.0</span>,</span><br><span class="line">      <span class="attr">presence_penalty</span>: <span class="number">0.0</span>,</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">let</span> result = response.<span class="property">data</span>.<span class="property">choices</span>[<span class="number">0</span>].<span class="property">text</span>;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (<span class="attr">error</span>: <span class="built_in">any</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> error;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The code to translate the text is similar:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="title function_">translate</span>(</span><br><span class="line">    <span class="attr">text</span>: <span class="built_in">string</span>,</span><br><span class="line">    <span class="attr">sourceLanguage</span>: <span class="built_in">string</span>,</span><br><span class="line">    <span class="attr">targetLanguage</span>: <span class="built_in">string</span></span><br><span class="line">  ): <span class="title class_">Promise</span>&lt;<span class="built_in">string</span> | <span class="literal">undefined</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="variable language_">this</span>.<span class="property">openaiService</span>.<span class="title function_">createCompletion</span>(&#123;</span><br><span class="line">        <span class="attr">model</span>: <span class="string">&quot;text-davinci-003&quot;</span>,</span><br><span class="line">        <span class="attr">prompt</span>: <span class="string">`Translate this into <span class="subst">$&#123;targetLanguage&#125;</span> from <span class="subst">$&#123;sourceLanguage&#125;</span>:\n\n<span class="subst">$&#123;text&#125;</span>\n\n`</span>,</span><br><span class="line">        <span class="attr">temperature</span>: <span class="number">0.3</span>,</span><br><span class="line">        <span class="attr">max_tokens</span>: <span class="number">2048</span>,</span><br><span class="line">        <span class="attr">top_p</span>: <span class="number">1.0</span>,</span><br><span class="line">        <span class="attr">frequency_penalty</span>: <span class="number">0.0</span>,</span><br><span class="line">        <span class="attr">presence_penalty</span>: <span class="number">0.0</span>,</span><br><span class="line">      &#125;);</span><br><span class="line">      <span class="keyword">let</span> result = response.<span class="property">data</span>.<span class="property">choices</span>[<span class="number">0</span>].<span class="property">text</span>;</span><br><span class="line">      <span class="keyword">return</span> result;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (<span class="attr">error</span>: <span class="built_in">any</span>) &#123;</span><br><span class="line">      <span class="keyword">throw</span> error;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>The core code here is just to get the selected text and build a prompt. OpenAI API will generate the text based on the prompt. You can fine-tune the parameters to get better results. Prompts are very important in AI applications. You can read more about it here: <a target="_blank" rel="noopener" href="https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api">Best practices for prompt engineering with OpenAI API</a>. I think prompts may be a future programming language for developers - who knows?</p>
+<p>The code to insert the text into the editor is the same as Translator Helper.</p>
+<p>Now when we edit the text, we can press <code>shift+alt+r</code> to revise the text:</p>
+<img src="/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/revision.gif" class="" title="Revise the text using ReVision" alt="Revise the text using ReVision">
+
+<p>And press <code>ctrl+shift+t</code> to translate the text:</p>
+<img src="/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/translation.gif" class="" title="Translate the text using ReVision" alt="Translate the text using ReVision">
+
+<p>It’s nearly done!</p>
+<h3 id="Publishing-the-extension"><a href="#Publishing-the-extension" class="headerlink" title="Publishing the extension"></a>Publishing the extension</h3><p>I have described how to publish the extension in the <a target="_blank" rel="noopener" href="https://medium.com/@yanxiaodi/how-to-develop-a-vs-code-extension-step-by-step-translator-helper-55226fcd018e">previous post</a>, including how to set up the Azure DevOps pipeline. So I won’t repeat it here.</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>In this article, I have shown you how easy it is to develop a VS Code extension using the OpenAI API. OpenAI API provides various possibilities for developers. Check the examples of OpenAI and see if you can find any interesting ideas. The code of ReVision is available on GitHub: <a target="_blank" rel="noopener" href="https://github.com/yanxiaodi/vs-code-revision">vs-code-revision</a>. Try this extension in VS Code and feel free to leave comments and suggestions. Thanks for reading!</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AI/" rel="tag"># AI</a>
+              <a href="/tags/vscode/" rel="tag"># vscode</a>
+              <a href="/tags/vscode-extension/" rel="tag"># vscode extension</a>
+              <a href="/tags/translate/" rel="tag"># translate</a>
+              <a href="/tags/open-source/" rel="tag"># open source</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/09/20/take-your-first-step-with-dapr/" rel="prev" title="Take your first step with Dapr">
+                  <i class="fa fa-angle-left"></i> Take your first step with Dapr
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xiaodi Yan</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">236k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:35</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

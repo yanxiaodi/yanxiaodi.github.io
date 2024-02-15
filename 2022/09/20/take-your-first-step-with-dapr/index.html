@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yanxiaodi.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Dapr is a new way to build distributed applications. It provides quite a few building blocks to abstract the common operations of distributed microservice architecture. In this article, let us take th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Take your first step with Dapr">
+<meta property="og:url" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/index.html">
+<meta property="og:site_name" content="Xiaodi Yan&#39;s Blog">
+<meta property="og:description" content="Dapr is a new way to build distributed applications. It provides quite a few building blocks to abstract the common operations of distributed microservice architecture. In this article, let us take th">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220919221445598.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220919221519029.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220919222005258.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220919222602379.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220919223719963.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220919223317775.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220920211115867.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220912232246292.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220913210354010.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220913224455598.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220913230701904.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220913230918188.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220913231224637.png">
+<meta property="article:published_time" content="2022-09-20T09:43:40.000Z">
+<meta property="article:modified_time" content="2022-09-20T09:43:40.000Z">
+<meta property="article:author" content="Xiaodi Yan">
+<meta property="article:tag" content=".NET">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="Dapr">
+<meta property="article:tag" content="Microservices">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/image-20220919221445598.png">
+
+
+<link rel="canonical" href="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/","path":"2022/09/20/take-your-first-step-with-dapr/","title":"Take your first step with Dapr"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Take your first step with Dapr | Xiaodi Yan's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaodi Yan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Coding is fun...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about-me/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-community-activities"><a href="/community-activities" rel="section"><i class="events fa-fw"></i>community activities</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-Dapr"><span class="nav-number">1.</span> <span class="nav-text">What is Dapr?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#What-problem-Dapr-can-solve"><span class="nav-number">1.1.</span> <span class="nav-text">What problem Dapr can solve?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#What-if-we-use-Dapr"><span class="nav-number">1.2.</span> <span class="nav-text">What if we use Dapr?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-it-works"><span class="nav-number">1.3.</span> <span class="nav-text">How it works?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prerequisites"><span class="nav-number">2.</span> <span class="nav-text">Prerequisites</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Install-Dapr"><span class="nav-number">2.1.</span> <span class="nav-text">Install Dapr</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Building-the-first-Dapr-application"><span class="nav-number">3.</span> <span class="nav-text">Building the first Dapr application</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-the-application"><span class="nav-number">3.1.</span> <span class="nav-text">Creating the application</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Adding-Dapr-State-Management"><span class="nav-number">3.2.</span> <span class="nav-text">Adding Dapr State Management</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Running-the-Dapr-application"><span class="nav-number">3.3.</span> <span class="nav-text">Running the Dapr application</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Understanding-the-component-configuration-files"><span class="nav-number">3.4.</span> <span class="nav-text">Understanding the component configuration files</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-Azure-CosmosDB-as-the-state-store"><span class="nav-number">4.</span> <span class="nav-text">Using Azure CosmosDB as the state store</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-an-Azure-CosmosDB-database"><span class="nav-number">4.1.</span> <span class="nav-text">Creating an Azure CosmosDB database</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-Azure-CosmosDB"><span class="nav-number">4.2.</span> <span class="nav-text">Using Azure CosmosDB</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Managing-the-secrets-in-Dapr"><span class="nav-number">5.</span> <span class="nav-text">Managing the secrets in Dapr</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-an-Azure-Key-Vault"><span class="nav-number">5.1.</span> <span class="nav-text">Creating an Azure Key Vault</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Storing-the-secret-in-the-Azure-Key-Vault"><span class="nav-number">5.2.</span> <span class="nav-text">Storing the secret in the Azure Key Vault</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Authenticating-the-application-to-the-Azure-Key-Vault"><span class="nav-number">5.3.</span> <span class="nav-text">Authenticating the application to the Azure Key Vault</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Generating-a-new-Azure-AD-application-and-service-principal"><span class="nav-number">5.3.1.</span> <span class="nav-text">Generating a new Azure AD application and service principal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Granting-the-service-principal-to-access-the-Azure-Key-Vault"><span class="nav-number">5.3.2.</span> <span class="nav-text">Granting the service principal to access the Azure Key Vault</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-a-Dapr-component-to-access-the-Azure-Key-Vault"><span class="nav-number">5.4.</span> <span class="nav-text">Creating a Dapr component to access the Azure Key Vault</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-Dapr-secret-store-to-access-the-state-store"><span class="nav-number">6.</span> <span class="nav-text">Using Dapr secret store to access the state store</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">7.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiaodi Yan"
+      src="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+  <p class="site-author-name" itemprop="name">Xiaodi Yan</p>
+  <div class="site-description" itemprop="description">Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yanxiaodi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yanxiaodi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/xiaodi-yan-829bb055/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;xiaodi-yan-829bb055&#x2F;" rel="noopener me" target="_blank"><i class="fab linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yanxiaodi.github.io/2022/09/20/take-your-first-step-with-dapr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+      <meta itemprop="name" content="Xiaodi Yan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaodi Yan's Blog">
+      <meta itemprop="description" content="Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Take your first step with Dapr | Xiaodi Yan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Take your first step with Dapr
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-09-20 21:43:40" itemprop="dateCreated datePublished" datetime="2022-09-20T21:43:40+12:00">2022-09-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Microservices/" itemprop="url" rel="index"><span itemprop="name">Microservices</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>20k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>18 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Dapr is a new way to build distributed applications. It provides quite a few building blocks to abstract the common operations of distributed microservice architecture. In this article, let us take the first step with Dapr and understand how it works.</p>
+<h2 id="What-is-Dapr"><a href="#What-is-Dapr" class="headerlink" title="What is Dapr?"></a>What is Dapr?</h2><p>Dapr is not a framework or a library. It is a runtime. Dapr is language-agnostic. Before we explain what Dapr is, let us look at what problem Dapr can solve, then understand how it works.</p>
+<span id="more"></span>
+
+<h3 id="What-problem-Dapr-can-solve"><a href="#What-problem-Dapr-can-solve" class="headerlink" title="What problem Dapr can solve?"></a>What problem Dapr can solve?</h3><p>Now everyone is talking about cloud-native, microservice and distributed systems. More and more companies and organizations are refactoring their monolithic systems to microservice architecture. Another trend is that we have more and more cloud services&#x2F;components to build the application, like Lego bricks, so as a developer, we need to learn how to use these cloud-native services to build the application. For example, if you need a state store, you can use Azure CosmonDB or AWS DynamoDB, or you can use Redis managed by any cloud provider. If you need a message queue, you can also find some managed services in the cloud. So we need to make decisions like:</p>
+<ul>
+<li>Which one will we use?</li>
+<li>How should we write the code?</li>
+<li>How do we integrate these cloud services with our application?</li>
+<li>What if we want to use another platform? How can we reuse our code?</li>
+</ul>
+<p>If you write code that targets a specific cloud provider, that means your application will be tightly coupled with that cloud provider, and you cannot easily migrate to another cloud platform. It’s not portable. It’s a <strong>vendor-locking</strong> risk.</p>
+<p>Let’s say we want to implement a state store for the shopping cart service. That’s a quite common feature in all online shopping systems. We have many available options:</p>
+<ul>
+<li>Redis</li>
+<li>Memcached</li>
+<li>MongoDB</li>
+<li>Azure CosmosDB</li>
+<li>Azure Table Storage</li>
+<li>AWS DynamoDB</li>
+<li>GCP Firestore</li>
+</ul>
+<p>Let’s say the client has an existing solution in Azure, so we decide to use CosmosDB as the state store. Then we probably would make it like this:</p>
+<img src="/2022/09/20/take-your-first-step-with-dapr/image-20220919221445598.png" class="" title="The traditional project structure" alt="The traditional project structure">
+
+<p>Figure 1 - The traditional project structure</p>
+<p>First, we would need to learn how to use CosmosDB, read the documentation, and install the CosmosDB SDK for a specific language. If the project is developed by .NET, I’ll install the .NET CosmosDB SDK, then I can write the business logic code on top of it. This is quite straightforward.</p>
+<p>The challenge is that we may want to implement the hybrid cloud architecture, or we need to support on-premises or AWS. So we will need to implement the state store on Redis or AWS DynamoDB. But how can we reuse our code?</p>
+<p>If you are an experienced developer, you would say “hey we can use some design patterns, like Dependency Injection”. That’s true. Dependency Injection is a common pattern to inject the correct implementation for a specific purpose. We can define an interface to make an abstraction for the common operations, then we can have different implementations, one for CosmosDB, and another for Redis, as shown below:</p>
+<img src="/2022/09/20/take-your-first-step-with-dapr/image-20220919221519029.png" class="" title="Using Dependency Injection to support multiple implementations" alt="Using Dependency Injection to support multiple implementations">
+
+<p>Figure 2 - Using Dependency Injection to support multiple implementations</p>
+<p>Ok now it supports two platforms. What if we need to support more? Apparently, we need to write more code with different SDKs for each platform. It works but you will find many duplicated codes. That’s a problem.</p>
+<p>There’s a principle in software development called the <strong>DRY</strong> principle – <strong>Don’t repeat yourself</strong>. As developers, we don’t want to repeat ourselves. We want to write the code once and reuse it. So we need to find a better way to solve this problem.</p>
+<p>That’s the challenge for developers. The reality is that, to be a modern application developer, we need to understand many services in each cloud provider. But we want to focus on business logic only, and lean on the cloud platforms to implement the scalability, flexibility, resiliency, maintainability, elasticity, etc. Developers should not be expected to become distributed system experts.</p>
+<p>How can we solve that? How can we write the code once and run it everywhere? How can we reduce the cognitive load to support more platforms? How can we have agility and flexibility, and reduce the complexity?</p>
+<p>That brings us to <strong>Dapr</strong>, or distributed application runtime, which is a new way to build modern distributed applications. Let’s see what we can do if we use Dapr to build the same application.</p>
+<h3 id="What-if-we-use-Dapr"><a href="#What-if-we-use-Dapr" class="headerlink" title="What if we use Dapr?"></a>What if we use Dapr?</h3><p>If we use Dapr for the same shopping cart service, we can refactor the system like this:</p>
+<img src="/2022/09/20/take-your-first-step-with-dapr/image-20220919222005258.png" class="" title="Refactoring the shopping cart service with Dapr" alt="Refactoring the shopping cart service with Dapr">
+
+<p>Figure 3 - Refactoring the shopping cart service with Dapr</p>
+<p>We don’t need to install any language-specific SDKs. We just call the standard APIs exposed by Dapr, and Dapr will call the underlying cloud services. In other words, Dapr is like an interface, or an abstraction layer between our application and the cloud services, which can reduce the complexity. If we want to support more cloud services, no need to change the code, just update the configuration file of Dapr.</p>
+<p>That says, the application now is portable. You can easily run it on any cloud platform. Also, the code is simpler, shorter, and easier to manage. Ok the state management is just one feature of Dapr. Next, let’s dive deeper and check more details.</p>
+<p>Dapr is trying to solve the complexity of building a distributed application. Here is the overview of the Dapr architecture.</p>
+<img src="/2022/09/20/take-your-first-step-with-dapr/image-20220919222602379.png" class="" title="The overview of Dapr (Copyright by Microsoft)" alt="The overview of Dapr (Copyright by Microsoft)">
+
+<p>Figure 4 - The overview of Dapr (Copyright by Microsoft)</p>
+<p>We can see, on the bottom row, there are various cloud providers. In the blue area, there are some <strong>building blocks</strong> of Dapr.</p>
+<blockquote>
+<p><strong>What is a building block?</strong></p>
+<p>A building block is an abstraction layer for a specific cloud capability, or we can say it encapsulates a distributed infrastructure capability. For example, the state management capability we just mentioned in the shopping cart example, you can use Azure CosmosDB, or AWS DynamoDB, but both of them are NoSQL databases, and they have lots of similarities. So on top of them, Dapr provides a building block to make the abstraction for this capability. Then We can access the capability through the Dapr APIs, normally they are HTTP or gRPC APIs.</p>
+</blockquote>
+<p>On top of the Dapr building blocks, there is our application code, you might use various languages, like Python, .NET, or NodeJS. It doesn’t matter. Because they will call the Dapr APIs without any hard dependencies to those cloud services.</p>
+<p>You can see besides the state management, there are some other building blocks for <strong>Service-to-service invocation</strong>, pub&#x2F;sub, <strong>bindings</strong>, <strong>actors</strong>, <strong>observability</strong>, <strong>secrets</strong>, etc. Each building block represents a capability of the distributed application based on the cloud-native services.</p>
+<p>We won’t introduce each of them in this article, but we can understand that Dapr allows you to swap out different underlying implementations without having to change any code. So this way makes your code more portable, more flexible, and vendor-neutral.</p>
+<h3 id="How-it-works"><a href="#How-it-works" class="headerlink" title="How it works?"></a>How it works?</h3><p>This diagram below shows the Dapr architecture, which is called sidecar architecture. </p>
+<img src="/2022/09/20/take-your-first-step-with-dapr/image-20220919223719963.png" class="" title="A Sidecar" alt="A Sidecar">
+
+<p>Figure 5 - A Sidecar</p>
+<p>Dapr is like a sidecar that you can assemble with your motorcycle. A sidecar enables Dapr to run in a separate process or a separate container alongside the service. For each service, you can have a Dapr sidecar. In this way, Dapr will not intrude on your application, and it would be easy to change the code to adopt it.</p>
+<p>The service calls the Dapr APIs through HTTP or gRPC. And the Dapr building blocks invoke the <strong>components</strong> that implement the cloud services.</p>
+<blockquote>
+<p><strong>What is a component?</strong></p>
+<p>A component is to provide concrete implementation for the cloud services. If we use a simple analogy, <strong>a Building block is like an interface, and a component is like a concrete implementation.</strong></p>
+</blockquote>
+<p>The application doesn’t know how Dapr calls those components. It just needs to know Dapr building blocks. No dependencies on cloud services. The building blocks are independent of each other. You can use one of them or use many of them. Just do it following your requirements. Another benefit is that Dapr is developed in the industry best practices including comprehensive observability. So you can confidently use these building blocks to build your distributed application.</p>
+<p>Dapr has a set of components for many popular services. For state stores, we can see it supports DynamoDB, CosmosDB, Firebase, Redis, etc.</p>
+<img src="/2022/09/20/take-your-first-step-with-dapr/image-20220919223317775.png" class="" title="Dapr components (Copyright by Microsoft)" alt="Dapr components (Copyright by Microsoft)">
+
+<p>Figure 6 - Dapr components (Copyright by Microsoft)</p>
+<p>Similarly, the other building blocks also have many components. There are over 70 components available now. So if you need to support another service, you can just update the Dapr configuration to support that. No need to change the code.<br>Also, Dapr is an open-source project, so everyone can create components for any resources and contribute the code.</p>
+<p>Next, let’s see a demo. I will show you how to use the state store component in Dapr.</p>
+<h2 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h2><p>Microsoft provides a getting-started guide here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/architecture/dapr-for-net-developers/getting-started">https://docs.microsoft.com/en-us/dotnet/architecture/dapr-for-net-developers/getting-started</a>. We will follow the steps below:</p>
+<h3 id="Install-Dapr"><a href="#Install-Dapr" class="headerlink" title="Install Dapr"></a>Install Dapr</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.dapr.io/getting-started/install-dapr-cli/">Install the Dapr CLI</a>.</li>
+<li><a target="_blank" rel="noopener" href="https://docs.docker.com/get-docker/">Install Docker Desktop</a>. If you’re running on Windows, make sure that <strong>Docker Desktop for Windows</strong> is configured to use Linux containers.</li>
+<li><a target="_blank" rel="noopener" href="https://docs.dapr.io/getting-started/install-dapr-selfhost/">Initialize Dapr in your local environment</a>.</li>
+<li><a target="_blank" rel="noopener" href="https://dotnet.microsoft.com/download/dotnet/6.0?WT.mc_id=DT-MVP-5001643">Install the .NET 6 SDK</a>.</li>
+</ul>
+<p>After you initialize Dapr, you can run the command <code>docker ps</code> to verify containers are running. You can see a Redis instance named <code>dapr_redis</code> in the output, which is the default state store implementation by default:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CONTAINER ID   IMAGE               COMMAND                  CREATED        STATUS                    PORTS                              NAMES</span><br><span class="line">b4d4f465fecd   daprio/dapr:1.8.4   <span class="string">&quot;./placement&quot;</span>            31 hours ago   Up 18 minutes             0.0.0.0:6050-&gt;50005/tcp            dapr_placement</span><br><span class="line">e070cbee088b   openzipkin/zipkin   <span class="string">&quot;start-zipkin&quot;</span>           32 hours ago   Up 18 minutes (healthy)   9410/tcp, 0.0.0.0:9411-&gt;9411/tcp   dapr_zipkin</span><br><span class="line">0d1d5ae053e6   redis:6             <span class="string">&quot;docker-entrypoint.s…&quot;</span>   32 hours ago   Up 18 minutes             0.0.0.0:6379-&gt;6379/tcp             dapr_redis</span><br></pre></td></tr></table></figure>
+
+<p>Let’s see how to use this built-in state store.</p>
+<h2 id="Building-the-first-Dapr-application"><a href="#Building-the-first-Dapr-application" class="headerlink" title="Building the first Dapr application"></a>Building the first Dapr application</h2><p>We will build a simple console app to consume the default state store.</p>
+<h3 id="Creating-the-application"><a href="#Creating-the-application" class="headerlink" title="Creating the application"></a>Creating the application</h3><p>This demo comes from Microsoft’s doc: <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/architecture/dapr-for-net-developers/getting-started?WT.mc_id=DT-MVP-5001643">Get started with Dapr</a>. I’ll introduce the main steps below:</p>
+<p>Run the below command to create a console application:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet new console -o DaprCounter</span><br></pre></td></tr></table></figure>
+
+<p>Navigate to the application directory:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> DaprCounter</span><br></pre></td></tr></table></figure>
+
+<p>Run the command below, you should be able to see the output as “Hello World!”</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet run</span><br></pre></td></tr></table></figure>
+
+<h3 id="Adding-Dapr-State-Management"><a href="#Adding-Dapr-State-Management" class="headerlink" title="Adding Dapr State Management"></a>Adding Dapr State Management</h3><p>We will use the Dapr SDK to access the state store. We mentioned that Dapr provides HTTP&#x2F;gRPC protocols so you can call the Dapr APIs using any tool. Using the Dapr SDK would save our effort by providing the strongly typed .NET client to call the Dapr APIs.</p>
+<p>Run the command below to install the <code>Dapr.Client</code> NuGet package:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet add package Dapr.Client</span><br></pre></td></tr></table></figure>
+
+<p>Open the <code>Program.cs</code> file and update it as the following code:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> Dapr.Client;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="built_in">string</span> storeName = <span class="string">&quot;statestore&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="built_in">string</span> key = <span class="string">&quot;counter&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> daprClient = <span class="keyword">new</span> DaprClientBuilder().Build();</span><br><span class="line"><span class="keyword">var</span> counter = <span class="keyword">await</span> daprClient.GetStateAsync&lt;<span class="built_in">int</span>&gt;(storeName, key);</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">$&quot;Counter = <span class="subst">&#123;counter++&#125;</span>&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> daprClient.SaveStateAsync(storeName, key, counter);</span><br><span class="line">    <span class="keyword">await</span> Task.Delay(<span class="number">1000</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In this file, we create a <code>DaprClient</code> instance, which is used to call the Dapr APIs. To use the state store, we use <code>GetStateAsync()</code> and <code>SaveStateAsync()</code> to get and save the <code>counter</code> value.</p>
+<h3 id="Running-the-Dapr-application"><a href="#Running-the-Dapr-application" class="headerlink" title="Running the Dapr application"></a>Running the Dapr application</h3><p>Run the application with the following command:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dapr run --app-id DaprCounter dotnet run</span><br></pre></td></tr></table></figure>
+
+<p>In the command above, we specify the <code>app-id</code> for the application. The state store will use this id as a prefix for the state key. You will see the <code>counter</code> increases per second.</p>
+<p>Stop and restart the application. You will see the <code>counter</code> does not reset, which means the value is saved in the state store.</p>
+<p>If you want to check the data in the Redis container, you can inspect it in the terminal:</p>
+<img src="/2022/09/20/take-your-first-step-with-dapr/image-20220920211115867.png" class="" title="Inspect the Redis data in terminal" alt="Inspect the Redis data in terminal">
+
+<p>Figure 7 - Inspect the Redis data in terminal</p>
+<p>Then use the following command to enter <a target="_blank" rel="noopener" href="https://redis.io/docs/manual/cli/">Redis-CLI</a>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli</span><br></pre></td></tr></table></figure>
+
+<p>Then you can check the keys in the Redis database:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; Keys *</span><br><span class="line">1) <span class="string">&quot;DaprCounter||counter&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>You will see the key consists of the <code>app-id</code> and the key name that is defined in the code.</p>
+<p>To check the data stored in the database, you can use the command below:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; HGETALL DaprCounter||counter</span><br><span class="line">1) <span class="string">&quot;data&quot;</span></span><br><span class="line">2) <span class="string">&quot;41&quot;</span></span><br><span class="line">3) <span class="string">&quot;version&quot;</span></span><br><span class="line">4) <span class="string">&quot;41&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>To delete the key, use the command below:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; DEL DaprCounter||counter</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br></pre></td></tr></table></figure>
+
+<p>In this project, we do not have any dependency on Redis directly. Dapr SDK behaves as an abstraction layer between the application and the Redis instance. So the next question is, how does Dapr know where the Redis instance is?</p>
+<h3 id="Understanding-the-component-configuration-files"><a href="#Understanding-the-component-configuration-files" class="headerlink" title="Understanding the component configuration files"></a>Understanding the component configuration files</h3><p>As we mentioned before, when you initialize Dapr for the local environment, it automatically created a Redis instance as its state store. Also, it created a configuration file to specify what component is used for the state store. The default configuration files are located in the <code>%USERPROFILE%\.dapr\components</code> folder if you use Windows. If you use Linux or macOS, you can find them in the <code>$HOME/.dapr/components</code> folder. You can find a file named <code>statestore.yaml</code>:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">dapr.io/v1alpha1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Component</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">statestore</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">state.redis</span></span><br><span class="line">  <span class="attr">version:</span> <span class="string">v1</span></span><br><span class="line">  <span class="attr">metadata:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">redisHost</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">localhost:6379</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">redisPassword</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">actorStateStore</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&quot;true&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>In this file, Dapr specifies the state type as Redis. It also has the metadata to specify the Redis host and password. If we would like to change to another implementation of the state store, e.g. an Azure CosmosDB, we just update the configuration file without changing any code of the application. That says the application is portable.</p>
+<p>Microsoft’s doc does not introduce how to switch to another implementation. Let’s move on.</p>
+<h2 id="Using-Azure-CosmosDB-as-the-state-store"><a href="#Using-Azure-CosmosDB-as-the-state-store" class="headerlink" title="Using Azure CosmosDB as the state store"></a>Using Azure CosmosDB as the state store</h2><p>Next, let us explore how to change the state store to Azure CosmosDB.</p>
+<h3 id="Creating-an-Azure-CosmosDB-database"><a href="#Creating-an-Azure-CosmosDB-database" class="headerlink" title="Creating an Azure CosmosDB database"></a>Creating an Azure CosmosDB database</h3><p>Follow this doc to create the Azure CosmosDB database: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/cosmos-db/sql/create-cosmosdb-resources-portal?WT.mc_id=DT-MVP-5001643">Quickstart: Create an Azure Cosmos account, database, container, and items from the Azure portal</a>.</p>
+<p>Create a CosmosDB account. Here are examples when you create the CosmosDB account:</p>
+<ul>
+<li>API: Core (SQL)</li>
+<li>Resource Group: <code>rg-dapr-demo</code></li>
+<li>Account Name: <code>dapr-demo</code></li>
+<li>Location: Select a location that is close to you</li>
+</ul>
+<p>Leave the other fields as default values.</p>
+<p>Create a CosmosDB container:</p>
+<ul>
+<li>Database id: Create new, <code>dapr-demo</code></li>
+<li>Container id: <code>dapr-state-store</code></li>
+<li>Partition key: <code>/id</code></li>
+</ul>
+<p>Leave the other options to their defaults.</p>
+<p>Once the CosmosDB container is created, you can get the URI and Keys in the Settings menu:</p>
+<img src="/2022/09/20/take-your-first-step-with-dapr/image-20220912232246292.png" class="" title="The Keys menu of CosmosDB" alt="The Keys menu of CosmosDB">
+
+<p>Figure 8 - The Keys menu of CosmosDB</p>
+<p>Copy the URI and the PRIMARY KEY, and we will use them in the next section.</p>
+<h3 id="Using-Azure-CosmosDB"><a href="#Using-Azure-CosmosDB" class="headerlink" title="Using Azure CosmosDB"></a>Using Azure CosmosDB</h3><p>Next, let us update the <code>statestore.yaml</code> file to use the Azure CosmosDB. You can make a backup for the default configuration. Then update the file as the following content:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">dapr.io/v1alpha1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Component</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">statestore</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">state.azure.cosmosdb</span></span><br><span class="line">  <span class="attr">version:</span> <span class="string">v1</span></span><br><span class="line">  <span class="attr">metadata:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">url</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&lt;The</span> <span class="string">URI</span> <span class="string">of</span> <span class="string">your</span> <span class="string">CosmosDB</span> <span class="string">container&gt;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">masterKey</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&lt;The</span> <span class="string">PRIMARY</span> <span class="string">Key</span> <span class="string">of</span> <span class="string">your</span> <span class="string">CosmosDB</span> <span class="string">container&gt;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">database</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&lt;The</span> <span class="string">database</span> <span class="string">name,</span> <span class="string">e.g.</span> <span class="string">dapr-demo&gt;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">collection</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&lt;The</span> <span class="string">container</span> <span class="string">name,</span> <span class="string">e.g.</span> <span class="string">dapr-state-store&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Run the below script again:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dapr run --app-id DaprCounter dotnet run</span><br></pre></td></tr></table></figure>
+
+<p>You will see the application works too. But the counter is reset because it now uses the Azure CosmosDB as the state store. The implementation of the state store is pluggable!</p>
+<h2 id="Managing-the-secrets-in-Dapr"><a href="#Managing-the-secrets-in-Dapr" class="headerlink" title="Managing the secrets in Dapr"></a>Managing the secrets in Dapr</h2><p>In the above config file, the secret is stored in plain text. It is not a good practice to store the secret in the configuration file. Dapr provides a secret management building block to manage the secrets. You can use it to store the secret and reference it in the configuration file.</p>
+<p>The secret management building block is pluggable too. It supports multiple components for managing secrets. You can use the local file, Azure Key Vault, AWS Secrets Manager, etc. In this demo, we will use an Azure Key Vault as the secret store.</p>
+<h3 id="Creating-an-Azure-Key-Vault"><a href="#Creating-an-Azure-Key-Vault" class="headerlink" title="Creating an Azure Key Vault"></a>Creating an Azure Key Vault</h3><p>Follow this guide to create your Azure Key Vault: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/key-vault/general/quick-create-portal?WT.mc_id=DT-MVP-5001643">Quickstart: Create a key vault using the Azure portal</a>.</p>
+<ul>
+<li>Resource group: <code>rg-dapr-demo</code></li>
+<li>Key vault name: <code>dapr-demo</code></li>
+<li>Region: Select a region that is close to you</li>
+<li>Pricing tier: Standard</li>
+</ul>
+<p>Leave the other options to their defaults.</p>
+<h3 id="Storing-the-secret-in-the-Azure-Key-Vault"><a href="#Storing-the-secret-in-the-Azure-Key-Vault" class="headerlink" title="Storing the secret in the Azure Key Vault"></a>Storing the secret in the Azure Key Vault</h3><p>In the Azure Key Vault, click <strong>Secrets</strong> in the <strong>Objects</strong> menu, create a secret named <code>dapr-state-store-key</code> and set the value to the PRIMARY KEY of your CosmosDB container.</p>
+<img src="/2022/09/20/take-your-first-step-with-dapr/image-20220913210354010.png" class="" title="The Secrets menu of Azure Key Vault" alt="The Secrets menu of Azure Key Vault">
+
+<p>Figure 9 - The Secrets menu of Azure Key Vault</p>
+<h3 id="Authenticating-the-application-to-the-Azure-Key-Vault"><a href="#Authenticating-the-application-to-the-Azure-Key-Vault" class="headerlink" title="Authenticating the application to the Azure Key Vault"></a>Authenticating the application to the Azure Key Vault</h3><p>Next, we will need to authenticate the Dapr components to the Azure Key Vault. Azure uses Azure AD as the identity and access management solution. It allows services (applications) to obtain access tokens to call other services, e.g. Azure Key Vault. In Azure terminology, an application is called a <strong>Service Principal</strong>.</p>
+<p>To use Azure AD to authenticate the Dapr components, there are multiple ways:</p>
+<ul>
+<li>Authenticating using client credentials</li>
+<li>Authenticating using a PFX certificate</li>
+<li>Authenticating using a managed identity</li>
+</ul>
+<p>Because we run the demo locally, we will use the client credentials to authenticate the Dapr components. You can use PFX certificate or managed identity for production environment.</p>
+<h4 id="Generating-a-new-Azure-AD-application-and-service-principal"><a href="#Generating-a-new-Azure-AD-application-and-service-principal" class="headerlink" title="Generating a new Azure AD application and service principal"></a>Generating a new Azure AD application and service principal</h4><p>Go to the Azure Portal and click the Cloud Shell icon on the top menu:</p>
+<img src="/2022/09/20/take-your-first-step-with-dapr/image-20220913224455598.png" class="" title="Azure Cloud Shell" alt="Azure Cloud Shell">
+
+<p>Figure 10 - Azure Cloud Shell</p>
+<p>If you use your local terminal, you may need to login to Azure by running the following command:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">az login</span><br></pre></td></tr></table></figure>
+
+<p>If you have multiple subscriptions, run the following command to set your default subscription:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">az account <span class="built_in">set</span> -s [your subscription <span class="built_in">id</span>]</span><br></pre></td></tr></table></figure>
+
+<p>Create an Azure AD application:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">APP_NAME=<span class="string">&quot;dapr-application&quot;</span></span><br><span class="line">APP_ID=$(az ad app create \</span><br><span class="line">  --display-name <span class="string">&quot;<span class="variable">$&#123;APP_NAME&#125;</span>&quot;</span> \</span><br><span class="line">  | jq -r .appId)</span><br></pre></td></tr></table></figure>
+
+<p>Create a client secrete for the application:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">az ad app credential reset \</span><br><span class="line">  --<span class="built_in">id</span> <span class="string">&quot;<span class="variable">$&#123;APP_ID&#125;</span>&quot;</span> \</span><br><span class="line">  --years 2</span><br></pre></td></tr></table></figure>
+
+<p>This command will generate a client secret for the application. It will also print some other values in the output. Copy the values below and save them in a safe place. You will need it in the next section.</p>
+<ul>
+<li>appId: The client id</li>
+<li>name: The client name</li>
+<li>password: The client secret</li>
+<li>tenant: The Azure AD tenant id</li>
+</ul>
+<p>Next, create a service principal for the application:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SERVICE_PRINCIPAL_ID=$(az ad sp create \</span><br><span class="line">  --<span class="built_in">id</span> <span class="string">&quot;<span class="variable">$&#123;APP_ID&#125;</span>&quot;</span> \</span><br><span class="line">  | jq -r .<span class="built_in">id</span>)</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Service Principal ID: <span class="variable">$&#123;SERVICE_PRINCIPAL_ID&#125;</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>You will see a service principal ID in the output. Copy it and save it in a safe place. You will need it in the next section.</p>
+<p>Now you have two Ids, the application Id and the service principal Id. You might wonder what the difference is. The application Id (clientId) is used to represent the Dpar components. The service principal Id is used to grant permissions to an application to access Azure resources, e.g. Azure Key Vault.</p>
+<p>When a service principal is created, it does not have any permissions. You need to grant permissions to the service principal to access Azure resources. In this demo, we will grant the service principal to access the Azure Key Vault.</p>
+<h4 id="Granting-the-service-principal-to-access-the-Azure-Key-Vault"><a href="#Granting-the-service-principal-to-access-the-Azure-Key-Vault" class="headerlink" title="Granting the service principal to access the Azure Key Vault"></a>Granting the service principal to access the Azure Key Vault</h4><p>Go to the Azure portal and click the Azure Key Vault you created in the previous section. Click <strong>Access configuration</strong> in the <strong>Settings</strong> menu. Click <strong>Go to access Policies</strong>:</p>
+<img src="/2022/09/20/take-your-first-step-with-dapr/image-20220913230701904.png" class="" title="Config Azure Key Vault Access Policies" alt="Config Azure Key Vault Access Policies">
+
+<p>Figure 11 - Config Azure Key Vault Access Policies</p>
+<p>Click <strong>Create</strong> to create a new access policy. On the first <strong>Permission</strong> tab, select <strong>Secret permissions</strong> and check <strong>Get</strong>:</p>
+<img src="/2022/09/20/take-your-first-step-with-dapr/image-20220913230918188.png" class="" title="Set up access permissions" alt="Set up access permissions">
+
+<p>Figure 12 - Set up access permissions</p>
+<p>On the second <strong>Principal</strong> tab, we can search for the service principal we created in the previous section:</p>
+<img src="/2022/09/20/take-your-first-step-with-dapr/image-20220913231224637.png" class="" title="Assign the service principal" alt="Assign the service principal">
+
+<p>Figure 13 - Assign the service principal</p>
+<p>Select the <code>dapr-application</code> and click <strong>Next</strong>. Then click <strong>Next</strong> again then click <strong>Create</strong> to create the access policy.</p>
+<h3 id="Creating-a-Dapr-component-to-access-the-Azure-Key-Vault"><a href="#Creating-a-Dapr-component-to-access-the-Azure-Key-Vault" class="headerlink" title="Creating a Dapr component to access the Azure Key Vault"></a>Creating a Dapr component to access the Azure Key Vault</h3><p>Now we have a service principal that can access the Azure Key Vault. We need to update the configuration file to use the service principal to access the Azure Key Vault.</p>
+<p>Create a new file named <code>azurekeyvault.yaml</code> in the <code>dapr\components</code> folder. Add the following content to the file:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">dapr.io/v1alpha1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Component</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">azurekeyvault</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">secretstores.azure.keyvault</span></span><br><span class="line">  <span class="attr">version:</span> <span class="string">v1</span></span><br><span class="line">  <span class="attr">metadata:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">vaultName</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&quot;dapr-demo&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">azureTenantId</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&quot;&lt;your tenant id&gt;&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">azureClientId</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&quot;&lt;your client id&gt;&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">azureClientSecret</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&quot;&lt;your client secret&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>Please replace the values of <code>azureTenantId</code>, <code>azureClientId</code> and <code>azureClientSecret</code> with the values you saved in the previous section:</p>
+<ul>
+<li>azureTenantId: tenant</li>
+<li>azureClientId: appId</li>
+<li>azureClientSecret: password</li>
+</ul>
+<p>If you want to use a PFX certificate to authenticate the Dapr components, you can use the following component:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">dapr.io/v1alpha1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Component</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">azurekeyvault</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">secretstores.azure.keyvault</span></span><br><span class="line">  <span class="attr">version:</span> <span class="string">v1</span></span><br><span class="line">  <span class="attr">metadata:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">vaultName</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&quot;dapr-demo&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">azureTenantId</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&quot;&lt;your tenant id&gt;&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">azureClientId</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&quot;&lt;your client id&gt;&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">azureCertificateFile</span></span><br><span class="line">    <span class="attr">value :</span> <span class="string">&quot;&lt;pfx certificate file local path&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>Now we have a Dapr secret store component that can access the Azure Key Vault. We can use this component to retrieve the secret we stored in the Azure Key Vault.</p>
+<h2 id="Using-Dapr-secret-store-to-access-the-state-store"><a href="#Using-Dapr-secret-store-to-access-the-state-store" class="headerlink" title="Using Dapr secret store to access the state store"></a>Using Dapr secret store to access the state store</h2><p>The last step is to update the configuration file for the state store component to use the secret store component to access the Azure Key Vault.</p>
+<p>Update the <code>statestore.yaml</code> file in the <code>dapr\components</code> folder as the following content:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">dapr.io/v1alpha1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Component</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">statestore</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">state.azure.cosmosdb</span></span><br><span class="line">  <span class="attr">version:</span> <span class="string">v1</span></span><br><span class="line">  <span class="attr">metadata:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">url</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">&lt;The</span> <span class="string">URI</span> <span class="string">of</span> <span class="string">your</span> <span class="string">CosmosDB</span> <span class="string">container&gt;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">masterKey</span></span><br><span class="line">    <span class="attr">secretKeyRef:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">dapr-state-store-key</span></span><br><span class="line">      <span class="attr">key:</span> <span class="string">dapr-state-store-key</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">database</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">dapr-demo</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">collection</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">dapr-state-store</span></span><br><span class="line"><span class="attr">auth:</span></span><br><span class="line">  <span class="attr">secretStore:</span> <span class="string">azurekeyvault</span></span><br></pre></td></tr></table></figure>
+
+<p>Note that we use the <code>secretKeyRef</code> to replace the hard-coded master key with the secret store component. The <code>secretStore</code> is the name of the secret store component we created in the previous section. In this way, we remove the plain text master key from the configuration file so it would be safe to check in the configuration file to source control. The defect with this demo is that we still have a client secret in the configuration file. To remove the client secret from the configuration file, we can use a PFX certificate to authenticate the Dapr components. This demo is just to show how to use the secret store component to access the Azure Key Vault.</p>
+<p>Now we can run the application to see if it can access the Azure Key Vault and the Cosmos DB. If everything works fine, you should see the application works as expected.</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>In this article, we learned what Dapr is and how to use Dapr to implement a portable state store, which can support Redis and Azure CosmosDB as the implementations. We also learned how to use Dapr to access the Azure Key Vault to retrieve the secret. Note that Dapr has many other components that can be used to build a portable application. To learn more about how to configure the other Dapr components, please check the <a target="_blank" rel="noopener" href="https://docs.dapr.io/">Dapr documentation</a>.</p>
+<p>Thanks for reading!</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NET/" rel="tag"># .NET</a>
+              <a href="/tags/Azure/" rel="tag"># Azure</a>
+              <a href="/tags/Dapr/" rel="tag"># Dapr</a>
+              <a href="/tags/Microservices/" rel="tag"># Microservices</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/03/increase-the-version-number-in-azure-devOps/" rel="prev" title="Increase The Version Number In Azure DevOps">
+                  <i class="fa fa-angle-left"></i> Increase The Version Number In Azure DevOps
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/03/12/build-an-openai-powered-vscode-extension-in-no-time/" rel="next" title="build-an-openai-powered-vscode-extension-in-no-time">
+                  build-an-openai-powered-vscode-extension-in-no-time <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xiaodi Yan</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">236k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:35</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

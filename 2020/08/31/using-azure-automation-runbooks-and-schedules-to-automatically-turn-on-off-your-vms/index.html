@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yanxiaodi.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Azure Automation is a service of Azure that allows us to automate Azure management tasks and orchestrate actions. It is widely used in operations to help us save time and reduce human errors. Recently">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Using Azure Automation Runbooks and Schedules to automatically turn on&#x2F;off your VMs">
+<meta property="og:url" content="https://yanxiaodi.github.io/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/index.html">
+<meta property="og:site_name" content="Xiaodi Yan&#39;s Blog">
+<meta property="og:description" content="Azure Automation is a service of Azure that allows us to automate Azure management tasks and orchestrate actions. It is widely used in operations to help us save time and reduce human errors. Recently">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200826171820597.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200818143227089.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200826180355759.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200827101943375.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200827103038429.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200827102733958.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200827102842363.png">
+<meta property="article:published_time" content="2020-08-31T08:10:04.000Z">
+<meta property="article:modified_time" content="2020-08-31T08:10:04.000Z">
+<meta property="article:author" content="Xiaodi Yan">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="PowerShell">
+<meta property="article:tag" content="automation">
+<meta property="article:tag" content="runbook">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yanxiaodi.github.io/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200826171820597.png">
+
+
+<link rel="canonical" href="https://yanxiaodi.github.io/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://yanxiaodi.github.io/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/","path":"2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/","title":"Using Azure Automation Runbooks and Schedules to automatically turn on/off your VMs"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Using Azure Automation Runbooks and Schedules to automatically turn on/off your VMs | Xiaodi Yan's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaodi Yan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Coding is fun...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about-me/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-community-activities"><a href="/community-activities" rel="section"><i class="events fa-fw"></i>community activities</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-an-Automation-account"><span class="nav-number">1.</span> <span class="nav-text">Creating an Automation account</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Updating-to-PowerShell-7-x"><span class="nav-number">2.</span> <span class="nav-text">Updating to PowerShell 7.x</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-a-script-to-start-stop-VMs"><span class="nav-number">3.</span> <span class="nav-text">Creating a script to start&#x2F;stop VMs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-deploy-script"><span class="nav-number">4.</span> <span class="nav-text">Creating deploy script</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Installing-Az-module"><span class="nav-number">5.</span> <span class="nav-text">Installing Az module</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Importing-Runbooks"><span class="nav-number">6.</span> <span class="nav-text">Importing Runbooks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-Schedules"><span class="nav-number">7.</span> <span class="nav-text">Creating Schedules</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Registering-the-Runbooks-and-Schedules"><span class="nav-number">8.</span> <span class="nav-text">Registering the Runbooks and Schedules</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deployment"><span class="nav-number">9.</span> <span class="nav-text">Deployment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">10.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiaodi Yan"
+      src="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+  <p class="site-author-name" itemprop="name">Xiaodi Yan</p>
+  <div class="site-description" itemprop="description">Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yanxiaodi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yanxiaodi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/xiaodi-yan-829bb055/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;xiaodi-yan-829bb055&#x2F;" rel="noopener me" target="_blank"><i class="fab linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yanxiaodi.github.io/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+      <meta itemprop="name" content="Xiaodi Yan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaodi Yan's Blog">
+      <meta itemprop="description" content="Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Using Azure Automation Runbooks and Schedules to automatically turn on/off your VMs | Xiaodi Yan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Using Azure Automation Runbooks and Schedules to automatically turn on/off your VMs
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-08-31 20:10:04" itemprop="dateCreated datePublished" datetime="2020-08-31T20:10:04+12:00">2020-08-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>13k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>12 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Azure Automation is a service of Azure that allows us to automate Azure management tasks and orchestrate actions. It is widely used in operations to help us save time and reduce human errors. Recently, I just created the scripts to turn on&#x2F;off the virtual machines on schedules to save cost. If you have the same requirement, feel free to copy&#x2F;paste the scripts and save your money.</p>
+<span id="more"></span>
+
+<p>I assume you already have your Azure subscription. And you may have a few VMs deployed in Azure, but we know the price of VMs is quite expensive and it would be better to deallocate the VM when you do not use it. A scenario is you probably have your own build agents for your DevOps pipelines, and you do not need to keep them running on weekends. There are many ways to do that, such as Azure Functions or just create a script on your laptop. In this article, I will show you how to use Azure Automation to automate this process with Runbooks and Schedules. In this article, I will be focusing on the PowerShell scripts because you can re-run it any time and it is easy to share. You do not have to type the scripts now. I will explain the fundamentals and you can just copy the out-of-box script at the end of this article.</p>
+<p>Find more here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/automation/automation-intro?WT.mc_id=AZ-MVP-5001643">An introduction to Azure Automation</a>.</p>
+<h2 id="Creating-an-Automation-account"><a href="#Creating-an-Automation-account" class="headerlink" title="Creating an Automation account"></a>Creating an Automation account</h2><p>Before we get started, we need to have an Automation account. Unfortunately, we cannot use ARM template to create Automation account for this scenario because ARM template does not support the creation of the <strong>Automation Run As account</strong>, which is required in the scripts. <strong>Run As account</strong> provides the authentication for managing resources in Azure. Basically, it creates certificates in the specified Automation account. For more detail: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/automation/manage-runas-account?WT.mc_id=AZ-MVP-5001643">Manage an Azure Automation Run As account</a>.</p>
+<p>We can use Azure portal to create an Automation account with Run As account support.</p>
+<img src="/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200826171820597.png" class="" title="Create a new Automation account" alt="Create a new Automation account">
+
+<p>I will not copy&#x2F;paste the full steps because you can find the detail here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/automation/automation-create-standalone-account?WT.mc_id=AZ-MVP-5001643">Create a standalone Azure Automation account</a>. One thing you need to be aware of is when you create it in Azure portal, please make sure <strong>Create Azure Run As account</strong> is selected:</p>
+<img src="/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200818143227089.png" class="" title="Create Azure Run As account" alt="Create Azure Run As account">
+
+<p>Once the Automation is created, you can check the <strong>Run as accounts</strong> in <strong>Account Settings</strong> section:</p>
+<img src="/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200826180355759.png" class="" title="Azure Run As account" alt="Azure Run As account">
+
+<p>Now let us set up the environment.</p>
+<h2 id="Updating-to-PowerShell-7-x"><a href="#Updating-to-PowerShell-7-x" class="headerlink" title="Updating to PowerShell 7.x"></a>Updating to PowerShell 7.x</h2><p>Windows 10 has PowerShell 5.x installed by default. You can use the below command to check the version of PowerShell:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-Host</span> | <span class="built_in">Select-Object</span> Version</span><br></pre></td></tr></table></figure>
+
+<p>or</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">Get-Host</span>).Version</span><br></pre></td></tr></table></figure>
+
+<p>On my current laptop, the version is 5.1.18362.752. However, PowerShell 7.x and later is the recommended version for use with Azure on all platforms. It supports multiple platforms, such as Windows, macOS, and Linux. So we will use it today. You can find more detail here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/powershell/scripting/install/migrating-from-windows-powershell-51-to-powershell-7?view=powershell-7&WT.mc_id=AZ-MVP-5001643">Migrating from Windows PowerShell 5.1 to PowerShell 7</a>.</p>
+<p>Please download and install PowerShell 7.x here: <a target="_blank" rel="noopener" href="https://github.com/PowerShell/PowerShell/releases/">https://github.com/PowerShell/PowerShell/releases/</a></p>
+<h2 id="Creating-a-script-to-start-stop-VMs"><a href="#Creating-a-script-to-start-stop-VMs" class="headerlink" title="Creating a script to start&#x2F;stop VMs"></a>Creating a script to start&#x2F;stop VMs</h2><p>Now, let us create the runbooks to start&#x2F;stop VMs. Create a folder named <strong>automations</strong> then create a subfolder named <strong>runbooks</strong>. Use VS Code to open it. Next, create a new file named <strong>aa-startVMs.ps1</strong> in <strong>runbooks</strong> folder. Update the content like this:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Param</span>(</span><br><span class="line">    [<span class="built_in">string</span>[]]<span class="variable">$VmNames</span>,</span><br><span class="line">    [<span class="built_in">string</span>]<span class="variable">$ResourceGroupName</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Authenticate using ServicePrincipal RunAs Account and logging in</span></span><br><span class="line"><span class="variable">$ConnectionName</span> = <span class="string">&quot;AzureRunAsConnection&quot;</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment"># Get the connection &quot;AzureRunAsConnection &quot;</span></span><br><span class="line">    <span class="variable">$ServicePrincipalConnection</span> = <span class="built_in">Get-AutomationConnection</span> <span class="literal">-Name</span> <span class="variable">$ConnectionName</span>      </span><br><span class="line">    <span class="built_in">Write-Output</span> <span class="string">&quot;Logging in to Azure...&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="variable">$account</span> = <span class="built_in">Add-AzureRmAccount</span> `</span><br><span class="line">        <span class="literal">-ServicePrincipal</span> `</span><br><span class="line">        <span class="literal">-TenantId</span> <span class="variable">$ServicePrincipalConnection</span>.TenantId `</span><br><span class="line">        <span class="literal">-ApplicationId</span> <span class="variable">$ServicePrincipalConnection</span>.ApplicationId `</span><br><span class="line">        <span class="literal">-CertificateThumbprint</span> <span class="variable">$ServicePrincipalConnection</span>.CertificateThumbprint </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="variable">$ServicePrincipalConnection</span>) &#123;</span><br><span class="line">        <span class="variable">$ErrorMessage</span> = <span class="string">&quot;Connection <span class="variable">$ConnectionName</span> not found.&quot;</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="variable">$ErrorMessage</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">Write-Error</span> <span class="literal">-Message</span> <span class="variable">$_</span>.Exception</span><br><span class="line">        <span class="keyword">throw</span> <span class="variable">$_</span>.Exception</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Write-Output</span> <span class="variable">$account</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="built_in">Write-Output</span> <span class="string">&quot;Starting VMs...&quot;</span></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$vmName</span> <span class="keyword">in</span> <span class="variable">$VmNames</span>) &#123;</span><br><span class="line">        <span class="built_in">Start-AzureRmVM</span> `</span><br><span class="line">            <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span> `</span><br><span class="line">            <span class="literal">-Name</span> <span class="variable">$vmName</span></span><br><span class="line">        <span class="built_in">Write-Output</span> <span class="string">&quot;<span class="variable">$vmName</span> started.&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Write-Output</span> <span class="string">&quot;VMs successfully started.&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> &#123;</span><br><span class="line">    <span class="built_in">Write-Error</span> <span class="literal">-Message</span> <span class="variable">$_</span>.Exception</span><br><span class="line">    <span class="keyword">throw</span> <span class="variable">$_</span>.Exception</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>I created two parameters for this script. The first one is an array that contains all the VMs you need to control. The second parameter is the resource group name. Then we login by the <strong>Run as account</strong>. Finally, we use <code>Start-AzureRmVM</code> cmdlet to start the VMs.</p>
+<p>Similarly, you can create a <strong>aa-stopVMs.ps1</strong> script to stop the VMs in <strong>runbooks</strong> folder:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># The login script is omitted here</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="built_in">Write-Output</span> <span class="string">&quot;Stopping VMs...&quot;</span></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$vmName</span> <span class="keyword">in</span> <span class="variable">$VmNames</span>) &#123;</span><br><span class="line">        <span class="built_in">Stop-AzureRmVM</span> `</span><br><span class="line">            <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span> `</span><br><span class="line">            <span class="literal">-Name</span> <span class="variable">$vmName</span> `</span><br><span class="line">            <span class="literal">-Force</span></span><br><span class="line">        <span class="built_in">Write-Output</span> <span class="string">&quot;<span class="variable">$vmName</span> stopped.&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Write-Output</span> <span class="string">&quot;VMs successfully stopped.&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> &#123;</span><br><span class="line">    <span class="built_in">Write-Error</span> <span class="literal">-Message</span> <span class="variable">$_</span>.Exception</span><br><span class="line">    <span class="keyword">throw</span> <span class="variable">$_</span>.Exception</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>You can create the runbooks in the Azure portal. But we will use the PowerShell script to import the runbooks.</p>
+<h2 id="Creating-deploy-script"><a href="#Creating-deploy-script" class="headerlink" title="Creating deploy script"></a>Creating deploy script</h2><p>Create a new script in <strong>automations</strong> folder  and name it as <strong>deploy.ps1</strong>. Then add some parameters as shown below:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[<span class="built_in">string</span>]<span class="variable">$SubscriptionName</span> = <span class="string">&#x27;YouSubscriptionName&#x27;</span></span><br><span class="line">[<span class="built_in">string</span>]<span class="variable">$VmsResourceGroupName</span> = <span class="string">&quot;YourVMsResourceGroupName&quot;</span></span><br><span class="line">[<span class="built_in">string</span>]<span class="variable">$ResourceGroupName</span> = <span class="string">&quot;YourAutomationAccountResourceGroupName&quot;</span></span><br><span class="line">[<span class="built_in">string</span>]<span class="variable">$AutomationAccountName</span> = <span class="string">&quot;YourAutomationAccountName&quot;</span></span><br><span class="line">[<span class="built_in">string</span>]<span class="variable">$RunAsAccountName</span> = <span class="string">&quot;AzureRunAsConnection&quot;</span></span><br><span class="line">[<span class="built_in">string</span>]<span class="variable">$StartVMsRunbookName</span> = <span class="string">&quot;aa-startVMs&quot;</span></span><br><span class="line">[<span class="built_in">string</span>]<span class="variable">$StopVMsRunbookName</span> = <span class="string">&quot;aa-stopVMs&quot;</span></span><br><span class="line">[<span class="built_in">string</span>]<span class="variable">$StartVMsScheduleName</span> = <span class="string">&quot;ScheduledStartVMs&quot;</span></span><br><span class="line">[<span class="built_in">string</span>]<span class="variable">$StopVMsScheduleName</span> = <span class="string">&quot;ScheduledStopVMs&quot;</span></span><br><span class="line">[<span class="built_in">string</span>]<span class="variable">$StartTime</span> = <span class="string">&quot;09:00:00&quot;</span></span><br><span class="line">[<span class="built_in">string</span>]<span class="variable">$StopTime</span> = <span class="string">&quot;17:00:00&quot;</span></span><br><span class="line">[<span class="built_in">string</span>[]]<span class="variable">$VmNames</span> = <span class="selector-tag">@</span>(<span class="string">&quot;vm-test-01&quot;</span>, <span class="string">&quot;vm-test-02&quot;</span>, <span class="string">&quot;vm-test-03&quot;</span>)</span><br><span class="line">[<span class="built_in">string</span>]<span class="variable">$TimeZoneId</span> = <span class="string">&quot;New Zealand Standard Time&quot;</span></span><br><span class="line">[<span class="type">System.DayOfWeek</span>[]]<span class="variable">$WeekDays</span> = <span class="selector-tag">@</span>([<span class="type">System.DayOfWeek</span>]::Monday..[<span class="type">System.DayOfWeek</span>]::Friday)</span><br></pre></td></tr></table></figure>
+
+<p>These parameters can help us easily change the configuration if we need to re-deploy the script. For this case, I will turn on the VMs at 9:00 am and turn off them at 5:00 pm every workday.</p>
+<h2 id="Installing-Az-module"><a href="#Installing-Az-module" class="headerlink" title="Installing Az module"></a>Installing Az module</h2><p>Starting in December 2018, the Azure PowerShell Az module is in general release and is now the intended PowerShell module for interacting with Azure. If you have installed PowerShell 7.x, you can install Az module without impacting the existing AzureRM module. </p>
+<p>We need to make sure the required Az module installed on our laptop. Add the below script to <strong>deploy.ps1</strong>:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># We do not support having both the AzureRM and Az modules installed for PowerShell 5.1 on Windows at the same time. </span></span><br><span class="line"><span class="comment"># If you need to keep AzureRM available on your system, install the Az module for PowerShell 6.2.4 or later.</span></span><br><span class="line"><span class="comment"># Please intall PowerShell 6.2.4 or later. https://github.com/PowerShell/PowerShell/releases/</span></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$PSVersionTable</span>.PSEdition <span class="operator">-eq</span> <span class="string">&#x27;Desktop&#x27;</span> <span class="operator">-and</span> (<span class="built_in">Get-Module</span> <span class="literal">-Name</span> AzureRM <span class="literal">-ListAvailable</span>)) &#123;</span><br><span class="line">    <span class="built_in">Write-Warning</span> <span class="literal">-Message</span> (<span class="string">&#x27;Az module not installed. Having both the AzureRM and &#x27;</span> +</span><br><span class="line">        <span class="string">&#x27;Az modules installed at the same time is not supported.&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">Install-Module</span> <span class="literal">-Name</span> Az <span class="literal">-AllowClobber</span> <span class="literal">-Scope</span> CurrentUser</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>You can run the above script separately in PowerShell 7.x to install the latest Az module. But for easy-sharing, I will leave it in the <strong>deploy.ps1</strong> script so anyone who has not installed PowerShell 7.x does not need to worry about that.</p>
+<p>Then we can use <code>Connect-AzAccount</code> cmdlet to connect to your Azure account. Add the below script to <strong>deploy.ps1</strong> script:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$SubscriptionName</span> = <span class="string">&#x27;Your subscription Name&#x27;</span></span><br><span class="line"><span class="built_in">Connect-AzAccount</span></span><br><span class="line"><span class="comment"># Set the current context if you have multiple Azure subscriptions</span></span><br><span class="line"><span class="built_in">Set-AzContext</span> <span class="literal">-Name</span> <span class="variable">$SubscriptionName</span> <span class="literal">-Subscription</span> <span class="variable">$SubscriptionName</span></span><br></pre></td></tr></table></figure>
+
+<p>Because you probably have multiple Azure subscriptions so here we need to specify what subscription you need to operate in case you have another default Azure context.</p>
+<p>When you run the script, you will need to open a link then type the given code to complete the authentication. Then you can use the new Az module to operate the Azure resources.</p>
+<p>For more details about migrating from AzureRM to Az: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/powershell/azure/migrate-from-azurerm-to-az?view=azps-4.5.0&WT.mc_id=AZ-MVP-5001643">Migrate Azure PowerShell from AzureRM to Az</a>.</p>
+<h2 id="Importing-Runbooks"><a href="#Importing-Runbooks" class="headerlink" title="Importing Runbooks"></a>Importing Runbooks</h2><p>Next, we need to import the runbooks we created in <strong>runbooks</strong> folder. But we also need to make sure the automation Run as account exists. Add the below script to <strong>deploy.ps1</strong>:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Ensure that the Run As Account exists:</span></span><br><span class="line"><span class="variable">$AutomationConnection</span> = <span class="built_in">Get-AzAutomationConnection</span> `</span><br><span class="line">    <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span> `</span><br><span class="line">    <span class="literal">-AutomationAccountName</span> <span class="variable">$AutomationAccountName</span> `</span><br><span class="line">    <span class="literal">-Name</span> <span class="variable">$RunAsAccountName</span> `</span><br><span class="line">    <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!<span class="variable">$AutomationConnection</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="string">&quot;Could not find Automation Connection: <span class="variable">$</span>(<span class="variable">$RunAsAccountName</span>). You must create a Run As Account before using this Automation Account.&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Then we can find the scripts in <strong>runbooks</strong> folder and import them:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Write-Output</span> <span class="string">&quot;Deploying runbooks...&quot;</span></span><br><span class="line"><span class="variable">$AllRunbookFileNames</span> = <span class="built_in">Get-ChildItem</span> <span class="string">&quot;runbooks&quot;</span> | <span class="built_in">ForEach-Object</span> &#123; <span class="variable">$_</span>.Name &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="variable">$RunbookFileName</span> <span class="keyword">in</span> <span class="variable">$AllRunbookFileNames</span>) &#123;</span><br><span class="line">    <span class="built_in">Write-Host</span> <span class="string">&quot;Importing <span class="variable">$RunbookFileName</span>&quot;</span></span><br><span class="line">    <span class="variable">$RunbookName</span> = <span class="variable">$RunbookFileName</span>.Replace(<span class="string">&quot;.ps1&quot;</span>, <span class="string">&quot;&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="variable">$existingRunbook</span> = <span class="built_in">Get-AzAutomationRunbook</span> `</span><br><span class="line">        <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span> `</span><br><span class="line">        <span class="literal">-AutomationAccountName</span> <span class="variable">$AutomationAccountName</span> `</span><br><span class="line">        <span class="literal">-Name</span> <span class="variable">$RunbookName</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$existingRunbook</span>) &#123;</span><br><span class="line">        <span class="built_in">Remove-AzAutomationRunbook</span> `</span><br><span class="line">            <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span> `</span><br><span class="line">            <span class="literal">-AutomationAccountName</span> <span class="variable">$AutomationAccountName</span> `</span><br><span class="line">            <span class="literal">-Name</span> <span class="variable">$RunbookName</span> `</span><br><span class="line">            <span class="literal">-Force</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Import-AzAutomationRunbook</span> `</span><br><span class="line">        <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span> `</span><br><span class="line">        <span class="literal">-AutomationAccountName</span> <span class="variable">$AutomationAccountName</span> `</span><br><span class="line">        <span class="literal">-Name</span> <span class="variable">$RunbookName</span> `</span><br><span class="line">        <span class="literal">-Path</span> <span class="string">&quot;runbooks/<span class="variable">$RunbookFileName</span>&quot;</span> `</span><br><span class="line">        <span class="literal">-Type</span> PowerShell</span><br><span class="line">    <span class="built_in">Publish-AzAutomationRunbook</span> `</span><br><span class="line">        <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span> `</span><br><span class="line">        <span class="literal">-AutomationAccountName</span> <span class="variable">$AutomationAccountName</span> `</span><br><span class="line">        <span class="literal">-Name</span> <span class="variable">$RunbookName</span> `</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Output</span> <span class="string">&quot;Deploying runbooks completed.&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>With this script, we can import the runbooks to the given automation account.</p>
+<h2 id="Creating-Schedules"><a href="#Creating-Schedules" class="headerlink" title="Creating Schedules"></a>Creating Schedules</h2><p>To schedule a runbook to start at the specified time, we need to create a schedule then link the runbook to it. A schedule can be configured to either run once or on a recurring hourly&#x2F;daily&#x2F;weekly&#x2F;monthly or specific days of the week or months. We can link one runbook to multiple schedules, or multiple runbooks can be linked to one schedule. For more detail: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/automation/shared-resources/schedules?WT.mc_id=AZ-MVP-5001643">Manage schedules in Azure Automation</a>.</p>
+<p>The next step is to create the schedules to execute the runbooks. We will create two schedules:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Write-Output</span> <span class="string">&quot;Deploying schedules...&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Create or update the start schedule</span></span><br><span class="line"><span class="variable">$StartTime</span> = (<span class="built_in">Get-Date</span> <span class="variable">$StartTime</span>).AddDays(<span class="number">1</span>)</span><br><span class="line"><span class="built_in">New-AzAutomationSchedule</span> `</span><br><span class="line">    <span class="literal">-AutomationAccountName</span> <span class="variable">$AutomationAccountName</span> `</span><br><span class="line">    <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span> `</span><br><span class="line">    <span class="literal">-Name</span> <span class="variable">$StartVMsScheduleName</span> `</span><br><span class="line">    <span class="literal">-StartTime</span> <span class="variable">$StartTime</span> `</span><br><span class="line">    <span class="literal">-DaysOfWeek</span> <span class="variable">$WeekDays</span> `</span><br><span class="line">    <span class="literal">-WeekInterval</span> <span class="number">1</span> `</span><br><span class="line">    <span class="literal">-TimeZone</span> <span class="variable">$TimeZoneId</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># Create or update the stop schedule</span></span><br><span class="line"><span class="variable">$StopTime</span> = (<span class="built_in">Get-Date</span> <span class="variable">$StopTime</span>).AddDays(<span class="number">1</span>)</span><br><span class="line"><span class="built_in">New-AzAutomationSchedule</span> `</span><br><span class="line">    <span class="literal">-AutomationAccountName</span> <span class="variable">$AutomationAccountName</span> `</span><br><span class="line">    <span class="literal">-Name</span> <span class="variable">$StopVMsScheduleName</span> `</span><br><span class="line">    <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span> `</span><br><span class="line">    <span class="literal">-StartTime</span> <span class="variable">$StopTime</span> `</span><br><span class="line">    <span class="literal">-DaysOfWeek</span> <span class="variable">$WeekDays</span> `</span><br><span class="line">    <span class="literal">-WeekInterval</span> <span class="number">1</span> `</span><br><span class="line">    <span class="literal">-TimeZone</span> <span class="variable">$TimeZoneId</span></span><br></pre></td></tr></table></figure>
+
+<p>The schedules are set up to be executed from tomorrow.</p>
+<h2 id="Registering-the-Runbooks-and-Schedules"><a href="#Registering-the-Runbooks-and-Schedules" class="headerlink" title="Registering the Runbooks and Schedules"></a>Registering the Runbooks and Schedules</h2><p>The last section of the <strong>deploy.ps1</strong> is to link the runbooks and schedules. For more detail: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/automation/shared-resources/schedules#link-a-schedule-to-a-runbook?WT.mc_id=AZ-MVP-5001643">Link a schedule to a runbook</a>.</p>
+<p>We will add the scripts as below:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$RunbookParams</span> = <span class="selector-tag">@</span>&#123;<span class="string">&quot;VmNames&quot;</span> = <span class="variable">$VmNames</span>; <span class="string">&quot;ResourceGroupName&quot;</span> = <span class="variable">$VmsResourceGroupName</span> &#125;</span><br><span class="line"><span class="comment"># if a job schedule for the specified runbook and schedule already exists, remove it first.</span></span><br><span class="line"><span class="variable">$StartVMsScheduledRunbook</span> = <span class="built_in">Get-AzAutomationScheduledRunbook</span> `</span><br><span class="line">    <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span> `</span><br><span class="line">    –AutomationAccountName <span class="variable">$AutomationAccountName</span> `</span><br><span class="line">    <span class="literal">-RunbookName</span> <span class="variable">$StartVMsRunbookName</span></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$StartVMsScheduledRunbook</span>) &#123;</span><br><span class="line">    <span class="built_in">Unregister-AzAutomationScheduledRunbook</span> `</span><br><span class="line">        <span class="literal">-JobScheduleId</span> <span class="variable">$StartVMsScheduledRunbook</span>.JobScheduleId `</span><br><span class="line">        <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span> `</span><br><span class="line">        –AutomationAccountName <span class="variable">$AutomationAccountName</span> `</span><br><span class="line">        <span class="literal">-Force</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># register start vms</span></span><br><span class="line"><span class="built_in">Register-AzAutomationScheduledRunbook</span> `</span><br><span class="line">    –AutomationAccountName <span class="variable">$AutomationAccountName</span> `</span><br><span class="line">    –RunbookName <span class="variable">$StartVMsRunbookName</span> `</span><br><span class="line">    –ScheduleName <span class="variable">$StartVMsScheduleName</span> `</span><br><span class="line">    –Parameters <span class="variable">$RunbookParams</span> `</span><br><span class="line">    <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$StopVMsScheduledRunbook</span> = <span class="built_in">Get-AzAutomationScheduledRunbook</span> `</span><br><span class="line">    <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span> `</span><br><span class="line">    –AutomationAccountName <span class="variable">$AutomationAccountName</span> `</span><br><span class="line">    <span class="literal">-RunbookName</span> <span class="variable">$StopVMsRunbookName</span></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$StopVMsScheduledRunbook</span>) &#123;</span><br><span class="line">    <span class="built_in">Unregister-AzAutomationScheduledRunbook</span> `</span><br><span class="line">        <span class="literal">-JobScheduleId</span> <span class="variable">$StopVMsScheduledRunbook</span>.JobScheduleId `</span><br><span class="line">        <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span> `</span><br><span class="line">        –AutomationAccountName <span class="variable">$AutomationAccountName</span> `</span><br><span class="line">        <span class="literal">-Force</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># register stop vms</span></span><br><span class="line"><span class="built_in">Register-AzAutomationScheduledRunbook</span> `</span><br><span class="line">    –AutomationAccountName <span class="variable">$AutomationAccountName</span> `</span><br><span class="line">    –RunbookName <span class="variable">$StopVMsRunbookName</span> `</span><br><span class="line">    –ScheduleName <span class="variable">$StopVMsScheduleName</span> `</span><br><span class="line">    –Parameters <span class="variable">$RunbookParams</span> `</span><br><span class="line">    <span class="literal">-ResourceGroupName</span> <span class="variable">$ResourceGroupName</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Output</span> <span class="string">&quot;Deploying schedules completed.&quot;</span></span><br><span class="line"><span class="built_in">Write-Output</span> <span class="string">&quot;Please check the result from Azure portal.&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>In this section, we need to specify the parameters for the schedules to run the runbooks. Also, we need to check if the registration already exists. If yes, we need to remove the registration then create a new one.</p>
+<h2 id="Deployment"><a href="#Deployment" class="headerlink" title="Deployment"></a>Deployment</h2><p>The final step is to run the <strong>deploy.ps1</strong> script to deploy them. Run PowerShell 7.x as administrator and navigate to the <strong>automation</strong> folder then type the below command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.\deploy</span><br></pre></td></tr></table></figure>
+
+<p>You will see a message that shows you need to open a link then type the given code to complete the authentication. Then you would see the required runbooks and schedules are configured in your automation account:</p>
+<p>So what if we need to start&#x2F;stop VMs at different time on weekends? The easiest way is just create another schedule with different parameters. For example, I want to set up a schedule for Saturday and Sunday, so I can use the below parameter for <code>$WeekDays</code>:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="type">System.DayOfWeek</span>[]]<span class="variable">$WeekDays</span> = <span class="selector-tag">@</span>([<span class="type">System.DayOfWeek</span>]::Saturday,[<span class="type">System.DayOfWeek</span>]::Sunday)</span><br></pre></td></tr></table></figure>
+
+<p>Then you will get the schedule like this:</p>
+<img src="/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200827101943375.png" class="" title="Create Schedules" alt="Create Schedules">
+
+<img src="/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200827103038429.png" class="" title="Schedules Created" alt="Schedules Created">
+
+<p>You can check the recent jobs of your runbooks on the Overview page:</p>
+<img src="/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200827102733958.png" class="" title="Recent runbook jobs" alt="Recent runbook jobs">
+
+<p>And see the output:</p>
+<img src="/2020/08/31/using-azure-automation-runbooks-and-schedules-to-automatically-turn-on-off-your-vms/image-20200827102842363.png" class="" title="Runbook output" alt="Runbook output">
+
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>In this article, I demonstrated how to write a reusable PowerShell script to automatically turn on&#x2F;off your VMs to save money. One thing you need to be aware of is the default self-signed certificate you created for the Run As account will be expired after one year. So you need to renew it before it expires. Please follow the link to renew it if you need: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/automation/manage-runas-account#cert-renewal?WT.mc_id=AZ-MVP-5001643">Renew a self-signed certificate</a></p>
+<p>You can find the scripts here: <a target="_blank" rel="noopener" href="https://gist.github.com/yanxiaodi/6607d36a80f7c3d70089acc3924f36a9">Azure Runbooks &amp; Schedules to start&#x2F;stop VMs</a>. Feel free to copy&#x2F;share it.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Azure/" rel="tag"># Azure</a>
+              <a href="/tags/PowerShell/" rel="tag"># PowerShell</a>
+              <a href="/tags/automation/" rel="tag"># automation</a>
+              <a href="/tags/runbook/" rel="tag"># runbook</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/08/09/implementing-a-non-copy-paste-editText-control-with-Xamarin-Android/" rel="prev" title="Implementing a Non-CopyPaste EditText control with Xamarin.Android">
+                  <i class="fa fa-angle-left"></i> Implementing a Non-CopyPaste EditText control with Xamarin.Android
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/09/28/the-story-of-citanz-and-me/" rel="next" title="The story of CITANZ and me">
+                  The story of CITANZ and me <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xiaodi Yan</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">236k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:35</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

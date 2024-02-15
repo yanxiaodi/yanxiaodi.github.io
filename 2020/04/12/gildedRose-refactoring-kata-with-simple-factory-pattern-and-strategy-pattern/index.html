@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yanxiaodi.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="For some reason, I found an interesting project - GildedRose-Refactoring-Kata on GitHub. It provides a starting code for refactoring exercise in a bunch of programming languages. The principle is we s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to refactor GildedRose-Refactoring-Kata with Simple Factory Pattern and Strategy Pattern">
+<meta property="og:url" content="https://yanxiaodi.github.io/2020/04/12/gildedRose-refactoring-kata-with-simple-factory-pattern-and-strategy-pattern/index.html">
+<meta property="og:site_name" content="Xiaodi Yan&#39;s Blog">
+<meta property="og:description" content="For some reason, I found an interesting project - GildedRose-Refactoring-Kata on GitHub. It provides a starting code for refactoring exercise in a bunch of programming languages. The principle is we s">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-11T21:23:52.000Z">
+<meta property="article:modified_time" content="2020-04-11T21:23:52.000Z">
+<meta property="article:author" content="Xiaodi Yan">
+<meta property="article:tag" content="design pattern">
+<meta property="article:tag" content="dotnetcore">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://yanxiaodi.github.io/2020/04/12/gildedRose-refactoring-kata-with-simple-factory-pattern-and-strategy-pattern/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://yanxiaodi.github.io/2020/04/12/gildedRose-refactoring-kata-with-simple-factory-pattern-and-strategy-pattern/","path":"2020/04/12/gildedRose-refactoring-kata-with-simple-factory-pattern-and-strategy-pattern/","title":"How to refactor GildedRose-Refactoring-Kata with Simple Factory Pattern and Strategy Pattern"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>How to refactor GildedRose-Refactoring-Kata with Simple Factory Pattern and Strategy Pattern | Xiaodi Yan's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaodi Yan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Coding is fun...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about-me/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-community-activities"><a href="/community-activities" rel="section"><i class="events fa-fw"></i>community activities</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Simple-Factory-Pattern"><span class="nav-number">1.</span> <span class="nav-text">Simple Factory Pattern</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Strategy-Pattern"><span class="nav-number">2.</span> <span class="nav-text">Strategy Pattern</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">3.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiaodi Yan"
+      src="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+  <p class="site-author-name" itemprop="name">Xiaodi Yan</p>
+  <div class="site-description" itemprop="description">Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yanxiaodi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yanxiaodi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/xiaodi-yan-829bb055/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;xiaodi-yan-829bb055&#x2F;" rel="noopener me" target="_blank"><i class="fab linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yanxiaodi.github.io/2020/04/12/gildedRose-refactoring-kata-with-simple-factory-pattern-and-strategy-pattern/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+      <meta itemprop="name" content="Xiaodi Yan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaodi Yan's Blog">
+      <meta itemprop="description" content="Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="How to refactor GildedRose-Refactoring-Kata with Simple Factory Pattern and Strategy Pattern | Xiaodi Yan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          How to refactor GildedRose-Refactoring-Kata with Simple Factory Pattern and Strategy Pattern
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-04-12 09:23:52" itemprop="dateCreated datePublished" datetime="2020-04-12T09:23:52+12:00">2020-04-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Coding-Practice/" itemprop="url" rel="index"><span itemprop="name">Coding Practice</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>9.1k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>8 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>For some reason, I found an interesting project - <strong><a target="_blank" rel="noopener" href="https://github.com/emilybache/GildedRose-Refactoring-Kata">GildedRose-Refactoring-Kata</a></strong> on GitHub. It provides a starting code for refactoring exercise in a bunch of programming languages. The principle is we should create enough unit tests that can cover all cases(especially for the edge cases), then start to refactor the code. Let us try to do some exercises.</p>
+<span id="more"></span>
+
+<p>The original project has a huge method which contains lots of <code>if else</code> blocks to update the Items properties. Regarding the refactoring, there is a limit based on the requirement - “do not alter the <code>Item</code> class or Items property”. That is kind of trap because my first thought is to use the simple factory pattern, which means we need to modify the <code>Item</code> class as an abstract class, then create respectively derived classes for different items. Anyway, let us see what we could do if we are allowed to modify the <code>Item</code> class.</p>
+<h2 id="Simple-Factory-Pattern"><a href="#Simple-Factory-Pattern" class="headerlink" title="Simple Factory Pattern"></a>Simple Factory Pattern</h2><p>The Simple Factory Pattern might be one of the most widely used patterns. There is a <code>factory</code> object for creating some other objects so we do not need to use <code>new</code> keyword to frequently create different objects in our code. The objects created by the factory should have the same parent class but they perform different tasks according to their types. It is easy to use and it works for lots of scenarios. The “easiest” does not mean it is not good enough. We could find the balance between the delivery and the time-cost.</p>
+<p>For this case, the <code>Item</code> class would be the base class. I can add an abstract method to calculate the <code>SellIn</code> and <code>Quality</code>:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title">Item</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> SellIn &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Quality &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">Item</span>(<span class="params"><span class="built_in">string</span> name, <span class="built_in">int</span> sellIn, <span class="built_in">int</span> quality</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Name = name;</span><br><span class="line">        SellIn = sellIn;</span><br><span class="line">        Quality = quality;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">Update</span>()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The <code>Item</code> class now is <code>abstract</code> so it cannot be instantiated directly. Now we can create derived classes to update these properties for different types. For simplicity, I will create a <strong>StandardItem</strong> type and an <strong>AgedBrie</strong> type as examples, as shown below:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">StandardItem</span> : <span class="title">Item</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StandardItem</span>(<span class="params"><span class="built_in">string</span> name, <span class="built_in">int</span> sellIn, <span class="built_in">int</span> quality</span>) </span></span><br><span class="line"><span class="function">        : <span class="title">base</span>(<span class="params">name, sellIn, quality</span>)</span> &#123; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        SellIn = SellIn - <span class="number">1</span>;</span><br><span class="line">        Quality = Quality - <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (Quality &lt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Quality = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(Quality &gt; <span class="number">50</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Quality = <span class="number">50</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AgedBrie</span> : <span class="title">Item</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AgedBrie</span>(<span class="params"><span class="built_in">string</span> name, <span class="built_in">int</span> sellIn, <span class="built_in">int</span> quality</span>) </span></span><br><span class="line"><span class="function">        : <span class="title">base</span>(<span class="params">name, sellIn, quality</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        SellIn = SellIn - <span class="number">1</span>;</span><br><span class="line">        Quality = Quality + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (Quality &lt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Quality = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (Quality &gt; <span class="number">50</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Quality = <span class="number">50</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//The above validation can be refactored as well</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>But here we still see some duplicated code when retrieving the value of the <code>Quality</code>. So the better way is to move these validations to the <code>getter</code> method of the <code>Quality</code> property in the <code>Item</code> base class, or we could have a default implementation in the base class.</p>
+<p>By creating these derived classes, we can extract the logic from the big <code>GildedRose</code> class to the derived classes. Next we need to have a factory to create them.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ItemFactory</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Item <span class="title">CreateItem</span>(<span class="params"><span class="built_in">string</span> name, <span class="built_in">int</span> sellIn, <span class="built_in">int</span> quality</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">switch</span> (name)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;Aged Brie&quot;</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> AgedBrie(name, sellIn, quality);</span><br><span class="line">            ...</span><br><span class="line">            <span class="literal">default</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> StandardItem(name, sellIn, quality);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The next step is to update the <code>Main</code> method in <code>Program</code> class:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">IList&lt;Item&gt; Items = <span class="keyword">new</span> List&lt;Item&gt;&#123;</span><br><span class="line">    <span class="comment">//Call the factory to create the derived classes:</span></span><br><span class="line">    ItemFactory.CreateItem(<span class="string">&quot;+5 Dexterity Vest&quot;</span>, <span class="number">10</span>, <span class="number">20</span>),</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>We use the factory to create the items. Now update the <code>UpdateQuality</code> method in the <code>GildedRose</code> class:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">UpdateQuality</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> Items)</span><br><span class="line">    &#123;</span><br><span class="line">        item.Update();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Because each derived item has its own method to update the properties, so we can get the correct values.</p>
+<p>But, what if we cannot modify the <code>Item</code> class?</p>
+<p>One variation is using the interface to extend the behavior of the class. We do not need to add the <code>Update</code> method in the <code>Item</code> class. Instead, we can create a new interface which provides the <code>Update</code> method. So the derived classes could implement this interface to update its properties:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IUpdate</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">UpdateSellIn</span>()</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">UpdateQuality</span>()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AgedBrie</span> : <span class="title">Item</span>, <span class="title">IUpdate</span></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>All the derived classes should implement the <code>IUpdate</code> interface. So the basic logic does not change much, just need to change the <code>UpdateQuality</code> method respectively:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">UpdateQuality</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> Items)</span><br><span class="line">    &#123;</span><br><span class="line">        ((IUpdate)item).UpdateSellIn();</span><br><span class="line">        ((IUpdate)item).UpdateQuality();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>For some C# interviews, one common question is “the differences between the abstract class and the interface”. Basically, the typical answer could be:</p>
+<ul>
+<li>The abstract class can have access specifier for functions but the interface cannot. In other words, you can use <code>private</code>, <code>public</code>, etc for the internal functions but in the interface, all functions are public by default.</li>
+<li>The abstract class can have default implementations but the interface cannot.</li>
+<li>The abstract class can have fields and constants but the interface cannot have fields.</li>
+<li>The abstract class can have non-abstract methods but the interface cannot.</li>
+<li>The abstract class can have the constructor but the interface cannot.</li>
+<li>One class can only derive from one abstract class but it can implement multiple interfaces.</li>
+<li>Both of them cannot be instantiated.</li>
+<li>…</li>
+</ul>
+<blockquote>
+<p>Note: Please keep in mind that <strong>“the interface cannot have implementation” is not correct today because the interface supports default implementations from C# 8.0!</strong> Also, there are more changes to the interface since C# 8.0: The interface in C# 8.0 can have <code>private</code>, <code>static</code>,  <code>protected</code>, <code>virtual</code> members. Maybe this interview question could be updated. FYI: <a target="_blank" rel="noopener" href="https://devblogs.microsoft.com/dotnet/default-implementations-in-interfaces/">Default implementations in interfaces</a> and <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/dotnet/csharp/tutorials/default-interface-methods-versions">Tutorial: Update interfaces with default interface methods in C# 8.0</a></p>
+</blockquote>
+<p>So when should we use the abstract class or the interface? From my understanding, the answer is “it depends”. The abstract class is used to define the actual identity of the objects which have logical inheritance relations but the interface is more likely used to extend the behaviors of the objects. In the dependency injection mode, we mainly use interfaces.</p>
+<p>That’s kind of digression. Let us return to the refactoring. To be honest, the variation of the factory pattern is not good enough - because it makes confusing regarding the <strong>object</strong> and the <strong>behavior</strong>. Actually we should make an abstraction of the method that is used to calculate the properties. But the item itself should be the same. Let us move on.</p>
+<h2 id="Strategy-Pattern"><a href="#Strategy-Pattern" class="headerlink" title="Strategy Pattern"></a>Strategy Pattern</h2><p>There are categories of the design patterns:</p>
+<ul>
+<li>Creational Patterns - to create various objects</li>
+<li>Structural Patterns - to assemble objects into larger structures</li>
+<li>Behavioral Patterns - more focus on the algorithms and the assignment of responsibilities between objects.</li>
+</ul>
+<p>For this practice, we could use one of the Behavioral Patterns - Strategy Pattern to decouple the calculation logic and the objects. This pattern allows us to have multiple algorithms without changing the original <code>Item</code> class.</p>
+<p>First, we need to define an interface that declares a method to execute a strategy:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IStrategy</span></span><br><span class="line">&#123;</span><br><span class="line">    (<span class="built_in">int</span> sellIn, <span class="built_in">int</span> quality) Update(Item item)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>If we use C# 8.0, we can have the default implementation here, eg. to reset the value of <code>SellIn</code> and validate the value of <code>Quality</code>.</p>
+<p>Then we will define the concrete strategies:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">StandardStrategy</span> : <span class="title">IStrategy</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> (<span class="built_in">int</span> sellIn, <span class="built_in">int</span> quality) Update(Item item)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> quality = item.Quality - <span class="number">2</span>;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">return</span> (item.SellIn - <span class="number">1</span>, quality);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AgedBrieStrategy</span> : <span class="title">IStrategy</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> (<span class="built_in">int</span> sellIn, <span class="built_in">int</span> quality) Update(Item item)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> quality = item.Quality + <span class="number">1</span>;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">return</span> (item.SellIn - <span class="number">1</span>, quality);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Then we need to create a <code>Context</code> class to define the interface of interest to clients:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">StrategyContext</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> IStrategy _strategy = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StrategyContext</span>(<span class="params"><span class="built_in">string</span> name</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">switch</span> (name)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;Aged Brie&quot;</span>:</span><br><span class="line">                _strategy = <span class="keyword">new</span> AgedBrieStrategy();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            ...</span><br><span class="line">            <span class="literal">default</span>:</span><br><span class="line">                _strategy = <span class="keyword">new</span> StandardStrategy();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> (<span class="built_in">int</span> sellIn, <span class="built_in">int</span> quality) Update(Item item)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> _strategy.Update(item);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Next we can apply the strategies in the <code>UpdateQuality</code> method in <code>GildedRose</code> class:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">UpdateQuality</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> Items)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> context = <span class="keyword">new</span> StrategyContext(item.Name);</span><br><span class="line">        <span class="keyword">var</span> result = context.Update(item);</span><br><span class="line">        item.SellIn = result.sellIn;</span><br><span class="line">        item.Quality = result.quality;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This time we did not change the <code>Item</code> class and the <code>Main</code> method in <code>Program</code> class. If you think the <code>new</code> keyword is not beautiful here, you can continue to use the Factory Pattern to decouple the logic used to create the correct strategy to another part. But now we have already decoupled the calculation behavior from the object itself to another class.</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>My repo can be found here: <a target="_blank" rel="noopener" href="https://github.com/yanxiaodi/GildedRose-Refactoring-Kata-Solutions">https://github.com/yanxiaodi/GildedRose-Refactoring-Kata-Solutions</a>. Because I did not create enough unit tests so there is no guarantee for the results. The demo is to show how to apply these design patterns, not the specific implementation. When we start to refactor the code, the most important thing is to create enough unit tests to make sure the refactoring would not break the current functions. The original project already has a unit test sample so we can add more tests to cover those edge cases. It is not easy to make 100% cover but it is worth to do.</p>
+<p>Obviously, I do not think someone would write code like the original project. One thing I always think about is when we have a new requirement, how should we design it by using some complex design pattern or just <code>if else</code>?  In other words, sometimes the client might just ask you to implement the function as soon as possible because of the budget limit without any care regarding your underlying implements. Let us say we have two options: </p>
+<ul>
+<li>Developer A is a newbie who can complete the function in one hour but just using <code>if else</code>. However, it indeed works as expected.</li>
+<li>Developer B is more experienced but needs more time to design the pattern so the time-cost would be 2 hours. But it would be easy to add more features in the future.</li>
+</ul>
+<p>How would you choose?</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/design-pattern/" rel="tag"># design pattern</a>
+              <a href="/tags/dotnetcore/" rel="tag"># dotnetcore</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/04/02/mapping-the-model-to-multiple-tables-with-entityFramework-core/" rel="prev" title="Mapping the same model to multiple tables with EntityFramework.Core">
+                  <i class="fa fa-angle-left"></i> Mapping the same model to multiple tables with EntityFramework.Core
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/04/16/using-azure-devops-pipelines-to-inject-configurations-for-aspnetcore-web-app-on-linux/" rel="next" title="Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Aeb App on linux">
+                  Using Azure DevOps Pipelines to inject configurations for ASP.NET Core Aeb App on linux <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xiaodi Yan</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">236k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:35</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

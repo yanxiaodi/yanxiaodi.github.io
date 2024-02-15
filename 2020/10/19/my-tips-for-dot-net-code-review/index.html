@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yanxiaodi.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Code-review is important in our daily development. Some developers may spend lots of time on learning new features of the languages, DDD, distributed system or some fancy stuff but the first thing we">
+<meta property="og:type" content="article">
+<meta property="og:title" content="My tips for .NET code-review">
+<meta property="og:url" content="https://yanxiaodi.github.io/2020/10/19/my-tips-for-dot-net-code-review/index.html">
+<meta property="og:site_name" content="Xiaodi Yan&#39;s Blog">
+<meta property="og:description" content="Code-review is important in our daily development. Some developers may spend lots of time on learning new features of the languages, DDD, distributed system or some fancy stuff but the first thing we">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-19T08:42:22.000Z">
+<meta property="article:modified_time" content="2020-10-19T08:42:22.000Z">
+<meta property="article:author" content="Xiaodi Yan">
+<meta property="article:tag" content=".NETCore">
+<meta property="article:tag" content="ASP.NETCore">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://yanxiaodi.github.io/2020/10/19/my-tips-for-dot-net-code-review/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://yanxiaodi.github.io/2020/10/19/my-tips-for-dot-net-code-review/","path":"2020/10/19/my-tips-for-dot-net-code-review/","title":"My tips for .NET code-review"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>My tips for .NET code-review | Xiaodi Yan's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaodi Yan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Coding is fun...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about-me/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-community-activities"><a href="/community-activities" rel="section"><i class="events fa-fw"></i>community activities</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NullReferenceException-series"><span class="nav-number">1.</span> <span class="nav-text">NullReferenceException series</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Always-initialize-the-collection-when-you-declare-it"><span class="nav-number">1.1.</span> <span class="nav-text">Always initialize the collection when you declare it</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DO-NOT-return-null-values-from-methods-returning-collections"><span class="nav-number">1.2.</span> <span class="nav-text">DO NOT return null values from methods returning collections</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FirstOrDefault-or-First"><span class="nav-number">1.3.</span> <span class="nav-text">FirstOrDefault() or First()?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Checking-if-the-key-exists-in-the-dictionary"><span class="nav-number">1.4.</span> <span class="nav-text">Checking if the key exists in the dictionary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#as-or-is"><span class="nav-number">1.5.</span> <span class="nav-text">as or is?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Check-the-instance-which-comes-from-the-DI-container-for-deep-sleep-mode-on-mobile"><span class="nav-number">1.6.</span> <span class="nav-text">Check the instance which comes from the DI container for deep-sleep mode on mobile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Any-better-ways-to-replace-if-statement-for-null-checking"><span class="nav-number">1.7.</span> <span class="nav-text">Any better ways to replace if statement for null checking?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-TryParse-not-Parse"><span class="nav-number">1.8.</span> <span class="nav-text">Using TryParse(), not Parse()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Task-Async-Await"><span class="nav-number">2.</span> <span class="nav-text">Task&#x2F;Async&#x2F;Await</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Avoid-async-void-method-unless-you-use-it-for-an-event-handler"><span class="nav-number">2.1.</span> <span class="nav-text">Avoid async void method unless you use it for an event handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Avoid-mixing-async-and-sync-methods-together"><span class="nav-number">2.2.</span> <span class="nav-text">Avoid mixing async and sync methods together</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Return-Task-not-return-await"><span class="nav-number">2.3.</span> <span class="nav-text">Return Task, not return await</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#What-if-we-have-to-block-the-async-code"><span class="nav-number">2.4.</span> <span class="nav-text">What if we have to block the async code?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Use-Task-WaitAll-to-run-multiple-tasks"><span class="nav-number">2.5.</span> <span class="nav-text">Use Task.WaitAll() to run multiple tasks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Use-ConfigureAwait-false-to-avoid-deadlock"><span class="nav-number">2.6.</span> <span class="nav-text">Use ConfigureAwait(false)  to avoid deadlock</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exceptions"><span class="nav-number">3.</span> <span class="nav-text">Exceptions</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Throw-exceptions-not-return-an-error-code"><span class="nav-number">3.1.</span> <span class="nav-text">Throw exceptions, not return an error code.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Use-standard-exception-types-when-you-can"><span class="nav-number">3.2.</span> <span class="nav-text">Use standard exception types when you can</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Provide-additional-properties-for-custom-exceptions"><span class="nav-number">3.3.</span> <span class="nav-text">Provide additional properties for custom exceptions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Do-not-eat-the-exception-in-try-catch-block"><span class="nav-number">3.4.</span> <span class="nav-text">Do not eat the exception in try-catch block</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HttpClient"><span class="nav-number">4.</span> <span class="nav-text">HttpClient</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DO-NOT-use-using-to-dispose-the-HttpClient-instance-explicitly"><span class="nav-number">4.1.</span> <span class="nav-text">DO NOT use using to dispose the HttpClient instance explicitly</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpClient-does-not-respect-DNS-changes"><span class="nav-number">4.2.</span> <span class="nav-text">HttpClient does not respect DNS changes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Specify-HttpHeaders-for-HttpClient-or-HttpRequestMessage"><span class="nav-number">4.3.</span> <span class="nav-text">Specify HttpHeaders for HttpClient or HttpRequestMessage?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Retry-the-request"><span class="nav-number">4.4.</span> <span class="nav-text">Retry the request</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Collections-List"><span class="nav-number">5.</span> <span class="nav-text">Collections&#x2F;List</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Always-initialize-the-collection-when-you-declare-it-1"><span class="nav-number">5.1.</span> <span class="nav-text">Always initialize the collection when you declare it</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ToList-first-or-just-use-foreach-for-the-IEnumerable"><span class="nav-number">5.2.</span> <span class="nav-text">ToList() first or just use foreach for the IEnumerable?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Possible-multiple-enumeration-of-IEnumerable"><span class="nav-number">5.3.</span> <span class="nav-text">Possible multiple enumeration of IEnumerable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Concurrent-collections"><span class="nav-number">5.4.</span> <span class="nav-text">Concurrent collections</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Miscellaneous"><span class="nav-number">6.</span> <span class="nav-text">Miscellaneous</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#or-Equals"><span class="nav-number">6.1.</span> <span class="nav-text">&#x3D;&#x3D; or Equals?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DO-use-protected-constructor-for-abstract-classes"><span class="nav-number">6.2.</span> <span class="nav-text">DO use protected constructor for abstract classes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Event-pattern"><span class="nav-number">6.3.</span> <span class="nav-text">Event pattern</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Delete-useless-codes"><span class="nav-number">6.4.</span> <span class="nav-text">Delete useless codes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Do-not-use-too-many-parameters-for-a-method"><span class="nav-number">6.5.</span> <span class="nav-text">Do not use too many parameters for a method.</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">7.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiaodi Yan"
+      src="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+  <p class="site-author-name" itemprop="name">Xiaodi Yan</p>
+  <div class="site-description" itemprop="description">Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yanxiaodi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yanxiaodi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/xiaodi-yan-829bb055/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;xiaodi-yan-829bb055&#x2F;" rel="noopener me" target="_blank"><i class="fab linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yanxiaodi.github.io/2020/10/19/my-tips-for-dot-net-code-review/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+      <meta itemprop="name" content="Xiaodi Yan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaodi Yan's Blog">
+      <meta itemprop="description" content="Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="My tips for .NET code-review | Xiaodi Yan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          My tips for .NET code-review
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-10-19 21:42:22" itemprop="dateCreated datePublished" datetime="2020-10-19T21:42:22+13:00">2020-10-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Coding-Practice/" itemprop="url" rel="index"><span itemprop="name">Coding Practice</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>19k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>17 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Code-review is important in our daily development. Some developers may spend lots of time on learning new features of the languages, DDD, distributed system or some fancy stuff but the first thing we should keep in mind is we need to write the robust, maintainable code. Here are some tips from my recent code-review and I hope it would be helpful for you.</p>
+<span id="more"></span>
+
+<h2 id="NullReferenceException-series"><a href="#NullReferenceException-series" class="headerlink" title="NullReferenceException series"></a>NullReferenceException series</h2><p>The <code>NullReferenceException</code> is really annoying. The best way to avoid it is to check if the variable is null before you use it. Here are some potential issues. I also include other exceptions such as <code>ArgumentNullException</code> here.</p>
+<h3 id="Always-initialize-the-collection-when-you-declare-it"><a href="#Always-initialize-the-collection-when-you-declare-it" class="headerlink" title="Always initialize the collection when you declare it"></a>Always initialize the collection when you declare it</h3><p>One common error is sometimes we declared a collection but did not initialize it before using it. Like this:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Person&gt; persons;</span><br><span class="line"><span class="comment">// Some logics</span></span><br><span class="line"><span class="comment">// If you use persons directly you may got a null object</span></span><br></pre></td></tr></table></figure>
+
+<p>So the better way is to always initialize the collection when we declare it:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Person&gt; persons = <span class="keyword">new</span> List&lt;Persons&gt;();</span><br><span class="line"><span class="comment">// Then you can do something as usual</span></span><br></pre></td></tr></table></figure>
+
+<p>Especially if we have a property which has its own private field:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// It is good to initialize the private field when we declare it.</span></span><br><span class="line"><span class="keyword">private</span> ObservableCollection&lt;Person&gt; _personList = <span class="keyword">new</span> ObservableCollection&lt;Person&gt;();</span><br><span class="line"><span class="keyword">public</span> ObservableCollection&lt;Person&gt; PersonList</span><br><span class="line">&#123;</span><br><span class="line">     <span class="keyword">get</span> =&gt; _personList;</span><br><span class="line">     <span class="keyword">set</span> =&gt; SetProperty(<span class="keyword">ref</span> _personList, <span class="keyword">value</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="DO-NOT-return-null-values-from-methods-returning-collections"><a href="#DO-NOT-return-null-values-from-methods-returning-collections" class="headerlink" title="DO NOT return null values from methods returning collections"></a>DO NOT return null values from methods returning collections</h3><p>Another tip is if we have a method that returns a collection, do not return <code>null</code>. Instead, if there are no satisfied elements, we should return an empty collection.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">List</span>&lt;<span class="title">Person</span>&gt; <span class="title">GetPersons</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// Some logic to retrieve the objects. If not found, then return an empty collection. DO NOT return null.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> List&lt;Person&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="FirstOrDefault-or-First"><a href="#FirstOrDefault-or-First" class="headerlink" title="FirstOrDefault() or First()?"></a><code>FirstOrDefault()</code> or <code>First()</code>?</h3><p>LINQ has some similar methods like <code>First()</code> and <code>FirstOrDefault()</code>. The key difference is the behavior for the empty collection. If the collection is empty or there is no element that satisfies the condition, then <code>First()</code> will throw <code>InvalidOperationException</code>. For this case, <code>FirstOrDefault()</code> is safe because it can return a default value for an empty collection or no element satisfies the condition. But we should be truly clear if the default value is null - that is another reason which would cause <code>NullReferenceException</code> - <strong>The default value for reference and nullable types is <code>null</code></strong>. So it would be better if we do like this:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> firstPerson = persons.FirstOrDefault(x =&gt; x.Age &gt; <span class="number">18</span>);</span><br><span class="line"><span class="comment">// Check if the variable is null</span></span><br><span class="line"><span class="keyword">if</span> (firstPerson != <span class="literal">null</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Do something to the firstPerson</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Similarly, <code>Single()</code> and <code>SingleOrDefault()</code> also have the different results. <code>Single()</code> throws <code>InvalidOperationException</code> for these scenarios:</p>
+<ul>
+<li>The source collection is empty</li>
+<li>No element satisfies the condition</li>
+<li><strong>More than one element</strong> satisfies the condition</li>
+</ul>
+<p>For <code>SingleOrDefault()</code>, it also returns a default value if the collection is empty or no satisfied element is found. We should check if the return value is null before using it.</p>
+<p>Another way to handle the empty collections is to use <code>DefaultIfEmpty()</code> extension method, as shown below:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">List&lt;<span class="built_in">int</span>&gt; numbers = <span class="keyword">new</span> List&lt;<span class="built_in">int</span>&gt; &#123; &#125;;</span><br><span class="line"><span class="comment">// Setting the default value to 1 by using DefaultIfEmpty() in the query.</span></span><br><span class="line"><span class="built_in">int</span> firstNumber = numbers.DefaultIfEmpty(<span class="number">1</span>).First();</span><br><span class="line"><span class="comment">// Now the firstNumber is 1, not 0.</span></span><br></pre></td></tr></table></figure>
+
+<p>FYI: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.first?view=netcore-3.1&WT.mc_id=DT-MVP-5001643">Enumerable.First</a> <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.firstordefault?view=netcore-3.1&WT.mc_id=DT-MVP-5001643">Enumerable.FirstOrDefault</a>, <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.single?view=netcore-3.1&WT.mc_id=DT-MVP-5001643">Enumerable.Single</a>, <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.singleordefault?view=netcore-3.1&WT.mc_id=DT-MVP-5001643">Enumerable.SingleOrDefault</a></p>
+<h3 id="Checking-if-the-key-exists-in-the-dictionary"><a href="#Checking-if-the-key-exists-in-the-dictionary" class="headerlink" title="Checking if the key exists in the dictionary"></a>Checking if the key exists in the dictionary</h3><p>One probable reason of <code>NullReferenceException</code> is related to the dictionary. I have seen it quite a few times in code-review. Unless we are 100% sure we know the key exists in the dictionary, (eg, the dictionary is hard-coded.) we should always check it first. Because sometimes the dictionary comes from the APIs, or it has other dependencies. We cannot guarantee the key we want exists in the dictionary. So try to use this way:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> persons = <span class="keyword">new</span> Dictionary&lt;<span class="built_in">string</span>, Person&gt; = <span class="keyword">new</span> Dictionary&lt;<span class="built_in">string</span>, Person&gt;();</span><br><span class="line"><span class="comment">// Add some values</span></span><br><span class="line"><span class="keyword">if</span> (persons.ContainsKey(<span class="string">&quot;Jack&quot;</span>))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> person = persons[<span class="string">&quot;Jack&quot;</span>];</span><br><span class="line">    <span class="comment">// Do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>If we do not check the key, we may get a <code>KeyNotFoundException</code>. FYI: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2.item?view=netcore-3.1&WT.mc_id=DT-MVP-5001643">Dictionary&lt;TKey,TValue&gt;.Item[TKey]</a>, <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2.containskey?view=netcore-3.1&WT.mc_id=DT-MVP-5001643">Dictionary&lt;TKey,TValue&gt;.ContainsKey(TKey)</a></p>
+<p>Also, when you add a key&#x2F;value pair to a dictionary, you should check if the key already exists in the dictionary.</p>
+<h3 id="as-or-is"><a href="#as-or-is" class="headerlink" title="as or is?"></a><code>as</code> or <code>is</code>?</h3><p>When we cast the object type, we may use <code>as</code>, for example:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">SetValueImpl</span>(<span class="params"><span class="built_in">object</span> target, SomeStatus <span class="keyword">value</span></span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> ctrl = target <span class="keyword">as</span> ControlA;</span><br><span class="line">    ctrl.Status = newValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The <code>as</code> operator explicitly converts the result of an expression to a given reference or nullable value type. It will not throw exceptions even if the conversion is not possible, but it will return <code>null</code> for this case. So usually, it is safer than the <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/type-testing-and-cast#cast-expression?WT.mc_id=DT-MVP-5001643">cast expression</a>, but we still need to check if the result is <code>null</code>. </p>
+<p>The <code>is</code> operator checks if the runtime type of an expression result is compatible with a given type. So it is safer to use the following code:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (target <span class="keyword">is</span> ControlA)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> ctrl = target <span class="keyword">as</span> ControlA;</span><br><span class="line">    ctrl.Status = newValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>From C# 7, we can use <code>is</code> to check and convert the type at the same time:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (target <span class="keyword">is</span> ControlA ctrl)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//You can use ctrl variable directly now because the result is already assigned to it</span></span><br><span class="line">    ctrl.Status = newValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>FYI: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/type-testing-and-cast?WT.mc_id=DT-MVP-5001643">Type-testing operators and cast expression</a></p>
+<h3 id="Check-the-instance-which-comes-from-the-DI-container-for-deep-sleep-mode-on-mobile"><a href="#Check-the-instance-which-comes-from-the-DI-container-for-deep-sleep-mode-on-mobile" class="headerlink" title="Check the instance which comes from the DI container for deep-sleep mode on mobile"></a>Check the instance which comes from the DI container for deep-sleep mode on mobile</h3><p>This issue may happen on mobile devices. If we use Dependency Injection for the mobile app, usually we just get the service instance from the DI container. But on mobile devices there are too many tricky scenarios we need to deal with, eg. deep-sleep mode, background tasks and push notifications, etc. For example, if the user clicks the notification to execute some actions, the DI container might have not been initialized. In other words, the lifecycle of the app may not be the way we expect. I have met some issues related to it but I do not want to expand too much here because it is rarely happening for other applications.</p>
+<h3 id="Any-better-ways-to-replace-if-statement-for-null-checking"><a href="#Any-better-ways-to-replace-if-statement-for-null-checking" class="headerlink" title="Any better ways to replace if statement for null checking?"></a>Any better ways to replace <code>if</code> statement for null checking?</h3><p>Yes. You can use the null-conditional operator to simplify it. Just use <code>?</code> to short-circuit the expression. For example:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A?.B?.Do(C)</span><br></pre></td></tr></table></figure>
+
+<p>If <code>A</code> is null, the rest of the chain does not execute. If <code>B</code> is null, <code>Do(C)</code> does not execute.</p>
+<p>Similarly, you can use <code>?[]</code> for element access. eg. <code>A?.B?[C]</code>. It is safe even <code>B</code> is null.</p>
+<p>It is also a good choice to invoke a delegate&#x2F;Action&#x2F;Func. For example:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Counter</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">event</span> EventHandler ThresholdReached;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">OnThresholdReached</span>(<span class="params">EventArgs e</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Use ? to avoid null reference exception</span></span><br><span class="line">        ThresholdReached?.Invoke(<span class="keyword">this</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>By the way, you can use the null-coalescing operator <code>??</code> to return the value of its left-hand operand if it is not <code>null</code>; otherwise, it returns the value of right-hand operand. For example, if we need to assign a value to a variable:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (variable <span class="keyword">is</span> <span class="literal">null</span>)</span><br><span class="line">&#123;</span><br><span class="line">    variable = expression;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The below code is available in C# 8.0:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">variable ??= expression;</span><br></pre></td></tr></table></figure>
+
+<p>FYI: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators?WT.mc_id=DT-MVP-5001643">Member access operators and expressions</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator?WT.mc_id=DT-MVP-5001643">null-coalescing-operator</a></p>
+<h3 id="Using-TryParse-not-Parse"><a href="#Using-TryParse-not-Parse" class="headerlink" title="Using TryParse(), not Parse()"></a>Using <code>TryParse()</code>, not <code>Parse()</code></h3><p>I think most of .NET developers already know that.</p>
+<h2 id="Task-Async-Await"><a href="#Task-Async-Await" class="headerlink" title="Task&#x2F;Async&#x2F;Await"></a>Task&#x2F;Async&#x2F;Await</h2><p>There are a vast number of posts&#x2F;questions&#x2F;blogs you can find in StackOverflow, GitHub or someone’s blogs regarding <code>Task</code>, <code>async</code> and <code>await</code>. I do read a lot articles, but I will not add any new contents and I just would like to highlight some best practices in asynchronous programming. </p>
+<h3 id="Avoid-async-void-method-unless-you-use-it-for-an-event-handler"><a href="#Avoid-async-void-method-unless-you-use-it-for-an-event-handler" class="headerlink" title="Avoid async void method unless you use it for an event handler"></a>Avoid <code>async void</code> method unless you use it for an event handler</h3><p>Return <code>Task</code> or <code>Task&lt;T&gt;</code> if it is possible for the <code>async</code> method. If you return a <code>void</code> method, the complier will not complain but it is not good because any exceptions will be eaten so you cannot catch it properly.</p>
+<p>One special scenario is to make an <code>async</code> event handler. Usually the event handler does not return any type, and it just returns <code>void</code>. But please make sure you already handle the possible exceptions in the event handler. For all the other cases, do not use <code>async void</code> method.</p>
+<h3 id="Avoid-mixing-async-and-sync-methods-together"><a href="#Avoid-mixing-async-and-sync-methods-together" class="headerlink" title="Avoid mixing async and sync methods together"></a>Avoid mixing <code>async</code> and <code>sync</code> methods together</h3><p>We should keep in mind that <strong>async all the way</strong>, which means we should not mix async and sync code for most of scenarios. More particular, <strong>never use <code>Task.Wait()</code> and <code>Task.Result</code> to block the async code</strong>. <code>Task.Wait()</code> is synchronous, potentially blocking the call. If I see <code>Task.Wait()</code> in code-review, definitely it is a strong signal to indicate the code may cause deadlocks. Also the bug caused by the deadlock is hard to track so please do not use it anymore.</p>
+<h3 id="Return-Task-not-return-await"><a href="#Return-Task-not-return-await" class="headerlink" title="Return Task, not return await"></a>Return Task, not return await</h3><p>If you already have an async Task and you need to call it in another Task, just return the Task, instead of making it as async then await. For example:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;<span class="built_in">string</span>&gt; <span class="title">GetDataFromApiAsync</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//Do some async jobs</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// You can do it like this </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;<span class="built_in">string</span>&gt; <span class="title">GetDataAsync</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">await</span> GetDataFromApiAsync();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// But this one is better</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Task&lt;<span class="built_in">string</span>&gt; <span class="title">GetData</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Just return the task</span></span><br><span class="line">    <span class="keyword">return</span> GetDataFromApiAsync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Every time we declare a method as async, the compiler will create a state machine class to wrap the logic. So if you do not have other <code>await</code> in the method, please just return the task directly. It helps us not create additional resource to switch between different threads.</p>
+<h3 id="What-if-we-have-to-block-the-async-code"><a href="#What-if-we-have-to-block-the-async-code" class="headerlink" title="What if we have to block the async code?"></a>What if we have to block the async code?</h3><p>For some reason we must convert an async code to synchronous, then you better use <code>Task.GetAwaiter().GetResult()</code>. It is the same with <code>Task.Wait()</code> if the task executes successfully, but the benefit is it can return a normal exception if the task gets any errors. But <code>Task.Wait()</code> wraps the exceptions in an <code>AggregateException</code> so it is extremely hard to diagnose the issue. </p>
+<h3 id="Use-Task-WaitAll-to-run-multiple-tasks"><a href="#Use-Task-WaitAll-to-run-multiple-tasks" class="headerlink" title="Use Task.WaitAll() to run multiple tasks"></a>Use <code>Task.WaitAll()</code> to run multiple tasks</h3><p>If you have multiple tasks to be executed and they do not have dependencies with each other, you can use <code>await Task.WhenAll()</code> to run them in parallel. Similarly, you can use <code>await Task.WhenAny()</code> to wait for any task to complete then continue the next code.</p>
+<h3 id="Use-ConfigureAwait-false-to-avoid-deadlock"><a href="#Use-ConfigureAwait-false-to-avoid-deadlock" class="headerlink" title="Use ConfigureAwait(false)  to avoid deadlock"></a>Use <code>ConfigureAwait(false)</code>  to avoid deadlock</h3><p>The <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.synchronizationcontext?view=netcore-3.1&WT.mc_id=DT-MVP-5001643">SynchronizationContext</a> class Provides the basic functionality for propagating a synchronization context in various synchronization models. Basically, using <code>ConfigureAwait(false)</code> can improve performance and avoid deadlocks. The general guidance is:</p>
+<ul>
+<li>Do not use <code>ConfigureAwait(false)</code> in the application-level code.</li>
+<li>Use <code>ConfigureAwait(false)</code> in the general-purpose library code.</li>
+</ul>
+<p>In other words, if you are developing a Windows Form&#x2F;WPF&#x2F;ASP.NET Core application, usually you do not need to use it. But if you develop a library for the general purposes, it would be better if you use it because the library does not care about the environment so no need to keep on the same <code>SynchronizationContext</code>.</p>
+<p>I highly recommend the below articles about Task&#x2F;async&#x2F;await:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming?WT.mc_id=DT-MVP-5001643">Async&#x2F;Await - Best Practices in Asynchronous Programming</a> - by Stephen Cleary</li>
+<li><a target="_blank" rel="noopener" href="https://blog.stephencleary.com/2012/02/async-and-await.html">Async and Await</a> by Stephen Cleary</li>
+<li><a target="_blank" rel="noopener" href="https://devblogs.microsoft.com/pfxteam/asyncawait-faq/?WT.mc_id=DT-MVP-5001643">Async&#x2F;Await FAQ</a> by Stephen Toub</li>
+<li><a target="_blank" rel="noopener" href="https://devblogs.microsoft.com/dotnet/configureawait-faq/?WT.mc_id=DT-MVP-5001643">ConfigureAwait FAQ</a> by Stephen Toub</li>
+</ul>
+<h2 id="Exceptions"><a href="#Exceptions" class="headerlink" title="Exceptions"></a>Exceptions</h2><p>All the applications may have exceptions. But a well-designed app can handle the exception and errors to prevent crashing. Some common issues are:</p>
+<h3 id="Throw-exceptions-not-return-an-error-code"><a href="#Throw-exceptions-not-return-an-error-code" class="headerlink" title="Throw exceptions, not return an error code."></a>Throw exceptions, not return an error code.</h3><p>Exceptions are not scary. I have seen some codes that try to hide the exception then return error codes. That would not good because the caller may not check the return code. Exceptions ensure that failures can be handled properly.</p>
+<h3 id="Use-standard-exception-types-when-you-can"><a href="#Use-standard-exception-types-when-you-can" class="headerlink" title="Use standard exception types when you can"></a>Use standard exception types when you can</h3><p>.NET framework already provides lots of exception types, eg. <code>ArgumentException</code>, <code>ArgumentNullException</code>, <code>InvalidOperationException</code> etc. Only introduce a new exception type when a predefined one does not apply.</p>
+<h3 id="Provide-additional-properties-for-custom-exceptions"><a href="#Provide-additional-properties-for-custom-exceptions" class="headerlink" title="Provide additional properties for custom exceptions"></a>Provide additional properties for custom exceptions</h3><p>If you design a custom exception, please attach additional information to the exception, which is useful for diagnosis. For example, <code>ArgumentNullException</code> has the argument name property, and <code>FileNotFoundException</code> has a <code>FileName</code> property. The more information it has, the easier for debugging.</p>
+<h3 id="Do-not-eat-the-exception-in-try-catch-block"><a href="#Do-not-eat-the-exception-in-try-catch-block" class="headerlink" title="Do not eat the exception in try-catch block"></a>Do not eat the exception in try-catch block</h3><p>I have seen the below code:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Do something</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (Exception ex)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Log the exception</span></span><br><span class="line">    <span class="keyword">throw</span> ex;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This is not good because it will reset the stack trace. The correct way is:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Do something</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (Exception ex)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Log the exception</span></span><br><span class="line">    <span class="keyword">throw</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Just use <code>throw</code> to keep the original stack trace. So the caller would know what happens. Also, you may see the below code:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">catch</span> (Exception ex)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> MyException(<span class="string">&quot;error occurs&quot;</span>, ex); <span class="comment">// This will wrap the original stack trace</span></span><br><span class="line">    <span class="comment">//or</span></span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> MyException(<span class="string">&quot;error occurs&quot;</span>); <span class="comment">// This will replace the original stack trace</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>So please make sure you throw exceptions correctly. DO NOT eat them!</p>
+<p>I recommend you to read the below articles:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/standard/exceptions/best-practices-for-exceptions?WT.mc_id=DT-MVP-5001643">Best practices for exceptions</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.c-sharpcorner.com/UploadFile/a777ce/difference-between-throw-and-throw-ex-in-C-Sharp/">Difference Between Throw and Throw ex in C#</a></li>
+</ul>
+<h2 id="HttpClient"><a href="#HttpClient" class="headerlink" title="HttpClient"></a>HttpClient</h2><p>To be honest, the <code>HttpClient</code> class in .NET is not good enough because so many developers are looking for how to use it correctly every day. So here are some tips:</p>
+<h3 id="DO-NOT-use-using-to-dispose-the-HttpClient-instance-explicitly"><a href="#DO-NOT-use-using-to-dispose-the-HttpClient-instance-explicitly" class="headerlink" title="DO NOT use using to dispose the HttpClient instance explicitly"></a>DO NOT use <code>using</code> to dispose the <code>HttpClient</code> instance explicitly</h3><p>I think lots of .NET developers already know that. It is a common error for some junior developers because <code>HttpClient</code> implements the <code>IDisposable</code> interface. Also, you might find the below code in some code samples from Microsoft official documents:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> (<span class="keyword">var</span> httpClient = <span class="keyword">new</span> HttpClient())</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>It is understandable because it is an <code>IDisposable</code> object and we should use <code>using</code> statement. But for this case, the above usage is totally wrong. Instead of creating a new instance for each request, we should share a single instance for the entire application. Because even you dispose the <code>HttpClient</code> instance, the underlying socket connection cannot be disposed immediately (generally, it will be hold for 240 seconds on Windows) so if you create new instances again and again, the available socket ports will be exhausted soon.</p>
+<p>The correct way is to keep a singleton instance for <code>HttpClient</code>. You can use a static instance or use singleton pattern to maintain the <code>HttpClient</code> instance. But we still have another issue.</p>
+<h3 id="HttpClient-does-not-respect-DNS-changes"><a href="#HttpClient-does-not-respect-DNS-changes" class="headerlink" title="HttpClient does not respect DNS changes"></a><code>HttpClient</code> does not respect DNS changes</h3><p>For most of scenarios, it is enough to maintain a singleton instance for all the requests. In .NET Framework 4.x , <code>HttpClient</code> does not respect the DNS changes. In other words, if the endpoint changes the DNS record(It could happen when we do the blue&#x2F;green deployment), the current <code>HttpClient</code> instance cannot detect that change so it will be stuck until the socket connection is closed. In the latest .NET Core, it has been improved. </p>
+<p>FYI: <a target="_blank" rel="noopener" href="http://byterot.blogspot.com/2016/07/singleton-httpclient-dns.html">Singleton HttpClient? Beware of this serious behaviour and how to fix it</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/dotnet/runtime/issues/18348">Singleton HttpClient doesn’t respect DNS changes</a></p>
+<h3 id="Specify-HttpHeaders-for-HttpClient-or-HttpRequestMessage"><a href="#Specify-HttpHeaders-for-HttpClient-or-HttpRequestMessage" class="headerlink" title="Specify HttpHeaders for HttpClient or HttpRequestMessage?"></a>Specify <code>HttpHeaders</code> for <code>HttpClient</code> or <code>HttpRequestMessage</code>?</h3><p>For some reason, we need to specify the <code>HttpHeaders</code>. We can do it through two ways:</p>
+<ul>
+<li>Use <code>HttpClient.DefaultRequestHeaders.Add()</code> to update the header of the <code>HttpClient</code> instance.</li>
+<li>Use <code>HttpRequestMessage.Headers.Add()</code> to update the header for each request.</li>
+</ul>
+<p>The second way is better. Because usually we reuse the singleton <code>HttpClient</code> instance. Even <code>HttpClient</code> is thread-safe, if we frequently change the <code>DefaultRequestHeaders</code> collection, it may cause the below <code>InvalidOperationException</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Operations that change non-concurrent collections must have exclusive access. A concurrent update was performed on this collection and corrupted its state. The collection&#x27;s state is no longer correct.</span><br></pre></td></tr></table></figure>
+
+<p>The reason is the <code>DefaultRequestHeaders</code> property of <code>HttpClient</code> is not thread-safe. It should not be modified while there are outstanding requests. FYI: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient.defaultrequestheaders?view=netcore-3.1?WT.mc_id=DT-MVP-5001643">HttpClient.DefaultRequestHeaders</a></p>
+<h3 id="Retry-the-request"><a href="#Retry-the-request" class="headerlink" title="Retry the request"></a>Retry the request</h3><p>The HTTP request may fail so usually we need to retry the failed requests by using <strong>Polly</strong>. So here is another exception you may see: </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">InvalidOperation exception: The request message was already sent. Cannot send the same request message multiple times.</span><br></pre></td></tr></table></figure>
+
+<p>That is because Polly just retries the request but does not change it. However, if the <code>HttpClient</code> checks it sends the same request, it will throw the above exception. The solution is easy - just create a <code>clone()</code> method to create another copy of the request:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> HttpRequestMessage <span class="title">Clone</span>(<span class="params"><span class="keyword">this</span> HttpRequestMessage req</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    HttpRequestMessage clone = <span class="keyword">new</span> HttpRequestMessage(req.Method, req.RequestUri);</span><br><span class="line"></span><br><span class="line">    clone.Content = req.Content;</span><br><span class="line">    clone.Version = req.Version;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (KeyValuePair&lt;<span class="built_in">string</span>, <span class="built_in">object</span>&gt; prop <span class="keyword">in</span> req.Properties)</span><br><span class="line">    &#123;</span><br><span class="line">        clone.Properties.Add(prop);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (KeyValuePair&lt;<span class="built_in">string</span>, IEnumerable&lt;<span class="built_in">string</span>&gt;&gt; header <span class="keyword">in</span> req.Headers)</span><br><span class="line">    &#123;</span><br><span class="line">        clone.Headers.TryAddWithoutValidation(header.Key, header.Value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> clone;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>FYI: <a target="_blank" rel="noopener" href="https://github.com/App-vNext/Polly/issues/313">How Polly prevents InvalidOperation exception SendAsync</a></p>
+<p>In .NET Core 2.1, Microsoft provides <code>HttpClientFactory</code> to try to solve some issues. It is better but one thing I do not like is it is tightly coupled with Microsoft DI. Here is an interesting thread on GitHub: <a target="_blank" rel="noopener" href="https://github.com/dotnet/extensions/issues/1345">Using HttpClientFactory without dependency injection</a>.</p>
+<h2 id="Collections-List"><a href="#Collections-List" class="headerlink" title="Collections&#x2F;List"></a>Collections&#x2F;List</h2><p>There are too many topics regarding <code>Collections</code>&#x2F;<code>List</code> in .NET. But I just want to emphasize the below tips here:</p>
+<h3 id="Always-initialize-the-collection-when-you-declare-it-1"><a href="#Always-initialize-the-collection-when-you-declare-it-1" class="headerlink" title="Always initialize the collection when you declare it"></a>Always initialize the collection when you declare it</h3><p>Oh I just realize that I have mentioned it at the beginning of this article. So please keep it in mind because I have struggled with this issue many times when I do the code-review.</p>
+<h3 id="ToList-first-or-just-use-foreach-for-the-IEnumerable"><a href="#ToList-first-or-just-use-foreach-for-the-IEnumerable" class="headerlink" title="ToList() first or just use foreach for the IEnumerable?"></a><code>ToList()</code> first or just use <code>foreach</code> for the <code>IEnumerable</code>?</h3><p>I am sure you have seen the below code:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// GetList() will return an IEnumerable object</span></span><br><span class="line"><span class="keyword">foreach</span> (<span class="function"><span class="keyword">var</span> item <span class="keyword">in</span> <span class="title">GetList</span>())</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">await</span> HandleItemAsync(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>We exactly know that when we use <code>foreach</code> to an <code>IEnumerable</code> object, it will iterate through the collection. For most scenario, it is the same with this one:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span> (<span class="function"><span class="keyword">var</span> item <span class="keyword">in</span> <span class="title">GetList</span>().<span class="title">ToList</span>())</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">await</span> HandleItemAsync(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The difference is that when you use <code>IEnumerable</code>, the compiler gets a chance to defer the work until later, possible optimizing the way. If you use <code>ToList()</code>, the compiler will force to get the result immediately. An example is when we query data from database, we usually have LINQ conditions so it would be better to defer evaluation until we execute it. But in this case, we should be aware of the <code>async</code> method in the <code>foreach</code> body. Consider this scenario: Let us say we have an Azure blob. We need to get all the files in the blob storage then delete them. So the code might be like this:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> files = container.ListBlobs(<span class="literal">null</span>, <span class="literal">true</span>, BlobListingDetails.None);<span class="comment">// List all the files in the blob. It will return an IEnumerable object.</span></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> file <span class="keyword">in</span> files)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">await</span> file.DeleteIfExistsAsync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>It seems good. But the risk is this is a cloud application. <code>ListBlobs()</code> method might be timeout if it cannot complete in a specify duration. So if there are a bunch of files to be deleted, it would spend quite a few minutes for <code>ListBlobs() </code> method. Then you will get a timeout exception.</p>
+<p>So the safe way is to use <code>ToList()</code> before making the iteration:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> files = container.ListBlobs(<span class="literal">null</span>, <span class="literal">true</span>, BlobListingDetails.None).ToList();<span class="comment">// List all the files in the blob then convert to a List.</span></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> file <span class="keyword">in</span> files)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">await</span> file.DeleteIfExistsAsync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Now you query the file list right away. Then no need to worry about the timeout issue. So it is not easy to say which method is better. It depends.</p>
+<h3 id="Possible-multiple-enumeration-of-IEnumerable"><a href="#Possible-multiple-enumeration-of-IEnumerable" class="headerlink" title="Possible multiple enumeration of IEnumerable"></a>Possible multiple enumeration of IEnumerable</h3><p>You may see this warning if you use Resharper. The below code comes from Jetbrains:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">IEnumerable&lt;<span class="built_in">string</span>&gt; names = GetNames();</span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> name <span class="keyword">in</span> names)</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Found &quot;</span> + name);</span><br><span class="line"><span class="keyword">var</span> allNames = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> name <span class="keyword">in</span> names)</span><br><span class="line">    allNames.Append(name + <span class="string">&quot; &quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>Assuming that <code>GetNames()</code> returns an <code>IEnumerable&lt;string&gt;</code>, the code makes twice enumerating in two <code>foreach</code> statements. If <code>GetNames()</code> queries the database or calls an API, the two calls may get different results because the original data has been changed by other processes. So it can be fixed by converting the  <code>IEnumerable&lt;string&gt;</code> to <code>List</code>:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">List&lt;<span class="built_in">string</span>&gt; names = GetNames().ToList();</span><br></pre></td></tr></table></figure>
+
+<p>So the two enumeration will get the same result.</p>
+<h3 id="Concurrent-collections"><a href="#Concurrent-collections" class="headerlink" title="Concurrent collections"></a>Concurrent collections</h3><p>The <code>List</code> and <code>Dictionary</code> are not thread-safe. Consider using concurrent collections for multiple-thread scenarios. You can find more information here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.concurrent?view=netcore-3.1?WT.mc_id=DT-MVP-5001643">System.Collections.Concurrent Namespace</a></p>
+<h2 id="Miscellaneous"><a href="#Miscellaneous" class="headerlink" title="Miscellaneous"></a>Miscellaneous</h2><h3 id="or-Equals"><a href="#or-Equals" class="headerlink" title="== or Equals?"></a><code>==</code> or <code>Equals</code>?</h3><p>They are both used to compare two value type data items or reference type data items. The difference is that <code>==</code> returns <code>true</code> if they refer to the same object. <code>Equals()</code> returns <code>true</code> if they have the same content. So they are not the same. FYI: </p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.object.equals?view=netcore-3.1?WT.mc_id=DT-MVP-5001643">Object.Equals Method</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/equality-operators?WT.mc_id=DT-MVP-5001643">Equality operators (C# reference)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.c-sharpcorner.com/UploadFile/3d39b4/difference-between-operator-and-equals-method-in-C-Sharp/">Difference Between Equality Operator ( &#x3D;&#x3D;) and Equals() Method in C#</a></li>
+</ul>
+<h3 id="DO-use-protected-constructor-for-abstract-classes"><a href="#DO-use-protected-constructor-for-abstract-classes" class="headerlink" title="DO use protected constructor for abstract classes"></a>DO use <code>protected</code> constructor for abstract classes</h3><p>Just do it.</p>
+<h3 id="Event-pattern"><a href="#Event-pattern" class="headerlink" title="Event pattern"></a>Event pattern</h3><p>I have met a bug regarding the event pattern. Basically the class maintains a global status field. If the app detects status changes, the class will publish an event to notify the subscriber. But it published the event first, then updated the global status field. So when the caller received the event, the global status might not be changed yet. It caused an intermittent bug. So if the caller needs to use some global values, please make sure the publisher updates the status first, then publishes the event.</p>
+<h3 id="Delete-useless-codes"><a href="#Delete-useless-codes" class="headerlink" title="Delete useless codes"></a>Delete useless codes</h3><p>If some codes are useless, you can add <code>Obsolete</code> attribute for the current version. Then totally delete them in the future versions. No need to keep the useless code in your solution. It is ugly. I have seen lots of codes that are commented but I don’t know why they are still there. Will they be restored in the future? No one knows. So if you do not need that, please delete it. Or you can leave a comment that indicates why it should be kept temporarily. </p>
+<h3 id="Do-not-use-too-many-parameters-for-a-method"><a href="#Do-not-use-too-many-parameters-for-a-method" class="headerlink" title="Do not use too many parameters for a method."></a>Do not use too many parameters for a method.</h3><p>If there are too many parameters for a method, consider refactoring it as a class. </p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>This is a cluttered note but indeed I met these issues many times. When I have more ideas I can add more topics to this series. Thanks.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NETCore/" rel="tag"># .NETCore</a>
+              <a href="/tags/ASP-NETCore/" rel="tag"># ASP.NETCore</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/09/28/the-story-of-citanz-and-me/" rel="prev" title="The story of CITANZ and me">
+                  <i class="fa fa-angle-left"></i> The story of CITANZ and me
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/01/18/four-ways-to-generate-code-in-c-sharp-including-source-generators-in-dotnet-5/" rel="next" title="Four ways to generate code in C# - Including Source Generators in .NET 5">
+                  Four ways to generate code in C# - Including Source Generators in .NET 5 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xiaodi Yan</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">236k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:35</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

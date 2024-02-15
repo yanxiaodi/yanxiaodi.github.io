@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yanxiaodi.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="I have got used to configure Azure DevOps Pipelines with the classic editor that allows us to configure lots of properties of the tasks with a friendly user interface. But the better way to configure">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Using Azure DevOps Pipelines to publish the NuGet package from GitHub repo">
+<meta property="og:url" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/index.html">
+<meta property="og:site_name" content="Xiaodi Yan&#39;s Blog">
+<meta property="og:description" content="I have got used to configure Azure DevOps Pipelines with the classic editor that allows us to configure lots of properties of the tasks with a friendly user interface. But the better way to configure">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191126125816387.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191126130101092.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191126131331582.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191126132325606.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191126133456137.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191203085913759.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191126170157038.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202113533810.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202113922673.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202114046323.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202114306637.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202114635116.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202115857765.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202121552841.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202121527364.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202121818956.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202135942108.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202150114032.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202150245329.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202152045889.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202151935278.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202152809377.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202153012927.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202153129451.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202160504100.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202160622803.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202160901238.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202161021929.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202161112097.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202224011804.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202165821476.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202224414806.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202170421319.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202222830280.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202222918027.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202224631757.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202224826733.png">
+<meta property="article:published_time" content="2019-12-03T04:09:47.000Z">
+<meta property="article:modified_time" content="2019-12-03T04:09:47.000Z">
+<meta property="article:author" content="Xiaodi Yan">
+<meta property="article:tag" content="DevOps">
+<meta property="article:tag" content="nuget">
+<meta property="article:tag" content="github">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191126125816387.png">
+
+
+<link rel="canonical" href="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/","path":"2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/","title":"Using Azure DevOps Pipelines to publish the NuGet package from GitHub repo"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Using Azure DevOps Pipelines to publish the NuGet package from GitHub repo | Xiaodi Yan's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaodi Yan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Coding is fun...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about-me/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-community-activities"><a href="/community-activities" rel="section"><i class="events fa-fw"></i>community activities</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-YAML"><span class="nav-number">1.</span> <span class="nav-text">What is YAML?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#name-value"><span class="nav-number">1.1.</span> <span class="nav-text">name&#x2F;value</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#collections"><span class="nav-number">1.2.</span> <span class="nav-text">collections</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multiple-data-types"><span class="nav-number">1.3.</span> <span class="nav-text">multiple data types</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#comments"><span class="nav-number">1.4.</span> <span class="nav-text">comments</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-structure-of-YAML-for-Pipelines"><span class="nav-number">2.</span> <span class="nav-text">The structure of YAML for Pipelines</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-your-first-task-in-Azure-DevOps-Pipelines"><span class="nav-number">3.</span> <span class="nav-text">Creating your first task in Azure DevOps Pipelines</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Applying-Azure-DevOps-Pipelines-for-your-project"><span class="nav-number">3.1.</span> <span class="nav-text">Applying Azure DevOps Pipelines for your project</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Setting-up-the-trigger"><span class="nav-number">3.2.</span> <span class="nav-text">Setting up the trigger</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Setting-up-the-pool"><span class="nav-number">3.3.</span> <span class="nav-text">Setting up the pool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Running-the-first-Pipeline"><span class="nav-number">3.4.</span> <span class="nav-text">Running the first Pipeline</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adding-tasks-to-the-pipeline"><span class="nav-number">4.</span> <span class="nav-text">Adding tasks to the pipeline</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-the-first-step"><span class="nav-number">4.1.</span> <span class="nav-text">Creating the first step</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Building-the-project"><span class="nav-number">4.2.</span> <span class="nav-text">Building the project</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Adding-parameters-for-NET-Core-CLI"><span class="nav-number">4.3.</span> <span class="nav-text">Adding parameters for .NET Core CLI</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Publishing-the-artifact"><span class="nav-number">5.</span> <span class="nav-text">Publishing the artifact</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Packing-the-package"><span class="nav-number">5.1.</span> <span class="nav-text">Packing the package</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Versioning-schemes"><span class="nav-number">6.</span> <span class="nav-text">Versioning schemes</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-variables"><span class="nav-number">6.1.</span> <span class="nav-text">Using variables</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Publishing-artifacts"><span class="nav-number">6.2.</span> <span class="nav-text">Publishing artifacts</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pushing-nupkg-file-to-NuGet-package-feed"><span class="nav-number">7.</span> <span class="nav-text">Pushing *.nupkg file to NuGet package feed</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-the-release-pipeline"><span class="nav-number">7.1.</span> <span class="nav-text">Creating the release pipeline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Adding-the-artifact"><span class="nav-number">7.2.</span> <span class="nav-text">Adding the artifact</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Adding-tasks"><span class="nav-number">7.3.</span> <span class="nav-text">Adding tasks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-the-release"><span class="nav-number">7.4.</span> <span class="nav-text">Creating the release</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Check-the-package-on-NuGet"><span class="nav-number">7.5.</span> <span class="nav-text">Check the package on NuGet</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">8.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiaodi Yan"
+      src="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+  <p class="site-author-name" itemprop="name">Xiaodi Yan</p>
+  <div class="site-description" itemprop="description">Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yanxiaodi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yanxiaodi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/xiaodi-yan-829bb055/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;xiaodi-yan-829bb055&#x2F;" rel="noopener me" target="_blank"><i class="fab linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yanxiaodi.github.io/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+      <meta itemprop="name" content="Xiaodi Yan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaodi Yan's Blog">
+      <meta itemprop="description" content="Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Using Azure DevOps Pipelines to publish the NuGet package from GitHub repo | Xiaodi Yan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Using Azure DevOps Pipelines to publish the NuGet package from GitHub repo
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-12-03 17:09:47" itemprop="dateCreated datePublished" datetime="2019-12-03T17:09:47+13:00">2019-12-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>21k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>19 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>I have got used to configure Azure DevOps Pipelines with the classic editor that allows us to configure lots of properties of the tasks with a friendly user interface. But the better way to configure the Pipelines is by using <code>YAML</code> file. It is easy to fine-tune each option for your Pipeline, and easy to clone &amp; share. That is why <code>YAML</code> is the default Pipelines configuration template in Azure DevOps nowadays. I have developed a simple NuGet package that integrates Azure DevOps to build and publish. I will demonstrate how to create a new pipeline with <code>YAML</code> file. Before we get started, let us spend several minutes to gain a basic understanding of <code>YAML</code>.</p>
+<span id="more"></span>
+
+<h2 id="What-is-YAML"><a href="#What-is-YAML" class="headerlink" title="What is YAML?"></a>What is <code>YAML</code>?</h2><blockquote>
+<p>YAML(YAML Ain’t Markup Language) is a human friendly data serialization standard for all programming languages.</p>
+</blockquote>
+<p>– <a target="_blank" rel="noopener" href="https://yaml.org/">yaml.org</a></p>
+<p><code>YAML</code> is designed to be human-friendly and work well with modern programming languages for common everyday tasks. It is similar to <code>JSON</code>. Actually, you could treat <code>YAML</code> as the superset of <code>JSON</code>. Every <code>JSON</code> file is also a valid <code>YAML</code> file. But the difference is that they have different priorities. The foremost goal of  <code>JSON</code> is simplicity and universality so it is easy to generate and parse in every modern programming language. But for <code>YAML</code>, the foremost design goal is to improve human readability. So <code>YAML</code> is a little bit more complex to generate and parse.</p>
+<p>Imagine how we can describe a basic data structure? There are three basic but important primitives: mappings (hashes&#x2F;dictionaries), sequences (arrays&#x2F;lists) and scalars (strings,&#x2F;numbers). We could describe the structures of <code>JSON</code> like this:</p>
+<ul>
+<li>A collection of name&#x2F;value pairs. An <em>object</em> starts with <code>&#123;</code> and ends with <code>&#125;</code>. Each name is followed by <code>:</code> and the name&#x2F;value pairs are separated by <code>,</code>.</li>
+<li>A list&#x2F;array of values. An <em>array</em> begins with <code>[</code> and ends with <code>]</code>. Values are separated by <code>,</code>.</li>
+<li>A <em>value</em> can be a <em>string</em> in double quotes, or a <em>number</em>, or <code>true</code> or <code>false</code> or <code>null</code>, or an <em>object</em> or an <em>array</em>. These structures can be nested.</li>
+</ul>
+<p>Let us see how it is in <code>YAML</code>. There are similarities between <code>YAML</code> and <code>JSON</code>. We will not cover all the details of <code>YAML</code> because Azure DevOps Pipelines does not support all features of <code>YAML</code>.</p>
+<h3 id="name-value"><a href="#name-value" class="headerlink" title="name&#x2F;value"></a>name&#x2F;value</h3><p><code>YAML</code> also contains a set of name&#x2F;value pairs. You do not need to use <code>&#123;</code> and <code>&#125;</code>. The left of <code>:</code> is the name and the right of <code>:</code> is the value. For example:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">myFirstPipeline</span></span><br></pre></td></tr></table></figure>
+
+<p>Note that the <em>string</em> in <code>YAML</code> does not need to be quoted. However, they can be.</p>
+<p>The value can be a string or number, or <code>true</code> or <code>false</code> or <code>null</code>, or an <em>object</em>. <code>YAML</code> uses indentation to indicate nested objects. 2 space indentation is preferred but not required. For example:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="attr">var1:</span> <span class="string">value1</span></span><br><span class="line">  <span class="attr">var2:</span> <span class="string">value2</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="collections"><a href="#collections" class="headerlink" title="collections"></a>collections</h3><p><code>YAML</code> uses <code>[]</code> to indicate an array. For example:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">sequence:</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+
+<p>Another way is to use <code>- </code>, as shown below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">sequence:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">item1</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">item2</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="multiple-data-types"><a href="#multiple-data-types" class="headerlink" title="multiple data types"></a>multiple data types</h3><p><code>|</code> indicates there are multiple data types available for the keyword. For example,  <code>job | templateReference</code> means either a job definition or a template reference are allowed.</p>
+<h3 id="comments"><a href="#comments" class="headerlink" title="comments"></a>comments</h3><p><code>JSON</code> does not support comment but you can use <code>#</code> for comments in <code>YAML</code>.</p>
+<h2 id="The-structure-of-YAML-for-Pipelines"><a href="#The-structure-of-YAML-for-Pipelines" class="headerlink" title="The structure of YAML for Pipelines"></a>The structure of <code>YAML</code> for Pipelines</h2><p>When we set up the pipelines in Azure DevOps, we use <strong>Stages</strong>, <strong>Jobs</strong> and <strong>Tasks</strong> to describe a CI&#x2F;CD process. One pipeline might contain one or more stages, such as “Build the app” and “Run tests”, etc. Every stage consists of one or more jobs. Every job contains one or more tasks. Let us see the hierarchy of the <code>YAML</code> file for the pipeline:</p>
+<ul>
+<li>Pipeline<ul>
+<li>Stage A<ul>
+<li>Job 1<ul>
+<li>Step 1.1</li>
+<li>Step 1.2</li>
+<li>…</li>
+</ul>
+</li>
+<li>Job 2<ul>
+<li>Step 2.1</li>
+<li>Step 2.2</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Stage B<ul>
+<li>Job 1</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>You do not need all these levels because sometimes the pipeline only contains a few jobs so just tailor the steps for your specific requirement.</p>
+<h2 id="Creating-your-first-task-in-Azure-DevOps-Pipelines"><a href="#Creating-your-first-task-in-Azure-DevOps-Pipelines" class="headerlink" title="Creating your first task in Azure DevOps Pipelines"></a>Creating your first task in Azure DevOps Pipelines</h2><h3 id="Applying-Azure-DevOps-Pipelines-for-your-project"><a href="#Applying-Azure-DevOps-Pipelines-for-your-project" class="headerlink" title="Applying Azure DevOps Pipelines for your project"></a>Applying Azure DevOps Pipelines for your project</h3><p>You can host your project on Azure DevOps Repo or GitHub. Azure DevOps Pipelines supports lots of repository providers, such as GitHub, Bitbucket or other Git system. </p>
+<p>If your project is hosted on GitHub, you can easily install the Azure Pipelines plugin from GitHub Marketplace:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191126125816387.png" class="" title="Installing Azure Pipelines to GitHub" alt="Installing Azure Pipelines to GitHub">
+
+<p>Search <em>pipeline</em> in Marketplace then click <strong>Azure Pipelines</strong>. It will guide you to install it into your project. Next, you could see your project in Azure DevOps.</p>
+<p>Another way is creating a new blank project in your Azure DevOps and just enable the modules you need. Then connect to your project repository and build the first pipeline following the guide.</p>
+<p>Let us create a new pipeline to build the project. Click <strong>Pipelines</strong> in the Azure DevOps menu, then select <strong>Builds</strong>:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191126130101092.png" class="" title="Auzre DevOps menu - Builds" alt="Auzre DevOps menu - Builds">
+
+<p>Click <strong>New</strong> - <strong>New build pipeline</strong>:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191126131331582.png" class="" title="Azure DevOps menu - New build pipeline" alt="Azure DevOps menu - New build pipeline">
+
+<p>Azure DevOps Pipelines will ask you where the project is:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191126132325606.png" class="" title="Select your repo" alt="Select your repo">
+
+<p>If you prefer the classic editor, feel free to click <strong>Use the classic editor</strong>. But this time, I will use <code>YAML</code>. So I click <strong>GitHub(YAML)</strong> option and select the repository. Azure Pipelines will analyze the repository and recommend a pipeline template for the project. If Azure Pipelines could not analyze what type your project is, you could configure it manually:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191126133456137.png" class="" title="Azure DevOps - Configure your pipeline" alt="Azure DevOps - Configure your pipeline">
+
+<p>I will build the pipeline from scratch. So I select <strong>Starter pipeline</strong>. Obviously, you could select one template for the specific type of your project to simplify the process. You can also click <strong>Show more</strong> to check more available templates.</p>
+<p>Once you select a template, Azure Pipelines will create a file named <code>azure-pipelines.yml</code> at the root of your repo. The default template for starter pipeline is shown below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Starter pipeline</span></span><br><span class="line"><span class="comment"># Start with a minimal pipeline that you can customize to build and deploy your code.</span></span><br><span class="line"><span class="comment"># Add steps that build, run tests, deploy, and more:</span></span><br><span class="line"><span class="comment"># https://aka.ms/yaml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">trigger:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">master</span></span><br><span class="line"></span><br><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">&#x27;ubuntu-latest&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">steps:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">script:</span> <span class="string">echo</span> <span class="string">Hello,</span> <span class="string">world!</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Run a one-line script&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">script:</span> <span class="string">|</span></span><br><span class="line"><span class="string">    echo Add other tasks to build, test, and deploy your project.</span></span><br><span class="line"><span class="string">    echo See https://aka.ms/yaml</span></span><br><span class="line"><span class="string"></span>  <span class="attr">displayName:</span> <span class="string">&#x27;Run a multi-line script&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>The content of the file might vary depending on your project.</p>
+<p>You can change the file name by clicking the file name link:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191203085913759.png" class="" title="Azure DevOps - Review your pipeline YAML" alt="Azure DevOps - Review your pipeline YAML">
+
+<h3 id="Setting-up-the-trigger"><a href="#Setting-up-the-trigger" class="headerlink" title="Setting up the trigger"></a>Setting up the trigger</h3><p>We have gained the fundamentals for <code>YAML</code>. Let us investigate the content of this <code>YAML</code> file. The first key is <code>trigger</code> that means <strong>Push trigger</strong>. It specifies what branch will cause the build process when you push the changes. If you do not specify this value, every time you push to every branch will trigger a build.</p>
+<p>For <code>trigger</code> key, there are different options but at the moment, we just need to know, we can set up a branch name here, as shown below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">trigger:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<p>If you want to add more branches, just add the elements like this:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">trigger:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">master</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">develop</span></span><br></pre></td></tr></table></figure>
+
+<p>You can also configure the <em>include</em>, <em>exclude</em> for <em>branches</em>, <em>tags</em> and <em>paths</em>. The full syntax is:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">trigger:</span></span><br><span class="line">  <span class="attr">batch:</span> <span class="string">boolean</span> <span class="comment"># batch changes if true (the default); start a new build for every push if false</span></span><br><span class="line">  <span class="attr">branches:</span></span><br><span class="line">    <span class="attr">include:</span> [ <span class="string">string</span> ] <span class="comment"># branch names which will trigger a build</span></span><br><span class="line">    <span class="attr">exclude:</span> [ <span class="string">string</span> ] <span class="comment"># branch names which will not</span></span><br><span class="line">  <span class="attr">tags:</span></span><br><span class="line">    <span class="attr">include:</span> [ <span class="string">string</span> ] <span class="comment"># tag names which will trigger a build</span></span><br><span class="line">    <span class="attr">exclude:</span> [ <span class="string">string</span> ] <span class="comment"># tag names which will not</span></span><br><span class="line">  <span class="attr">paths:</span></span><br><span class="line">    <span class="attr">include:</span> [ <span class="string">string</span> ] <span class="comment"># file paths which must match to trigger a build</span></span><br><span class="line">    <span class="attr">exclude:</span> [ <span class="string">string</span> ] <span class="comment"># file paths which will not trigger a build</span></span><br></pre></td></tr></table></figure>
+
+<p>You can use <strong>wildcards</strong> to specify a branch of a tag. Wildcards patterns allow you to use ***** to match zero or more characters and <strong>?</strong> to match a single character. For more details, please visit <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/azure/devops/pipelines/build/triggers?WT.mc_id=DT-MVP-5001643&view=azure-devops&tabs=yaml#wildcards">Wildcards in triggers</a>.</p>
+<p>Another type of triggers is <strong>PR trigger</strong> which specifies what branches will cause a pull request build to run. But keep in mind that this feature is only available for GitHub and Bitbucket Cloud. If you are using Azure DevOps Repos, you can configure <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/azure/devops/repos/git/branch-policies?WT.mc_id=DT-MVP-5001643&view=azure-devops#build-validation">branch policy for build validation</a> to trigger the build for validation.</p>
+<p>I am using GitHub, so I will use the code below to trigger the build when I have a new Pull Request to the <code>master</code> branch:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">pr:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Setting-up-the-pool"><a href="#Setting-up-the-pool" class="headerlink" title="Setting up the pool"></a>Setting up the pool</h3><p>The <code>pool</code> is used to specify which pool to use for the job. The full syntax is:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">string</span>  <span class="comment"># name of the pool to run this job in</span></span><br><span class="line">  <span class="attr">demands:</span> <span class="string">string</span> <span class="string">|</span> [ <span class="string">string</span> ]  <span class="comment">## see below</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">string</span> <span class="comment"># name of the vm image you want to use, only valid in the Microsoft-hosted pool</span></span><br></pre></td></tr></table></figure>
+
+<p>Azure DevOps provides us lots of Microsoft-hosted pools. You could find them here:  <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/azure/devops/pipelines/agents/hosted?WT.mc_id=DT-MVP-5001643&view=azure-devops#use-a-microsoft-hosted-agent">Microsoft-hosted agents</a>.</p>
+<p>Of cause, you are able to use your private pool but you need to create your build agent first. It is out of the scope of this article.</p>
+<p>I want to build the project on the Windows platform so I would change <code>vmImage</code> to <code>windows-2019</code> that runs Windows Server 2019 with Visual Studio 2019. So this section would be:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">&#x27;windows-2019&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>If you are developing a .NET Core application, you could use the Linux platforms such as Ubuntu by using the code below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">&#x27;ubuntu-latest&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Running-the-first-Pipeline"><a href="#Running-the-first-Pipeline" class="headerlink" title="Running the first Pipeline"></a>Running the first Pipeline</h3><p>The next sections are some scripts. Before we change them, we can save the pipeline first and try to run it. Click <strong>Save and run</strong> on the right top corner. You can change the commit message before saving it. You will see the result as shown below:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191126170157038.png" class="" title="Running the pipeline" alt="Running the pipeline">
+
+<p>Actually, this default pipeline template just shows how to run a one-line script and a multi-line script that output echo messages. We need to add our tasks to build the project.</p>
+<h2 id="Adding-tasks-to-the-pipeline"><a href="#Adding-tasks-to-the-pipeline" class="headerlink" title="Adding tasks to the pipeline"></a>Adding tasks to the pipeline</h2><p>Let us figure out the hierarchy of pipeline tasks. We can use <strong>Stage</strong>, <strong>Job</strong> and <strong>Step</strong> to classify the tasks. Basically, a stage is a collection of related jobs. A job is a collection of steps. Steps are a series of specific operations that make up a job, such as running a piece of script, or copying files. One example is shown below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">stages:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">stage:</span> <span class="string">Build</span></span><br><span class="line">  <span class="attr">jobs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job:</span> <span class="string">BuildJob</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">script:</span> <span class="string">echo</span> <span class="string">Building!</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">stage:</span> <span class="string">Test</span></span><br><span class="line">  <span class="attr">jobs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job:</span> <span class="string">TestOnWindows</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">script:</span> <span class="string">echo</span> <span class="string">Testing</span> <span class="string">on</span> <span class="string">Windows!</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job:</span> <span class="string">TestOnLinux</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">script:</span> <span class="string">echo</span> <span class="string">Testing</span> <span class="string">on</span> <span class="string">Linux!</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">stage:</span> <span class="string">Deploy</span></span><br><span class="line">  <span class="attr">jobs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job:</span> <span class="string">Deploy</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">script:</span> <span class="string">echo</span> <span class="string">Deploying</span> <span class="string">the</span> <span class="string">code!</span></span><br></pre></td></tr></table></figure>
+
+<p>As we mentioned, you do not need all of them. If your pipeline has only one stage and one job, you can omit <strong>stage</strong> and <strong>job</strong> and only use <strong>steps</strong>.</p>
+<h3 id="Creating-the-first-step"><a href="#Creating-the-first-step" class="headerlink" title="Creating the first step"></a>Creating the first step</h3><p>I prefer to start from the easiest way. So let us just ignore <strong>stage</strong> and <strong>job</strong>. First, I will add <strong>steps</strong> to build the project. The first step is to install the .NET Core SDK.</p>
+<p>Delete the echo scripts in the default pipeline, then add the <strong>steps</strong> section as shown below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">steps:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">UseDotNet@2</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Install .NET Core SDK&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">packageType:</span> <span class="string">&#x27;sdk&#x27;</span></span><br><span class="line">    <span class="attr">version:</span> <span class="string">&#x27;2.x&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>Please DO NOT just copy &amp; paste it. Try to type it to test the powerful editor of Azure DevOps Pipelines. When you type <em>dotnet</em> for the <strong>task</strong> name, you could find that the editor automatically shows a list that contains this keyword:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202113533810.png" class="" title="Azure DevOps - IntelliSense" alt="Azure DevOps - IntelliSense">
+
+<p>That is a similar experience of IntelliSense in Visual Studio. You will love it. Move your <em>up</em> or <em>down</em> key then press Enter to select <code>UseDotNet@2</code>. You will find there is a grey <strong>Settings</strong> link above the task:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202113922673.png" class="" title="Azure DevOps - Settings of YAML" alt="Azure DevOps - Settings of YAML">
+
+<p>Click <strong>Settings</strong>, you will see the configuration panel on the right side:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202114046323.png" class="" title="Azure DevOps - task settings" alt="Azure DevOps - task settings">
+
+<p>It saves time to remember the names of the parameters. Type <strong>2.x</strong> in the <strong>Version</strong> textbox, then click <strong>Add</strong>. The task will be added to the pipeline:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202114306637.png" class="" title="Azure DevOps - steps" alt="Azure DevOps - steps">
+
+<p>The editor supports wonderful IntelliSense when you type:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202114635116.png" class="" title="Azure DevOps - IntelliSense" alt="Azure DevOps - IntelliSense">
+
+<p>The next question is, how can we know the parameters we need to use? For .NET Core tool, check the documentation here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?WT.mc_id=DT-MVP-5001643&view=azure-devops">Use .NET Core task</a>.</p>
+<p>Azure DevOps Pipelines supports lots of tasks, such as <strong>Build tasks</strong>, <strong>Tool tasks</strong>, <strong>Test tasks</strong>, <strong>Deploy tasks</strong> and <strong>Utility tasks</strong>, etc. You can find the list here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/azure/devops/pipelines/tasks/?WT.mc_id=DT-MVP-5001643&view=azure-devops">Build and release tasks</a>.</p>
+<h3 id="Building-the-project"><a href="#Building-the-project" class="headerlink" title="Building the project"></a>Building the project</h3><p>Now we have installed the .NET Core SDK for our project. Next, we need to call .NET Core CLI to build the project. Add a new task in the current <strong>steps</strong> section, and select <code>DotNetCoreCLI@2</code> because we are using .NET Core v2.x. When you see the <strong>Settings</strong> link above the task, you can easily configure it in the task configuration panel:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202115857765.png" class="" title="Azure DevOps - task settings" alt="Azure DevOps - task settings">
+
+<p>The new task is shown below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&#x27;build&#x27;</span></span><br><span class="line">    <span class="attr">projects:</span> <span class="string">&#x27;FunCoding.CoreMessenger/FunCoding.CoreMessenger/FunCoding.CoreMessenger.csproj&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>When you specify the path to project(s), you can use wildcards (e.g. &#42;&#42;<em>&#x2F;</em>&#42;.csproj for all .csproj files in all subfolders). You can also specify arguments for the <code>build</code> command.</p>
+<p>Let us keep it as simple as possible at the moment. Click <strong>Save</strong> on the right top corner, and input your commit message, then click <strong>Save</strong>:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202121552841.png" class="" title="Azure DevOps - Save the pipeline" alt="Azure DevOps - Save the pipeline">
+
+<p>Once you saved the pipeline, you can run it by clicking <strong>Run</strong> on the right top corner. Select the correct branch&#x2F;tag, then click <strong>Run</strong>:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202121527364.png" class="" title="Azure DevOps - Run the pipeline" alt="Azure DevOps - Run the pipeline">
+
+<p>You will see the pipeline runs correctly:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202121818956.png" class="" title="Azure DevOps - pipeline result" alt="Azure DevOps - pipeline result">
+
+<h3 id="Adding-parameters-for-NET-Core-CLI"><a href="#Adding-parameters-for-NET-Core-CLI" class="headerlink" title="Adding parameters for .NET Core CLI"></a>Adding parameters for .NET Core CLI</h3><p>When we use the <code>dotnet build</code> command of .NET Core CLI, the default configuration is <code>debug</code>. We need to specify the <code>release</code> mode. So we can add a <code>configuration</code> parameter like this:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Build the project&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&#x27;build&#x27;</span></span><br><span class="line">    <span class="attr">configuration:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line">    <span class="attr">projects:</span> <span class="string">&#x27;FunCoding.CoreMessenger/FunCoding.CoreMessenger/FunCoding.CoreMessenger.csproj&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>If we just need a build pipeline for the PR validation, that is enough. We only need to validate the build,  and no need to pack and publish the packages. But for the release, we need to pack the project and publish the <code>*.nupkg</code> file. So let us move on.</p>
+<h2 id="Publishing-the-artifact"><a href="#Publishing-the-artifact" class="headerlink" title="Publishing the artifact"></a>Publishing the artifact</h2><p>The next step is to use <code>dotnet pack</code> command of .NET Core CLI to pack the code into a NuGet package, then publish it to a folder for the release.</p>
+<h3 id="Packing-the-package"><a href="#Packing-the-package" class="headerlink" title="Packing the package"></a>Packing the package</h3><p>The <code>dotnet pack</code> command builds the project and creates NuGet packages. We need to add another task to use this command. Select <code>DotNetCoreCLI@2</code> task and click <strong>Settings</strong>:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202135942108.png" class="" title="Azure DevOps - task settings" alt="Azure DevOps - task settings">
+
+<p>We need to select <code>pack</code> command. Then choose the correct path to the project to pack. We can keep the <strong>Configuration to Package</strong> and the <strong>Package Folder</strong> as the default values. For <strong>Do not build</strong> checkbox, we can make it checked because we have completed the step to build in the previous step. In the <strong>Pack options</strong>, we can select the versioning pattern. For more details:</p>
+<blockquote>
+<h2 id="Versioning-schemes"><a href="#Versioning-schemes" class="headerlink" title="Versioning schemes"></a>Versioning schemes</h2><p>For <strong>byPrereleaseNumber</strong>, the version will be set to whatever you choose for major, minor, and patch, plus the date and time in the format <code>yyyymmdd-hhmmss</code>.</p>
+<p>For <strong>byEnvVar</strong>, the version will be set as whatever environment variable, e.g. <code>MyVersion</code> (no <strong>$</strong>, just the environment variable name), you provide. Make sure the environment variable is set to a proper SemVer e.g. <code>1.2.3</code> or <code>1.2.3-beta1</code>.</p>
+<p>For <strong>byBuildNumber</strong>, the version will be set to the build number, ensure that your build number is a proper SemVer e.g. <code>1.0.$(Rev:r)</code>. If you select <strong>byBuildNumber</strong>, the task will extract a dotted version, <code>1.2.3.4</code> and use only that, dropping any label. To use the build number as is, you should use <strong>byEnvVar</strong> as described above, and set the environment variable to <code>BUILD_BUILDNUMBER</code>.</p>
+</blockquote>
+<p>For this demo, I do not want to publish a formal release to NuGet. So I select <strong>byPrereleaseNumber</strong>. It will attach a suffix after the <code>Major.Minor.Patch</code> version so it will be a pre-release version. Pre-release version is a label that has a <code>-</code> followed by whatever letters and numbers you want. For example, version <code>1.0.0-beta</code>, <code>1.0.0-build12345</code> are all pre-release versions of <code>1.0.0</code>. This is called <code>SemVer</code> which means semantic version number. You can find more details here: <a target="_blank" rel="noopener" href="https://semver.org/">Semantic Versioning</a>. When we need to publish a formal release version, we will not use this type of pack options. Another easy way to do it is to hardcode the version number in the *.csproj file, and set the <strong>Pack options</strong> as <code>Off</code> here. We can also add arguments for <code>dotnet pack</code> command, such as  <code>dotnet pack -p:PackageVersion=2.1.0</code>. In addition, we can find some other tools to help us simplify this job, such as <a target="_blank" rel="noopener" href="https://github.com/RicoSuter/DNT">DotNetTools</a>. You can use these tools or write PowerShell scripts to update the version number.</p>
+<p>The <code>pack</code> section looks like this:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Pack the package&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&#x27;pack&#x27;</span></span><br><span class="line">    <span class="attr">configuration:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line">    <span class="attr">packagesToPack:</span> <span class="string">&#x27;FunCoding.CoreMessenger/FunCoding.CoreMessenger/FunCoding.CoreMessenger.csproj&#x27;</span></span><br><span class="line">    <span class="attr">nobuild:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">versioningScheme:</span> <span class="string">&#x27;byPrereleaseNumber&#x27;</span></span><br><span class="line">    <span class="attr">majorVersion:</span> <span class="string">&#x27;1&#x27;</span></span><br><span class="line">    <span class="attr">minorVersion:</span> <span class="string">&#x27;0&#x27;</span></span><br><span class="line">    <span class="attr">patchVersion:</span> <span class="string">&#x27;0&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>If the pipeline runs correctly, it will pack the project and generate the package file <code>*.nupkg</code> into <code>$(Build.ArtifactStagingDirectory)</code> , which is a predefined variable of Azure DevOps. For your information: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?WT.mc_id=DT-MVP-5001643&view=azure-devops&tabs=yaml">Predefined variables</a>.</p>
+<h3 id="Using-variables"><a href="#Using-variables" class="headerlink" title="Using variables"></a>Using variables</h3><p>At the moment, we have not specified the build configuration. The default value for most projects is <code>Debug</code>. So we need to assign <code>Release</code> to this parameter. Also, we found that both of these two tasks contain the project path. So we could use <strong>variables</strong> to simplify the script.</p>
+<p><strong>Variables</strong> allow us to define some key&#x2F;value pairs that can be reused. Also, it is a good way to avoid hard-coding in the script. When Azure DevOps Pipelines executes the tasks, the variables will be replaced with the correct values.</p>
+<p>Azure DevOps already provides some predefined variables, as we mentioned in the last section. We can also define our own variables. Let us add some variables after the <code>pool</code> section:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="attr">configuration:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line">  <span class="attr">projectPath:</span> <span class="string">&#x27;FunCoding.CoreMessenger/FunCoding.CoreMessenger/FunCoding.CoreMessenger.csproj&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>Then we can apply these variables in the tasks by using <code>$(variableName)</code>:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Build the project&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&#x27;build&#x27;</span></span><br><span class="line">    <span class="attr">configuration:</span> <span class="string">$(configuration)</span></span><br><span class="line">    <span class="attr">projects:</span> <span class="string">$(projectPath)</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Pack the package&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&#x27;pack&#x27;</span></span><br><span class="line">    <span class="attr">configuration:</span> <span class="string">$(configuration)</span></span><br><span class="line">    <span class="attr">packagesToPack:</span> <span class="string">$(projectPath)</span></span><br><span class="line">    <span class="attr">nobuild:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">versioningScheme:</span> <span class="string">&#x27;byPrereleaseNumber&#x27;</span></span><br><span class="line">    <span class="attr">majorVersion:</span> <span class="string">&#x27;1&#x27;</span></span><br><span class="line">    <span class="attr">minorVersion:</span> <span class="string">&#x27;0&#x27;</span></span><br><span class="line">    <span class="attr">patchVersion:</span> <span class="string">&#x27;0&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>The pipeline will work as expected.</p>
+<p>Actually, we can use <code>dotnet push</code> command to push it to the NuGet package seed in the build pipeline. But it makes a little bit confusing because literally, the build pipeline should only do the build job. So I will create another release pipeline to push it to the NuGet package seed.</p>
+<h3 id="Publishing-artifacts"><a href="#Publishing-artifacts" class="headerlink" title="Publishing artifacts"></a>Publishing artifacts</h3><p>The next step is to publish the NuGet package file so the release pipeline is able to push it to NuGet package feed. Add a new task by typing <code>publish</code> and select <code>PublishBuildArtifacts@1</code>:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202150114032.png" class="" title="Azure DevOps - IntelliSense" alt="Azure DevOps - IntelliSense">
+
+<p>You can find more details about this task here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/publish-build-artifacts?WT.mc_id=DT-MVP-5001643&view=azure-devops">Publish Build Artifacts task</a>.</p>
+<p>Click <strong>Settings</strong> and keep the default settings then click <strong>Add</strong>:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202150245329.png" class="" title="Azure DevOps - Publish build artifacts" alt="Azure DevOps - Publish build artifacts">
+
+<p>When we pack the project, the default setting of <strong>Package Folder</strong> is <code>$(Build.ArtifactStagingDirectory)</code>. So in the publishing step, the task will get the NuGet package file from <code>$(Build.ArtifactStagingDirectory)</code> and publish it to Azure Pipelines, or a file share. The script is shown below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">PublishBuildArtifacts@1</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Publish the package&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">PathtoPublish:</span> <span class="string">&#x27;$(Build.ArtifactStagingDirectory)&#x27;</span></span><br><span class="line">    <span class="attr">ArtifactName:</span> <span class="string">&#x27;drop&#x27;</span></span><br><span class="line">    <span class="attr">publishLocation:</span> <span class="string">&#x27;Container&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>Ok, now when this pipeline is triggered, it will build the project, then pack and publish the NuGet package to Azure Pipelines. We can click <strong>Artifacts</strong> on the build pipeline result page then click <strong>drop</strong>:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202152045889.png" class="" title="Azure DevOps - build result" alt="Azure DevOps - build result">
+
+<p>We can see the <code>*.nupkg</code> is right here:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202151935278.png" class="" title="Azure DevOps - artifacts folder" alt="Azure DevOps - artifacts folder">
+
+<p>Note that the name of the <code>*.nupkg</code> file will be changed after each build because we selected <strong>byPrereleaseNumber</strong> as the <strong>Pack options</strong>. If you use different versioning schemes, the name may vary.</p>
+<h2 id="Pushing-nupkg-file-to-NuGet-package-feed"><a href="#Pushing-nupkg-file-to-NuGet-package-feed" class="headerlink" title="Pushing *.nupkg file to NuGet package feed"></a>Pushing <code>*.nupkg</code> file to NuGet package feed</h2><p>Usually, we should have another branch named <code>release</code> to release the package. But for simplicity, I continue to use <code>master</code> branch for the release pipeline. Please keep in mind that this is not a good practice of GitFlow. I just want to focus on the <code>YAML</code> stuff. You can easily change the target branch in the script.</p>
+<h3 id="Creating-the-release-pipeline"><a href="#Creating-the-release-pipeline" class="headerlink" title="Creating the release pipeline"></a>Creating the release pipeline</h3><p>Let us create a release pipeline. Click <strong>Pipelines</strong> in the Azure DevOps menu, then click <strong>Releases</strong> in the right side:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202152809377.png" class="" title="Azure DevOps menu - Releases" alt="Azure DevOps menu - Releases">
+
+<p>In the new window, click <strong>New pipeline</strong>. You will see a page like this:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202153012927.png" class="" title="Azure DevOps - add release" alt="Azure DevOps - add release">
+
+<p>We will build the pipeline from scratch so please click <strong>Empty job</strong>:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202153129451.png" class="" title="Azure DevOps - edit release" alt="Azure DevOps - edit release">
+
+<h3 id="Adding-the-artifact"><a href="#Adding-the-artifact" class="headerlink" title="Adding the artifact"></a>Adding the artifact</h3><p>Click <strong>Add an artifact</strong>, then you will see a page to configure the artifact:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202160504100.png" class="" title="Azure DevOps - select artifact" alt="Azure DevOps - select artifact">
+
+<p>Select the right build pipeline for the release. Then click <strong>Add</strong>. The artifact will be shown here:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202160622803.png" class="" title="Azure DevOps - artifact" alt="Azure DevOps - artifact">
+
+<h3 id="Adding-tasks"><a href="#Adding-tasks" class="headerlink" title="Adding tasks"></a>Adding tasks</h3><p>Then click <strong>1 job, 0 task</strong> link below <strong>Stage 1</strong>. You can update the details of the Stage and the Agent pool:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202160901238.png" class="" title="Azure DevOps - release task" alt="Azure DevOps - release task">
+
+<p>Click the <strong>+</strong> on the right of the job:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202161021929.png" class="" title="Azure DevOps - add release task" alt="Azure DevOps - add release task">
+
+<p>You will see a page that shows all the tasks available in Azure DevOps:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202161112097.png" class="" title="Azure DevOps - select release task" alt="Azure DevOps - select release task">
+
+<p>Before I wrote this article, I thought I could use <code>dotnet push</code> command to push the package to the NuGet package seed, so I selected <code>.NET Core</code> task and selected <code>nuget push</code> command from the <strong>Command</strong> list. But I found that .NET Core CLI threw an error:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Error: DotNetCore currently does not support using an encrypted Api Key.</span><br><span class="line">Packages failed to publish</span><br></pre></td></tr></table></figure>
+
+<p>I found an issue on GitHub: <a target="_blank" rel="noopener" href="https://github.com/microsoft/azure-pipelines-tasks/issues/7160">DotNetCore currently does not support using an encrypted Api Key</a>. At the moment, using an ApiKey is currently not supported in .NET Core CLI because the required libraries for encrypting the key are not available. So we need to use NuGet tool to push the package:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202224011804.png" class="" title="Azure DevOps - nuget task" alt="Azure DevOps - nuget task">
+
+<p>The tricky thing is here. The default value of <strong>Path to NuGet package(s) to publish</strong> is <code>$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg</code>. But the release pipelines download pipeline artifacts to <code>System.ArtifactsDirectory</code> so we need to use <code>$(System.ArtifactsDirectory)/**/*.nupkg</code>. You can find the note here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/nuget?WT.mc_id=DT-MVP-5001643&view=azure-devops#examples">NuGet task</a>. For more details about Artifacts, please check the documentation here: <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/devops/pipelines/release/artifacts?WT.mc_id=DT-MVP-5001643&view=azure-devops#download">Release artifacts and artifact sources</a>.</p>
+<p>The next important thing is that we need to create a connection to the NuGet server. If you are publishing the NuGet package to your organization, select <strong>This organization&#x2F;collection</strong> for <strong>Target feed location</strong>. I am publishing it to NetGet, so I choose <strong>External NuGet server (including other organizations&#x2F;collections)</strong>.</p>
+<p>If you have not created the connection to the NuGet server, click <strong>+New</strong> to create one. You can find the ApiKey in your NuGet portal. The Feed URL should be <code>https://api.nuget.org/v3/index.json</code>. </p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202165821476.png" class="" title="Azure DevOps - new service connection" alt="Azure DevOps - new service connection">
+
+<p>Click <strong>Save</strong> on the right top corner to save the configuration. The final configuration for the task looks like this:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202224414806.png" class="" title="Azure DevOps - nuget task settings" alt="Azure DevOps - nuget task settings">
+
+<p>The job is quite straightforward because we only need to use one command. If you have more tasks, just add them. You can also create different stages for different environments, such as Dev, Stage or Prod.</p>
+<h3 id="Creating-the-release"><a href="#Creating-the-release" class="headerlink" title="Creating the release"></a>Creating the release</h3><p>Click <strong>Create release</strong>, you will see the page to configure the release:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202170421319.png" class="" title="Azure DevOps - create a new release" alt="Azure DevOps - create a new release">
+
+<p>Click <strong>Create</strong> to start the release. Then return to the detail page of the release, click <strong>Deploy</strong>:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202222830280.png" class="" title="Azure DevOps - deploy" alt="Azure DevOps - deploy">
+
+<p>You will see a new page to deploy it:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202222918027.png" class="" title="Azure DevOps - deploy" alt="Azure DevOps - deploy">
+
+<p>Click <strong>Deploy</strong>, the release pipeline will start.</p>
+<p>If the release pipeline works, you can see the result as shown below:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202224631757.png" class="" title="Azure DevOps - release result" alt="Azure DevOps - release result">
+
+<h3 id="Check-the-package-on-NuGet"><a href="#Check-the-package-on-NuGet" class="headerlink" title="Check the package on NuGet"></a>Check the package on NuGet</h3><p>Now sign in NuGet and I can see the package is right here:</p>
+<img src="/2019/12/03/using-azure-devops-pipelines-to-publish-the-nuget-package-from-github-repo/image-20191202224826733.png" class="" title="Azure DevOps - nuget result" alt="Azure DevOps - nuget result">
+
+<p>Keep in mind that the package with an automated suffix like <code>1.0.0-CI-10191202-034430</code> is a pre-release version. Because we selected <strong>byPrereleaseNumber</strong> in the <code>pack</code> task. If we want to publish a formal version, we need to specify the version number by other ways. Versioning is another tricky thing in CI&#x2F;CD. But I want to stop here because this article is to show how to write a <code>YAML</code> file from scratch. We did not cover the full details of git flow, such as branch-policies. I hope you could gain a basic understanding of<code>YAML</code> and will not be scared of it anymore.</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>The final build script is shown as below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">trigger:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">master</span></span><br><span class="line"></span><br><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">&#x27;windows-2019&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">variables:</span></span><br><span class="line">  <span class="attr">configuration:</span> <span class="string">&#x27;Release&#x27;</span></span><br><span class="line">  <span class="attr">projectPath:</span> <span class="string">&#x27;FunCoding.CoreMessenger/FunCoding.CoreMessenger/FunCoding.CoreMessenger.csproj&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">steps:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">UseDotNet@2</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Install .NET Core SDK&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">packageType:</span> <span class="string">&#x27;sdk&#x27;</span></span><br><span class="line">    <span class="attr">version:</span> <span class="string">&#x27;2.x&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Build the project&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&#x27;build&#x27;</span></span><br><span class="line">    <span class="attr">configuration:</span> <span class="string">$(configuration)</span></span><br><span class="line">    <span class="attr">projects:</span> <span class="string">$(projectPath)</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">DotNetCoreCLI@2</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Pack the package&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">&#x27;pack&#x27;</span></span><br><span class="line">    <span class="attr">configuration:</span> <span class="string">$(configuration)</span></span><br><span class="line">    <span class="attr">packagesToPack:</span> <span class="string">$(projectPath)</span></span><br><span class="line">    <span class="attr">nobuild:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">versioningScheme:</span> <span class="string">&#x27;byPrereleaseNumber&#x27;</span></span><br><span class="line">    <span class="attr">majorVersion:</span> <span class="string">&#x27;1&#x27;</span></span><br><span class="line">    <span class="attr">minorVersion:</span> <span class="string">&#x27;0&#x27;</span></span><br><span class="line">    <span class="attr">patchVersion:</span> <span class="string">&#x27;0&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">PublishBuildArtifacts@1</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Publish the package&#x27;</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">PathtoPublish:</span> <span class="string">&#x27;$(Build.ArtifactStagingDirectory)&#x27;</span></span><br><span class="line">    <span class="attr">ArtifactName:</span> <span class="string">&#x27;drop&#x27;</span></span><br><span class="line">    <span class="attr">publishLocation:</span> <span class="string">&#x27;Container&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>In this article, I introduced what <code>YAML</code> is and how to define a <code>YAML</code> file from scratch. Azure DevOps Pipelines provides us with a good editor with intellisense to write <code>YAML</code> files. You can also update the properties with the configuration panel. We did not cover all the details regarding CI&#x2F;CD. Please check <a target="_blank" rel="noopener" href="https://datasift.github.io/gitflow/IntroducingGitFlow.html">GitFlow</a> and create corresponding branches. I hope this article would be useful to help you write your first <code>YAML</code> file. For more detail about Azure Pipelines, please check <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/azure/devops/pipelines/?WT.mc_id=DT-MVP-5001643&view=azure-devops">Azure Pipelines documentations</a>. Thanks.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DevOps/" rel="tag"># DevOps</a>
+              <a href="/tags/nuget/" rel="tag"># nuget</a>
+              <a href="/tags/github/" rel="tag"># github</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/11/20/implement-a-simple-messenger-component-for-wpf-uwp-and-xamarin/" rel="prev" title="Implementing a simple messenger component for WPF, UWP and Xamarin">
+                  <i class="fa fa-angle-left"></i> Implementing a simple messenger component for WPF, UWP and Xamarin
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/01/01/hello-world/" rel="next" title="Hello World">
+                  Hello World <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xiaodi Yan</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">236k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:35</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

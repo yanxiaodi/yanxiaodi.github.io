@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yanxiaodi.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="In my last post, I introduced Translator Helper - a VS Code Extension that helps you translate documents to other languages. In this post, I will introduce how to develop it from scratch.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to develop a VS Code Extension - Translator Helper">
+<meta property="og:url" content="https://yanxiaodi.github.io/2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/index.html">
+<meta property="og:site_name" content="Xiaodi Yan&#39;s Blog">
+<meta property="og:description" content="In my last post, I introduced Translator Helper - a VS Code Extension that helps you translate documents to other languages. In this post, I will introduce how to develop it from scratch.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/image-20200109104137159.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/image-20200109114205110.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/image-20200109114538882.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/image-20200218230646676.png">
+<meta property="article:published_time" content="2020-02-22T21:44:35.000Z">
+<meta property="article:modified_time" content="2020-02-22T21:44:35.000Z">
+<meta property="article:author" content="Xiaodi Yan">
+<meta property="article:tag" content="vscode">
+<meta property="article:tag" content="vscode extension">
+<meta property="article:tag" content="translate">
+<meta property="article:tag" content="open source">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yanxiaodi.github.io/2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/image-20200109104137159.png">
+
+
+<link rel="canonical" href="https://yanxiaodi.github.io/2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://yanxiaodi.github.io/2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/","path":"2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/","title":"How to develop a VS Code Extension - Translator Helper"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>How to develop a VS Code Extension - Translator Helper | Xiaodi Yan's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaodi Yan's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Coding is fun...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about-me/" rel="section"><i class="user fa-fw"></i>About</a></li><li class="menu-item menu-item-community-activities"><a href="/community-activities" rel="section"><i class="events fa-fw"></i>community activities</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-your-first-VS-Code-Extension"><span class="nav-number">1.</span> <span class="nav-text">Creating your first VS Code Extension</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Requirement-Analysis"><span class="nav-number">2.</span> <span class="nav-text">Requirement Analysis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Operating-The-Text"><span class="nav-number">3.</span> <span class="nav-text">Operating The Text</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Calling-Google-Translation-API"><span class="nav-number">4.</span> <span class="nav-text">Calling Google Translation API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implementing-The-Core-Function"><span class="nav-number">5.</span> <span class="nav-text">Implementing The Core Function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Configurations-Contribution-Points"><span class="nav-number">6.</span> <span class="nav-text">Configurations &amp; Contribution Points</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Extension-Configuration"><span class="nav-number">7.</span> <span class="nav-text">Extension Configuration</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Testing"><span class="nav-number">8.</span> <span class="nav-text">Testing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bundling"><span class="nav-number">9.</span> <span class="nav-text">Bundling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Publishing"><span class="nav-number">10.</span> <span class="nav-text">Publishing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CI-CD"><span class="nav-number">11.</span> <span class="nav-text">CI&#x2F;CD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Icon-README"><span class="nav-number">12.</span> <span class="nav-text">Icon &amp; README</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">13.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiaodi Yan"
+      src="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+  <p class="site-author-name" itemprop="name">Xiaodi Yan</p>
+  <div class="site-description" itemprop="description">Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yanxiaodi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yanxiaodi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/xiaodi-yan-829bb055/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;xiaodi-yan-829bb055&#x2F;" rel="noopener me" target="_blank"><i class="fab linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yanxiaodi.github.io/2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/3395915?s=460&v=4">
+      <meta itemprop="name" content="Xiaodi Yan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaodi Yan's Blog">
+      <meta itemprop="description" content="Microsoft MVP, Developer, Speaker, Community Contributor, .NET, ASP.NET, C#, Azure, ASP.NET Core, Cloud, Xamarin, Mobile, WPF, TypeScript, Python...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="How to develop a VS Code Extension - Translator Helper | Xiaodi Yan's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          How to develop a VS Code Extension - Translator Helper
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-02-23 10:44:35" itemprop="dateCreated datePublished" datetime="2020-02-23T10:44:35+13:00">2020-02-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/My-Projects/" itemprop="url" rel="index"><span itemprop="name">My Projects</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>17k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>15 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>In my last post, I introduced <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=XiaodiYan.translator-helper">Translator Helper</a> - a VS Code Extension that helps you translate documents to other languages. In this post, I will introduce how to develop it from scratch.</p>
+<span id="more"></span>
+
+<p>It is not very hard to develop a VS Code extension, but it is quite hard to develop a good one. Let us get started from a “Hello World”. You can find detailed documentation on VS Code site: <a target="_blank" rel="noopener" href="https://code.visualstudio.com/api">https://code.visualstudio.com/api</a>.</p>
+<p>First, we need to think about which category our extension is:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/extension-capabilities/theming">Theming</a>: Change the look of VS Code with a color or icon theme</li>
+<li><a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/extension-capabilities/extending-workbench">Extending the Workbench</a>: Add custom components &amp; views in the UI</li>
+<li><a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/extension-guides/webview">Webview Guide</a>: Create a Webview to display a custom webpage built with HTML&#x2F;CSS&#x2F;JS</li>
+<li><a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/language-extensions/overview">Language Extensions Overview</a>: Support a new programming language</li>
+<li><a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/extension-guides/debugger-extension">Debugger Extension Guide</a>: Support debugging a specific runtime</li>
+</ul>
+<p>You should focus on different APIs for each category. For my case, I want to read and insert the text in the file, so it belongs to <strong>Extending the Workbench</strong>. Next I will introduce how to develop a VS Code extension like <strong>Translator Helper</strong>.</p>
+<h2 id="Creating-your-first-VS-Code-Extension"><a href="#Creating-your-first-VS-Code-Extension" class="headerlink" title="Creating your first VS Code Extension"></a>Creating your first VS Code Extension</h2><p>You can find the tutorial here: <a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/get-started/your-first-extension">https://code.visualstudio.com/api/get-started/your-first-extension</a></p>
+<p>First, make sure you have <code>Node.js</code> and <code>Git</code> installed on your machine. Use <code>npm</code> to install <code>Yeoman</code> and <code>VS Code Extension Generator</code>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g yo generator-code</span><br></pre></td></tr></table></figure>
+
+<p>Then navigate to an empty folder, use the command below to create a new project:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yo code</span><br></pre></td></tr></table></figure>
+
+<p>The CLI will ask you some questions to complete the project. The first question is like this:</p>
+<img src="/2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/image-20200109104137159.png" class="" title="Generator CLI" alt="Generator CLI">
+
+<p>Here we need to select proper options based on my specified functionalities. For my extension, I use TypeScript because I love strong type. The output is shown below:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ? What type of extension do you want to create? New Extension (TypeScript)</span></span><br><span class="line"><span class="comment"># ? What&#x27;s the name of your extension? HelloWorld</span></span><br><span class="line"><span class="comment">### Press &lt;Enter&gt; to choose default for all options below ###</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ? What&#x27;s the identifier of your extension? helloworld</span></span><br><span class="line"><span class="comment"># ? What&#x27;s the description of your extension? LEAVE BLANK</span></span><br><span class="line"><span class="comment"># ? Initialize a git repository? Yes</span></span><br><span class="line"><span class="comment"># ? Which package manager to use? npm</span></span><br><span class="line"></span><br><span class="line">code ./helloworld</span><br></pre></td></tr></table></figure>
+
+<p>So a new VS Code Extension named <code>helloworld</code> will be generated and opened by VS Code. You can just press <code>F5</code> to run the project and you will see a new VS Code window that has loaded this extension.</p>
+<p>Press <code>F1</code> or <code>Ctrl+Shift+P</code>, then input <code>Hello World</code>, you will see there is a message box shown on the right bottom corner, which shows <code>Hello World</code>. That means the extension works.</p>
+<p>The most important code is placed in the <code>extension.ts</code> file. Open the file and have a look:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The module &#x27;vscode&#x27; contains the VS Code extensibility API</span></span><br><span class="line"><span class="comment">// Import the module and reference it with the alias vscode in your code below</span></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> vscode <span class="keyword">from</span> <span class="string">&#x27;vscode&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// this method is called when your extension is activated</span></span><br><span class="line"><span class="comment">// your extension is activated the very first time the command is executed</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">activate</span>(<span class="params">context: vscode.ExtensionContext</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Use the console to output diagnostic information (console.log) and errors (console.error)</span></span><br><span class="line">    <span class="comment">// This line of code will only be executed once when your extension is activated</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Congratulations, your extension &quot;helloworld&quot; is now active!&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The command has been defined in the package.json file</span></span><br><span class="line">    <span class="comment">// Now provide the implementation of the command with registerCommand</span></span><br><span class="line">    <span class="comment">// The commandId parameter must match the command field in package.json</span></span><br><span class="line">    <span class="keyword">let</span> disposable = vscode.<span class="property">commands</span>.<span class="title function_">registerCommand</span>(<span class="string">&#x27;extension.helloWorld&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// The code you place here will be executed every time your command is executed</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// Display a message box to the user</span></span><br><span class="line">        vscode.<span class="property">window</span>.<span class="title function_">showInformationMessage</span>(<span class="string">&#x27;Hello World!&#x27;</span>);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    context.<span class="property">subscriptions</span>.<span class="title function_">push</span>(disposable);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// this method is called when your extension is deactivated</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">deactivate</span>(<span class="params"></span>) &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>It is quite straight forward. In the <code>activate</code> method, it uses <code>vscode.commands.registerCommand()</code> method to register a command, then uses <code>vscode.window.showInformationMessage()</code> method to show the message box.</p>
+<h2 id="Requirement-Analysis"><a href="#Requirement-Analysis" class="headerlink" title="Requirement Analysis"></a>Requirement Analysis</h2><p>My requirement is simple: the user can press Keyboard Shortcuts to translate the current paragraph to the specified target language, then insert the translated text after the current paragraph. Because I found that the paragraph is the best unit for translation. No need to translate the whole article because it might lose some key information and we also need to proofread the text. Let check out the supported APIs of VS Code.</p>
+<p>You can find all the APIs here: <a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/references/vscode-api">https://code.visualstudio.com/api/references/vscode-api</a>. We need to interact with the current editor interface and implement the functionalities that allow us to automatically select and insert the text, etc. So I found an API named <code>TextEditor</code>: <a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/references/vscode-api#TextEditor">https://code.visualstudio.com/api/references/vscode-api#TextEditor</a>:</p>
+
+
+<p>It seems that this object can help us operate the text in the editor.</p>
+<p>So now we have got an idea: we will register the keyboard shortcuts and the commands, automatically select the current paragraph then send the text to the translation API, at last, insert the result after the current paragraph.</p>
+<h2 id="Operating-The-Text"><a href="#Operating-The-Text" class="headerlink" title="Operating The Text"></a>Operating The Text</h2><p>I created a class called <code>DocService</code> to operate the text in the editor, such as selecting a paragraph, inserting a paragraph, etc. The code is shown below:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">DocService</span> &#123;</span><br><span class="line">	<span class="attr">editor</span>: vscode.<span class="property">TextEditor</span> | <span class="literal">undefined</span>;</span><br><span class="line"></span><br><span class="line">	<span class="title function_">setCurrentEditor</span>(): <span class="built_in">void</span> &#123;</span><br><span class="line">		<span class="variable language_">this</span>.<span class="property">editor</span> = vscode.<span class="property">window</span>.<span class="property">activeTextEditor</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="title function_">getParagraph</span>(): <span class="built_in">string</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">editor</span> !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">			<span class="keyword">let</span> startLine = <span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">selection</span>.<span class="property">start</span>.<span class="property">line</span>;</span><br><span class="line">			<span class="keyword">let</span> endLine = <span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">selection</span>.<span class="property">end</span>.<span class="property">line</span>;</span><br><span class="line">			<span class="keyword">const</span> endCharacter = <span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">document</span>.<span class="title function_">lineAt</span>(endLine).<span class="property">text</span>.<span class="property">length</span>;</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">selection</span> = <span class="keyword">new</span> vscode.<span class="title class_">Selection</span>(startLine, <span class="number">0</span>, startLine, endCharacter);</span><br><span class="line">			<span class="keyword">var</span> paragraph = <span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">selection</span>;</span><br><span class="line">			<span class="keyword">let</span> result = <span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">document</span>.<span class="title function_">getText</span>(paragraph);</span><br><span class="line">			<span class="keyword">if</span> (result !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">				<span class="keyword">return</span> result;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="title function_">getSelectionText</span>(): <span class="built_in">string</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">editor</span> !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">document</span>.<span class="title function_">getText</span>(<span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">selection</span>);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="title function_">insertText</span>(<span class="attr">text</span>: <span class="built_in">string</span>): <span class="built_in">void</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">editor</span> !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">			<span class="keyword">let</span> end = <span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">selection</span>.<span class="property">end</span>;</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">editor</span>.<span class="title function_">edit</span>(<span class="function"><span class="params">editBuilder</span> =&gt;</span> &#123;</span><br><span class="line">				editBuilder.<span class="title function_">insert</span>(end, <span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">				editBuilder.<span class="title function_">insert</span>(end, text);</span><br><span class="line">			&#125;).<span class="title function_">then</span>(<span class="function"><span class="params">success</span> =&gt;</span> &#123;</span><br><span class="line">				<span class="keyword">if</span> (success &amp;&amp; <span class="variable language_">this</span>.<span class="property">editor</span> !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">					<span class="keyword">let</span> end = <span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">selection</span>.<span class="property">end</span>;</span><br><span class="line">					<span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">selection</span> = <span class="keyword">new</span> vscode.<span class="title class_">Selection</span>(end, end);</span><br><span class="line">					<span class="keyword">let</span> startLine = <span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">selection</span>.<span class="property">start</span>.<span class="property">line</span>;</span><br><span class="line">					<span class="keyword">let</span> endLine = <span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">selection</span>.<span class="property">end</span>.<span class="property">line</span>;</span><br><span class="line">					<span class="keyword">const</span> endCharacter = <span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">document</span>.<span class="title function_">lineAt</span>(endLine).<span class="property">text</span>.<span class="property">length</span>;</span><br><span class="line">					<span class="variable language_">this</span>.<span class="property">editor</span>.<span class="property">selection</span> = <span class="keyword">new</span> vscode.<span class="title class_">Selection</span>(startLine, <span class="number">0</span>, startLine, endCharacter);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Calling-Google-Translation-API"><a href="#Calling-Google-Translation-API" class="headerlink" title="Calling Google Translation API"></a>Calling Google Translation API</h2><p>We use Google Translate API to translate the text. It is just a simple HTTP request. For simplicity, we can use an npm package named <code>@vitalets/google-translate-api</code> to do it. The code is like this:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GoogleTranslationService</span> <span class="keyword">implements</span> <span class="title class_">ITranslatorService</span> &#123;</span><br><span class="line">	<span class="keyword">async</span> <span class="title function_">translate</span>(<span class="attr">text</span>: <span class="built_in">string</span>, <span class="attr">source</span>: <span class="built_in">string</span>, <span class="attr">target</span>: <span class="built_in">string</span>): <span class="title class_">Promise</span>&lt;<span class="built_in">string</span>&gt; &#123;</span><br><span class="line">		<span class="keyword">const</span> service = googleTranslate;</span><br><span class="line">		<span class="keyword">let</span> result = <span class="keyword">await</span> <span class="title function_">service</span>(text, &#123; <span class="attr">from</span>: source, <span class="attr">to</span>: target &#125;);</span><br><span class="line">		<span class="keyword">return</span> result.<span class="property">text</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Implementing-The-Core-Function"><a href="#Implementing-The-Core-Function" class="headerlink" title="Implementing The Core Function"></a>Implementing The Core Function</h2><p>Now we can combine these code snippets together. Create the function by following the “hello world” sample:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> translateInsert = vscode.<span class="property">commands</span>.<span class="title function_">registerCommand</span>(<span class="string">&#x27;translatorHelper.translateInsert&#x27;</span>, <span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">	<span class="comment">// The code you place here will be executed every time your command is executed</span></span><br><span class="line">	docService.<span class="title function_">setCurrentEditor</span>();</span><br><span class="line">	<span class="keyword">const</span> text = docService.<span class="title function_">getParagraph</span>();</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (text.<span class="title function_">trim</span>() !== <span class="string">&#x27;&#x27;</span>) &#123;</span><br><span class="line">			<span class="keyword">let</span> result = <span class="keyword">await</span> servie.<span class="title function_">translate</span>(text, source, target);</span><br><span class="line">			docService.<span class="title function_">insertText</span>(result);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">		vscode.<span class="property">window</span>.<span class="title function_">showErrorMessage</span>(<span class="string">`Error occurs. <span class="subst">$&#123;error.message&#125;</span>`</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>It is easy to understand. We call <code>getParagraph()</code> method in <code>DocService</code> class to automatically get the text of the current paragraph, send the orignial text to Google Translate API then insert the returned text after the current paragraph.</p>
+<h2 id="Configurations-Contribution-Points"><a href="#Configurations-Contribution-Points" class="headerlink" title="Configurations &amp; Contribution Points"></a>Configurations &amp; Contribution Points</h2><p>It will not work if you just register the commands in the code. We also need to update <code>package.json</code> to configure the new commands. There is an important concept called <a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/references/contribution-points"><strong>Contribution Points</strong></a> in VS Code extension development. You can find the documentation here: <a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/references/contribution-points">https://code.visualstudio.com/api/references/contribution-points</a><strong>. Contribution Points</strong> are a set of configurations in the <code>package.json</code> file, which is used to declare some properties of the extension, such as short cuts, commands and settings, etc. Here is an example:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;activationEvents&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;onCommand:translatorHelper.translateInsert&quot;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<p>The code above shows that it registers an event which will be invoked by the command named<code>translatorHelper.translateInsert </code> . Another example is shown below:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;contributes&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;commands&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;translatorHelper.translateInsert&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;title&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Translate &amp; Insert&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;keybindings&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;translatorHelper.translateInsert&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;alt+t&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;when&quot;</span><span class="punctuation">:</span> <span class="string">&quot;editorTextFocus&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>I added a command named <code>translatorHelper.translateInsert</code>, which is exact same with the one in the last code snippet. Also, I added a <code>keybindings</code>, so that when the user presses <code>Alt+T</code>, the command will be invoked.</p>
+<ul>
+<li><code>contributes.commands</code>: <a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/references/contribution-points#contributes.commands">https://code.visualstudio.com/api/references/contribution-points#contributes.commands</a></li>
+<li><code>contributes.keybindings</code>: <a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/references/contribution-points#contributes.keybindings">https://code.visualstudio.com/api/references/contribution-points#contributes.keybindings</a></li>
+</ul>
+<h2 id="Extension-Configuration"><a href="#Extension-Configuration" class="headerlink" title="Extension Configuration"></a>Extension Configuration</h2><p>We should provide users with the capability to set up the translate languages. The API we need to use for this purpose is <code>contributes.configuration</code>. VS Code provides a unified API to manage the configurations for all the extensions in one place. To enable configurations for my extension, I need to add the below code to the <code>contributes</code> section in <code>package.json</code> :</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;configuration&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;title&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Translator Helper&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;properties&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;translatorHelper.api&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;default&quot;</span><span class="punctuation">:</span> <span class="string">&quot;google&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;enum&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                        <span class="string">&quot;google&quot;</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="string">&quot;google-cn&quot;</span></span><br><span class="line">                    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;enumDescriptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                        <span class="string">&quot;Google Translation API.&quot;</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="string">&quot;Google Translation API for Chinese users.&quot;</span></span><br><span class="line">                    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Specify the api to translate the text.&quot;</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;translatorHelper.sourceLanguage&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;default&quot;</span><span class="punctuation">:</span> <span class="string">&quot;en&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;The source language to be translated.&quot;</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;translatorHelper.targetLanguage&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;default&quot;</span><span class="punctuation">:</span> <span class="string">&quot;zh-CN&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;The target language.&quot;</span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>The configuration could be text, enum or other types. You can also set the default value and add descriptions, etc. After that, you can see the configuration options in the dropdownlist on the configuration page. The detailed API is here: <a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/references/contribution-points#contributes.configuration">https://code.visualstudio.com/api/references/contribution-points#contributes.configuration</a>.</p>
+<p>For my case, I can read the configurations by the below code:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> config = vscode.<span class="property">workspace</span>.<span class="title function_">getConfiguration</span>(<span class="string">&quot;translatorHelper&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> api = config.<span class="property">api</span>;</span><br><span class="line"><span class="keyword">const</span> source = config.<span class="property">sourceLanguage</span>;</span><br><span class="line"><span class="keyword">const</span> target = config.<span class="property">targetLanguage</span>;</span><br></pre></td></tr></table></figure>
+
+<p>Now the basic functionalities of the translator extension are ready to go!</p>
+<h2 id="Testing"><a href="#Testing" class="headerlink" title="Testing"></a>Testing</h2><p>Testing is very important in the software development process, especially in the DevOps process. Good testing helps us improve the quality of the software. We can follow the instruction to create tests for the VS Code extension: <a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/working-with-extensions/testing-extension">https://code.visualstudio.com/api/working-with-extensions/testing-extension</a>.</p>
+<p>The default project template has a full test case integrated already, which is in the <code>src/test</code> folder. We can easily update the test cases. I added a default markdown file named <code>test.md</code> in the <code>src/test/suite</code> folder, which contains a “Hello World”. When the test runs, VS Code will load this file automatically and execute the command to translate it. Some code snippets are shown below:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">test</span>(<span class="string">&quot;Should get the correct translation then insert it.&quot;</span>, <span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">	<span class="keyword">const</span> uri = vscode.<span class="property">Uri</span>.<span class="title function_">file</span>(</span><br><span class="line">		path.<span class="title function_">join</span>(__dirname + testFileLocation)</span><br><span class="line">	);</span><br><span class="line">	<span class="keyword">const</span> <span class="variable language_">document</span> = <span class="keyword">await</span> vscode.<span class="property">workspace</span>.<span class="title function_">openTextDocument</span>(uri);</span><br><span class="line">	<span class="keyword">const</span> editor = <span class="keyword">await</span> vscode.<span class="property">window</span>.<span class="title function_">showTextDocument</span>(<span class="variable language_">document</span>);</span><br><span class="line">	<span class="comment">// Make sure the file is fully loaded before interacting with it.</span></span><br><span class="line">	<span class="keyword">await</span> <span class="title function_">sleep</span>(<span class="number">200</span>);</span><br><span class="line">	vscode.<span class="property">commands</span>.<span class="title function_">executeCommand</span>(<span class="string">&#x27;extension.translateInsert&#x27;</span>).<span class="title function_">then</span>(<span class="function"><span class="params">result</span> =&gt;</span> &#123;</span><br><span class="line">		assert.<span class="title function_">equal</span>(editor.<span class="property">document</span>.<span class="title function_">getText</span>(editor.<span class="property">selection</span>).<span class="title function_">indexOf</span>(<span class="string">&#x27;你好&#x27;</span>) &gt; -<span class="number">1</span>, <span class="literal">true</span>);</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>This piece of code will automatically load the text file and call <code>&#39;extension.translateInsert&#39;</code> command, then compare the translated text with expected text. If it contains the expected text, that means the extension works as expected.</p>
+<h2 id="Bundling"><a href="#Bundling" class="headerlink" title="Bundling"></a>Bundling</h2><p>You might be aware that the VS Code extension is similar to the front-end app which contains JavaScript&#x2F;TypeScript. For apps developed by JavaScript or TypeScript, loading lots of small files is slower than loading one big file. So usually, we need to use some bundlers to bundle the code and reduce the size of the app. There are quite a few different bundlers available, such as rollup.js, webpack, etc. For our case, we use webpack as the bundler. That is also the recommended way of VS Code: <a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/working-with-extensions/bundling-extension">https://code.visualstudio.com/api/working-with-extensions/bundling-extension</a></p>
+<p>Install webpack by typing this command:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i --save-dev webpack webpack-cli</span><br></pre></td></tr></table></figure>
+
+<p>Then install <code>ts-loader</code> to add supports to TypeScript for webpack:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i --save-dev ts-loader</span><br></pre></td></tr></table></figure>
+
+<p>After that, a <code>webpack.config.js</code> will be added to the project. In addition, we need to update the <code>package.json</code> file to use webpack for bundling：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;vscode:prepublish&quot;</span><span class="punctuation">:</span> <span class="string">&quot;webpack --mode production&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;webpack&quot;</span><span class="punctuation">:</span> <span class="string">&quot;webpack --mode development&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;webpack-dev&quot;</span><span class="punctuation">:</span> <span class="string">&quot;webpack --mode development --watch&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;test-compile&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tsc -p ./&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;compile&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tsc -p ./&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;watch&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tsc -watch -p ./&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;pretest&quot;</span><span class="punctuation">:</span> <span class="string">&quot;npm run compile&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;test&quot;</span><span class="punctuation">:</span> <span class="string">&quot;node ./out/test/runTest.js&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;deploy&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vsce publish --yarn&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+
+<p>If you have experience with front-end development, you may find that is easy to config.</p>
+<h2 id="Publishing"><a href="#Publishing" class="headerlink" title="Publishing"></a>Publishing</h2><p>It is time to publish our extension. Before doing it, we need to install <code>vsce</code> which is a command-line tool for packaging, publishing and managing VS code extensions. Run this command to install it:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g vsce</span><br></pre></td></tr></table></figure>
+
+<p>We also need to register an account in Marketplace to get the Access Token. Here is the instruction for publishing：<a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/working-with-extensions/publishing-extension">https://code.visualstudio.com/api/working-with-extensions/publishing-extension</a></p>
+<p>I do not want to copy &amp; paste the documents here so you can find detailed steps in the document above. Just keep in mind that if you do not create a Publisher, you will not be able to use the command to publish the extension.</p>
+<h2 id="CI-CD"><a href="#CI-CD" class="headerlink" title="CI&#x2F;CD"></a>CI&#x2F;CD</h2><p>It is tedious to publish the extension manually for each update. The best way is to integrate CI&#x2F;CD by Azure DevOps. Here is the documentation to describe how to build a Pipeline：<a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/working-with-extensions/continuous-integration">https://code.visualstudio.com/api/working-with-extensions/continuous-integration</a>.</p>
+<p>Note that we need to use Access Token to publish the extension, but this token is sensitive information so we need to create a variable to store the token in the Pipeline, then use is in YAML file.</p>
+<img src="/2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/image-20200109114205110.png" class="" title="Variables in Pipeline" alt="Variables in Pipeline">
+
+<p>The code of the YAML file is shown below:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">trigger:</span></span><br><span class="line">  <span class="attr">branches:</span></span><br><span class="line">    <span class="attr">include:</span> [<span class="string">&#x27;master&#x27;</span>]</span><br><span class="line">  <span class="attr">tags:</span></span><br><span class="line">    <span class="attr">include:</span> [<span class="string">&#x27;*&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="attr">strategy:</span></span><br><span class="line">  <span class="attr">matrix:</span></span><br><span class="line">    <span class="attr">linux:</span></span><br><span class="line">      <span class="attr">imageName:</span> <span class="string">&#x27;ubuntu-16.04&#x27;</span></span><br><span class="line">    <span class="attr">mac:</span></span><br><span class="line">      <span class="attr">imageName:</span> <span class="string">&#x27;macos-10.13&#x27;</span></span><br><span class="line">    <span class="attr">windows:</span></span><br><span class="line">      <span class="attr">imageName:</span> <span class="string">&#x27;vs2017-win2016&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">pool:</span></span><br><span class="line">  <span class="attr">vmImage:</span> <span class="string">$(imageName)</span></span><br><span class="line"></span><br><span class="line"><span class="attr">steps:</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">NodeTool@0</span></span><br><span class="line">  <span class="attr">inputs:</span></span><br><span class="line">    <span class="attr">versionSpec:</span> <span class="string">&#x27;8.x&#x27;</span></span><br><span class="line">  <span class="attr">displayName:</span> <span class="string">&#x27;Install Node.js&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">bash:</span> <span class="string">|</span></span><br><span class="line"><span class="string">    /usr/bin/Xvfb :99 -screen 0 1024x768x24 &gt; /dev/null 2&gt;&amp;1 &amp;</span></span><br><span class="line"><span class="string">    echo &quot;&gt;&gt;&gt; Started xvfb&quot;</span></span><br><span class="line"><span class="string"></span>  <span class="attr">displayName:</span> <span class="string">Start</span> <span class="string">xvfb</span></span><br><span class="line">  <span class="attr">condition:</span> <span class="string">and(succeeded(),</span> <span class="string">eq(variables[&#x27;Agent.OS&#x27;],</span> <span class="string">&#x27;Linux&#x27;</span><span class="string">))</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">bash:</span> <span class="string">|</span></span><br><span class="line"><span class="string">    echo &quot;&gt;&gt;&gt; Compile vscode-test&quot;</span></span><br><span class="line"><span class="string">    yarn &amp;&amp; yarn compile</span></span><br><span class="line"><span class="string">    echo &quot;&gt;&gt;&gt; Compiled vscode-test&quot;</span></span><br><span class="line"><span class="string">    cd sample</span></span><br><span class="line"><span class="string">    echo &quot;&gt;&gt;&gt; Run sample integration test&quot;</span></span><br><span class="line"><span class="string">    yarn &amp;&amp; yarn compile &amp;&amp; yarn test</span></span><br><span class="line"><span class="string"></span>  <span class="attr">displayName:</span> <span class="string">Run</span> <span class="string">Tests</span></span><br><span class="line">  <span class="attr">env:</span></span><br><span class="line">    <span class="attr">DISPLAY:</span> <span class="string">&#x27;:99.0&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">bash:</span> <span class="string">|</span></span><br><span class="line"><span class="string">    echo &quot;&gt;&gt;&gt; Publish&quot;</span></span><br><span class="line"><span class="string">    yarn deploy -p $(VSCODE_MARKETPLACE_TOKEN)</span></span><br><span class="line"><span class="string"></span>  <span class="attr">displayName:</span> <span class="string">Publish</span></span><br><span class="line">  <span class="attr">condition:</span> <span class="string">and(succeeded(),</span> <span class="string">eq(variables[&#x27;Agent.OS&#x27;],</span> <span class="string">&#x27;Linux&#x27;</span><span class="string">))</span></span><br></pre></td></tr></table></figure>
+
+<p>It uses <code>$(VSCODE_MARKETPLACE_TOKEN)</code> to retrieve the Access Token. In the trigger section, we set up the trigger to specify the trigger branch and the conditions. So that every time I commit a Pull Request, the Pipeline will be automatically triggered then publish the extension to the Marketplace.</p>
+<h2 id="Icon-README"><a href="#Icon-README" class="headerlink" title="Icon &amp; README"></a>Icon &amp; README</h2><p>Another important thing is the manifest information of the extension, including the icon and README, etc. To make the icon, I recommend using <a target="_blank" rel="noopener" href="https://icons8.com/lunacy">Lunacy</a>, which you can download from Windows 10 Store for free. This tool has a bunch of beautiful free icons. Also, you can download the extension icon packs that include more than 100,000 icons.</p>
+<img src="/2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/image-20200109114538882.png" class="" title="Lunacy" alt="Lunacy">
+
+<p>Place the icon file in the project folder, and config it in the <code>package.json</code> file:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;icon&quot;</span><span class="punctuation">:</span> <span class="string">&quot;images/icon.png&quot;</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+
+<p>In addition, you need to define the attributes of the extension, such as id, display name, description, version, publisher, repo link, VS Code version, etc. You can also add some badges to show the status like build status, current version, downloads, reviews. etc. For more details, please read this documentation: <a target="_blank" rel="noopener" href="https://code.visualstudio.com/api/references/extension-manifest">https://code.visualstudio.com/api/references/extension-manifest</a></p>
+<p>The README file is shown on the extension page in Marketplace. You better make a couple of GIF files to show what the extension can do. There are lots of tools to make GIF files. I use <a target="_blank" rel="noopener" href="https://www.techsmith.com/store/snagit">SNAGIT</a>, which is a good software to capture your screens.</p>
+<img src="/2020/02/23/how-to-develop-a-vs-code-extension-translator-helper/image-20200218230646676.png" class="" title="SNAGIT" alt="SNAGIT">
+
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>This is a very simple VS Code extension - you might find that the core method is just less than 50 lines. But it definitely improves my work efficiency. What I learned from it is that when you cannot find a good tool, why not make if yourself? The progress is fun! The project is open-sourced on GitHub: <a target="_blank" rel="noopener" href="https://github.com/yanxiaodi/vscode-translator-helper">https://github.com/yanxiaodi/vscode-translator-helper</a>. All feedback and advice are welcomed.</p>
+<p>Happy Coding!</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vscode/" rel="tag"># vscode</a>
+              <a href="/tags/vscode-extension/" rel="tag"># vscode extension</a>
+              <a href="/tags/translate/" rel="tag"># translate</a>
+              <a href="/tags/open-source/" rel="tag"># open source</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/01/11/translator-helper-a-vs-code-extension-to-help-you-translate-documents/" rel="prev" title="Translator Helper - A VS Code Extension to help you translate documents">
+                  <i class="fa fa-angle-left"></i> Translator Helper - A VS Code Extension to help you translate documents
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/04/02/mapping-the-model-to-multiple-tables-with-entityFramework-core/" rel="next" title="Mapping the same model to multiple tables with EntityFramework.Core">
+                  Mapping the same model to multiple tables with EntityFramework.Core <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Xiaodi Yan</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">236k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:35</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
