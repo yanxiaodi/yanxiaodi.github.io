@@ -26,12 +26,15 @@
 <meta property="og:site_name" content="Xiaodi Yan&#39;s Blog">
 <meta property="og:description" content="ASP.NET Core WebAPIs are a great way to expose your business logic to the world. But how do you consume them? In this article, I’ll show you how to generate a WebAPI client for your ASP.NET Core WebAP">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yanxiaodi.github.io/2024/02/15/how-to-generate-a-webapi-client-for-your-aspnetcore-webapi-with-swashbuckle-and-nswag/title.png">
+<meta property="og:image" content="https://yanxiaodi.github.io/2024/02/15/how-to-generate-a-webapi-client-for-your-aspnetcore-webapi-with-swashbuckle-and-nswag/image-20240215212931292.png">
 <meta property="article:published_time" content="2024-02-15T07:42:25.000Z">
 <meta property="article:modified_time" content="2024-02-15T07:42:25.000Z">
 <meta property="article:author" content="Xiaodi Yan">
 <meta property="article:tag" content=".NETCore">
 <meta property="article:tag" content="ASP.NETCore">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yanxiaodi.github.io/2024/02/15/how-to-generate-a-webapi-client-for-your-aspnetcore-webapi-with-swashbuckle-and-nswag/title.png">
 
 
 <link rel="canonical" href="https://yanxiaodi.github.io/2024/02/15/how-to-generate-a-webapi-client-for-your-aspnetcore-webapi-with-swashbuckle-and-nswag/">
@@ -243,6 +246,8 @@
     <div class="post-body" itemprop="articleBody"><p>ASP.NET Core WebAPIs are a great way to expose your business logic to the world. But how do you consume them? In this article, I’ll show you how to generate a WebAPI client for your ASP.NET Core WebAPI with <strong>Swashbuckle</strong> and <strong>NSwag</strong>.</p>
 <span id="more"></span>
 
+<img src="/2024/02/15/how-to-generate-a-webapi-client-for-your-aspnetcore-webapi-with-swashbuckle-and-nswag/title.png" class="" title="WebAPI" alt="WebAPI">
+
 <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>A good API is a well-documented API. But even with the best documentation, it can be hard to consume an API. Developers have to write a lot of boilerplate code to consume an API, including making HTTP requests, serializing and deserializing JSON, and handling errors. This can be time-consuming and error-prone.</p>
 <p>It is important to provide a great developer experience. One way to do this is to provide a client library that developers can use to consume your API. ASP.NET Core WebAPI template already provides a way to show the API documentation using <strong>Swashbuckle</strong>. But it doesn’t provide a way to generate a client library. In this article, I’ll show you how to generate a WebAPI client for your ASP.NET Core WebAPI with <strong>Swashbuckle</strong> and <strong>NSwag</strong>, so that you can provide the client library to your consumers.</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/domaindrivendev/Swashbuckle.AspNetCore">Swashbuckle</a> is a library that automatically generates API documentation from your ASP.NET Core WebAPI. The default template for ASP.NET Core WebAPI includes Swashbuckle.</p>
@@ -279,7 +284,7 @@
 </li>
 </ol>
 <p>So far, we have configured Swashbuckle to generate the OpenAPI specification with more information and include the XML comments from the controllers. When you run the application and navigate to <code>https://localhost:&lt;your_port_number&gt;/swagger/index.html</code>, you should see the updated Swagger UI with more information.</p>
-
+<img src="/2024/02/15/how-to-generate-a-webapi-client-for-your-aspnetcore-webapi-with-swashbuckle-and-nswag/image-20240215212931292.png" class="" title="SwaggerUI" alt="SwaggerUI">
 
 <p>You can see the title, description, and contact information in the Swagger UI. You can also see a link such as <code>https://localhost:&lt;your_port_number&gt;/swagger/v1/swagger.json</code>. This is the URL to the OpenAPI specification.</p>
 <h2 id="Generating-an-OpenAPI-specification-file-with-Swashbuckle"><a href="#Generating-an-OpenAPI-specification-file-with-Swashbuckle" class="headerlink" title="Generating an OpenAPI specification file with Swashbuckle"></a>Generating an OpenAPI specification file with Swashbuckle</h2><p>Although we can see the OpenAPI specification in the Swagger UI, we need to generate a JSON file for NSwag to consume. Either Swashbuckle or NSwag can generate the OpenAPI specification file. However, Swashbuckle supports header parameters, while NSwag has some limitations. So, we’ll use Swashbuckle to generate the OpenAPI specification file, and then use NSwag to generate the client code.</p>
